@@ -1,0 +1,25 @@
+{
+	"name": "@coinchoice/backend",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.ts",
+	"author": "Ryan Soury <ryan@usher.so>",
+	"license": "UNLICENSED",
+	"repository": "",
+	"private": false,
+	"scripts": {
+		"clean": "del ./dist",
+		"lint": "eslint --ext .js,.ts ."
+	},
+	"files": [],
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@types/node": "^18.11.18",
+		"del-cli": "^5.0.0",
+		"dotenv": "^16.0.3",
+		"typescript": "^4.9.4"
+	}
+}

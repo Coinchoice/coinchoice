@@ -1,0 +1,8 @@
+build
+dist
+distribution
+coverage
+node_modules
+vendor
+packages
+test/web-ext-profile
