@@ -4,6 +4,7 @@ import { HttpModule } from '@nestjs/axios';
 import { EthersModule, GOERLI_NETWORK } from 'nestjs-ethers';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AppService } from './app.service';
       // quorum: 1,
       // useDefaultProvider: true,
     }),
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
