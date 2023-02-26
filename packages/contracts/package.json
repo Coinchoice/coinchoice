@@ -1,7 +1,7 @@
 {
-	"name": "ETHD",
+	"name": "coinchoice-contracts",
 	"version": "0.1.0",
-	"description": "ETHD",
+	"description": "CCC",
 	"engines": {
 		"node": ">= 12.18.0"
 	},
