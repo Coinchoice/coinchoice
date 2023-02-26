@@ -50,8 +50,16 @@ export class AppController {
     return this.appService.getTokenSwapInfo(token, amount);
   }
 
-  @Get('balance')
-  getNetwork() {
-    return this.appService.getEthBalance();
+  @Get('ethbalance')
+  getEthBalance(@Query('address') address) {
+    return this.appService.getEthBalance(address);
+  }
+
+  @Get('tokenbalance')
+  getTokenBalance(
+    @Query('token') tokenAddress,
+    @Query('address') walletAddress,
+  ) {
+    return this.appService.getTokenBalance(tokenAddress, walletAddress);
   }
 }

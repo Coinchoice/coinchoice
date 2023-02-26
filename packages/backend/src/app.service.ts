@@ -3,9 +3,16 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AxiosResponse } from 'axios';
 import { HttpService } from '@nestjs/axios';
-import { InjectEthersProvider } from 'nestjs-ethers';
+import {
+  EthersContract,
+  InjectContractProvider,
+  InjectEthersProvider,
+} from 'nestjs-ethers';
+import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
+import { parseEther, formatUnits } from '@ethersproject/units';
+import * as ERC20ABI from './utils/erc20.json';
 
 @Injectable()
 export class AppService {
@@ -14,6 +21,8 @@ export class AppService {
   constructor(
     @InjectEthersProvider()
     private readonly ethersProvider: BaseProvider,
+    @InjectContractProvider()
+    private readonly ethersContract: EthersContract,
     private readonly httpService: HttpService,
   ) {}
 
@@ -29,27 +38,64 @@ export class AppService {
     );
   }
 
-  async getEthBalance(): Promise<BigNumber> {
+  async getEthBalance(address: string): Promise<BigNumber> {
     //return this.ethersProvider.getNetwork();
-    return this.ethersProvider.getBalance(
-      '0x152A80F617006a4d8513e8a47D85afb317eEC479',
-    );
+    return this.ethersProvider.getBalance(address);
   }
 
-  // Endpoint for saving the preferred gas currency
+  async getTokenBalance(
+    tokenAddress: string,
+    walletAddress: string,
+  ): Promise<BigNumber> {
+    const contract: Contract = this.ethersContract.create(
+      tokenAddress,
+      ERC20ABI.abi,
+    );
+    return await contract.balanceOf(walletAddress);
+  }
 
-  // Endpoint to check if wallet has enough balance in the preferred gas currency
+  // TODO: Endpoint for saving the preferred gas currency for the user
+
+  // TODO: Endpoint -> abrir um Websocket dentro deste endpoint -> devolver uma msg pro usuário
+
+  // Check if the user has enough balance to pay the gas fee in the preferred currency
+  async checkBalanceForToken(
+    from: string,
+    to: string,
+    input: string,
+    token: string,
+  ) {
+    // Original Transaction
+    const txGasFeeEth = await this.getTenderlySimulationGasFee(from, to, input);
+    const txGasFeeBig = parseEther(txGasFeeEth.toString());
+
+    // Swap Transaction
+    const [tokenPrice, swapGasFeeEth] = await firstValueFrom(
+      await this.getTokenSwapInfo(token, formatUnits(txGasFeeBig)),
+    );
+
+    const feeEth = swapGasFeeEth + txGasFeeEth;
+    const feeToken = feeEth * tokenPrice; // considering 18 decimals for now
+
+    const balanceTokenBig = await this.getTokenBalance(token, from); // considering 18 decimals for now
+
+    return parseInt(formatUnits(balanceTokenBig)) > feeToken;
+  }
 
   // https://docs.0x.org/0x-swap-api/api-references/get-swap-v1-price
+  // Netwok: Ethereum Mainnet
   async getTokenSwapInfo(token: string, amount: string) {
     this.logger.log(`0x Swap Price for token ${token} and amount ${amount}`);
     return this.httpService
       .get(
-        `https://api.0x.org/swap/v1/price?sellToken=ETH&buyToken=${token}&sellAmount=${amount}`,
+        `${process.env.OX_ENDPOINT}/swap/v1/price?sellToken=ETH&buyToken=${token}&sellAmount=${amount}`,
       )
       .pipe(
         map((result) => {
-          return result?.data;
+          return [
+            result?.data.price, // $1650 / ETH
+            (result?.data.gasPrice * result?.data.estimatedGas) / 1e18, // ETH
+          ];
         }),
       )
       .pipe(
@@ -70,6 +116,7 @@ export class AppService {
 
   // https://ethereum.org/en/developers/docs/gas/#base-fee
   // https://docs.etherscan.io/api-endpoints/gas-tracker
+  // Netwok: Ethereum Mainnet
   async getGasPrice() {
     this.logger.log(`Etherscan Gas Oracle`);
     return this.httpService
@@ -90,6 +137,7 @@ export class AppService {
   }
 
   // https://docs.tenderly.co/simulations-and-forks/simulation-api/using-simulation-api
+  // Netwok: NETWORK_ID
   async getTenderlySimulation(from: string, to: string, input: string) {
     this.logger.log(`Tenderly Simulation`);
     return this.httpService
@@ -102,7 +150,7 @@ export class AppService {
           save_if_fails: false, // if true, reverting simulations show up in the dashboard
           simulation_type: 'full', // full or quick (full is default)
 
-          network_id: '1', // network to simulate on
+          network_id: process.env.NETWORK_ID, // network to simulate on
 
           /* Standard EVM Transaction object */
           from: from,
