@@ -1,14 +1,14 @@
 {
   "version": "0.1.0",
-  "description": "This snap adds transaction insights to MetaMask showing what % of an ETH transfer is paid in gas fees.",
-  "proposedName": "Coinchoice MetaMask Snap",
+  "description": "This snap allows you to receive ETH for any currency gas-free.",
+  "proposedName": "Need ETH",
   "source": {
     "shasum": "izjmcVh3eJuJUbzP1n4zB0F4khy0U267JrVo+pgf6k0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "ethdenver-snaps-workshop-snap",
+        "packageName": "coinchoice-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
