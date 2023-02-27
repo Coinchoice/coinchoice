@@ -7,7 +7,7 @@
 // 	sendDecisionToCS,
 // } from '../shared/messages';
 // import { TxRequestStore } from '../shared/storage';
-import { log } from '../utils/logger';
+import { log } from './utils/logger';
 
 // import NotificationManager from './NotificationsManager';
 

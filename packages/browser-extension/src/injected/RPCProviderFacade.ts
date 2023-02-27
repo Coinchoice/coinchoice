@@ -6,8 +6,8 @@ import {
 	JsonRpcCallback,
 	JsonRpcRequest,
 	JsonRpcResponse,
-} from './types/injected';
-import { log } from './utils/logger';
+} from '../types/injected';
+import { log } from '../utils/logger';
 
 const isMainnet = () => {
 	return window.ethereum.chainId === '0x1';
