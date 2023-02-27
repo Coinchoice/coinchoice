@@ -1,14 +1,14 @@
 {
   "version": "0.1.0",
   "description": "This snap allows you to receive ETH for any currency gas-free.",
-  "proposedName": "Need ETH",
+  "proposedName": "Need ETH?",
   "source": {
     "shasum": "izjmcVh3eJuJUbzP1n4zB0F4khy0U267JrVo+pgf6k0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "coinchoice-snap",
+        "packageName": "ethdenver-snaps-workshop-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
