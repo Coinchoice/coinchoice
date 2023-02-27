@@ -1,0 +1,22 @@
+{
+  "version": "0.1.0",
+  "description": "This snap adds transaction insights to MetaMask showing what % of an ETH transfer is paid in gas fees.",
+  "proposedName": "Coinchoice MetaMask Snap",
+  "source": {
+    "shasum": "izjmcVh3eJuJUbzP1n4zB0F4khy0U267JrVo+pgf6k0=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "ethdenver-snaps-workshop-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:transaction-insight": {},
+    "endowment:ethereum-provider": {},
+    "endowment:network-access": {}
+  },
+  "manifestVersion": "0.1"
+}
