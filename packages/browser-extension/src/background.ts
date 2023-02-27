@@ -7,13 +7,13 @@
 // 	sendDecisionToCS,
 // } from '../shared/messages';
 // import { TxRequestStore } from '../shared/storage';
-import { log } from './utils/logger';
+// import { log } from './utils/logger';
 
 // import NotificationManager from './NotificationsManager';
 
-log.info('CoinChoice Service-Worker:');
-log.info('This is the background process for the CoinChoice Extension.');
-log.info('Clearing Tx store during boot.');
+console.log('CoinChoice Service-Worker:');
+console.log('This is the background process for the CoinChoice Extension.');
+console.log('Clearing Tx store during boot.');
 
 // TxRequestStore.clear();
 
@@ -54,3 +54,5 @@ log.info('Clearing Tx store during boot.');
 // 			break;
 // 	}
 // });
+
+export {};

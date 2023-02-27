@@ -1,3 +1,13 @@
+import detectEthereumProvider from '@metamask/detect-provider';
+import type { PlasmoCSConfig } from 'plasmo';
+
+// import { RPCProviderFacade } from './RPCProviderFacade';
+
+export const config: PlasmoCSConfig = {
+	matches: ['<all_urls>'],
+	world: 'MAIN',
+};
+
 // @ts-ignore
 // import ethereumWrapper from './injected/index?script&module';
 
@@ -11,6 +21,28 @@
 // node.prepend(script);
 
 console.log('CONTENT SCRIPT!');
+
+// new RPCProviderFacade();
+
+(async () => {
+	const provider = await detectEthereumProvider({ timeout: 10000 });
+	if (provider) {
+		console.log('Ethereum successfully detected!', provider);
+
+		// From now on, this should always be true:
+		// provider === window.ethereum
+
+		// Access the decentralized web!
+
+		// Legacy providers may only have ethereum.sendAsync
+		// const chainId = await provider.request({
+		// 	method: 'eth_chainId'
+		// })
+	} else {
+		// if the provider is not detected, detectEthereumProvider resolves to null
+		console.error('Please install MetaMask!');
+	}
+})();
 
 /**
  * Used to listen for events emitted by the injected ethereumWrapper script
