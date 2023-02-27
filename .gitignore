@@ -1,16 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-vendor
-.pnp
-.pnp.js
-.yarn/*
-.turbo
-.turbo/**
-/node_modules
+**/vendor
+**/.pnp
+**/.pnp.js
+**/.yarn/*
+**/.turbo
+**/.turbo/**
 **/node_modules
-jspm_packages
-flow-typed
+**/jspm_packages
+**/flow-typed
 
 # testing
 logs
