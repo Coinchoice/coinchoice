@@ -1,11 +1,9 @@
 // @ts-ignore
-import ethereumWrapper from './injected/index?script&module';
-
-// import { decisionStream, sendRequest } from './shared/messages';
+// import ethereumWrapper from './injected/index?script&module';
 
 const script = document.createElement('script');
 
-script.src = chrome.runtime.getURL(ethereumWrapper);
+script.src = chrome.runtime.getURL('injected/index.js');
 
 script.async = false;
 script.type = 'module';

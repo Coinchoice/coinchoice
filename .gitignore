@@ -8,6 +8,8 @@
 **/.turbo
 **/.turbo/**
 **/node_modules
+node_modules
+/node_modules/**
 **/jspm_packages
 **/flow-typed
 
