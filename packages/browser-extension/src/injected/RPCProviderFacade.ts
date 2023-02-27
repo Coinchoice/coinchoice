@@ -13,7 +13,10 @@ const isMainnet = () => {
 	return window.ethereum.chainId === '0x1';
 };
 
-const isIntercept = (method: string) => true;
+const isIntercept = (method: string) => {
+	log.debug(method);
+	return true;
+};
 
 export class RPCProviderFacade {
 	constructor() {

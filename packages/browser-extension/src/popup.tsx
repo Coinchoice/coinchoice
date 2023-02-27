@@ -1,30 +1,22 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { MantineProvider } from '@mantine/core';
+import { Anchor, Container, Title } from '@mantine/core';
 
 function IndexPopup() {
-	const [data, setData] = useState('');
-
 	return (
 		<MantineProvider>
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-					padding: 16,
-				}}
-			>
-				<h2>
+			<Container>
+				<Title>
 					Welcome to your{' '}
-					<a href="https://www.plasmo.com" target="_blank">
+					<Anchor href="https://www.plAnchorsmo.com" target="_blank">
 						Plasmo
-					</a>{' '}
+					</Anchor>{' '}
 					Extension!
-				</h2>
-				<input onChange={(e) => setData(e.target.value)} value={data} />
-				<a href="https://docs.plasmo.com" target="_blank">
+				</Title>
+				<Anchor href="https://docs.plasmo.com" target="_blank">
 					View Docs
-				</a>
-			</div>
+				</Anchor>
+			</Container>
 		</MantineProvider>
 	);
 }

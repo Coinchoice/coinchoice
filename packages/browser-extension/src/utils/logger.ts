@@ -1,3 +1,9 @@
-import { ILogObj, Logger } from 'tslog';
+import * as log from 'loglevel';
 
-export const log: Logger<ILogObj> = new Logger();
+log.setLevel(
+	process.env.LOG_LEVEL
+		? log.levels[process.env.LOG_LEVEL.toUpperCase()]
+		: log.levels.INFO
+);
+
+export { log };

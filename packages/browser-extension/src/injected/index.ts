@@ -1,3 +1,6 @@
-import { RPCProviderFacade } from './RPCProviderFacade';
+// import { RPCProviderFacade } from './RPCProviderFacade';
+// new RPCProviderFacade();
 
-new RPCProviderFacade();
+console.log('Hello world');
+
+export {};
