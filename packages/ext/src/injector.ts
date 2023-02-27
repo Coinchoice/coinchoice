@@ -4,7 +4,10 @@ import ethereumWrapper from './injectedScript?script&module';
 // import { decisionStream, sendRequest } from './shared/messages';
 
 const script = document.createElement('script');
+
+// @ts-ignore
 script.src = chrome.runtime.getURL(ethereumWrapper);
+
 script.async = false;
 script.type = 'module';
 const node = document.head || document.documentElement;

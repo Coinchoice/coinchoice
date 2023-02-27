@@ -1,9 +1,13 @@
-function App() {
+import { Button } from '@mantine/core';
+
+const App = () => {
 	return (
 		<main>
-			<div></div>
+			<div>
+				<Button>Click me!</Button>
+			</div>
 		</main>
 	);
-}
+};
 
 export default App;
