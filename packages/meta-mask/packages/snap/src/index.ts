@@ -16,11 +16,8 @@ const onTriggerAPI = async () => {
 // Handle outgoing transactions
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
 
-  console.log("TEST")
   // trigger browser extension for swap 
   const response = await onTriggerAPI()
-  console.log("TEST2")
-
   // this is shown if no transaction is triggered
   if (typeof transaction.data === 'string' && transaction.data !== '0x') {
     return {

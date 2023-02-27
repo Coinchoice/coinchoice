@@ -3,7 +3,7 @@
   "description": "This snap allows you to receive ETH for any currency gas-free.",
   "proposedName": "Need ETH?",
   "source": {
-    "shasum": "izjmcVh3eJuJUbzP1n4zB0F4khy0U267JrVo+pgf6k0=",
+    "shasum": "aLwUl8sh/uU/uz8MT/NdvgYoKtje2IBeXhmENN8WkCU=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
