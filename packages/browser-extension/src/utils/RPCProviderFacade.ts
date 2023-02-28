@@ -5,6 +5,7 @@ import {
 	JsonRpcResponse,
 	NetworkChainIds,
 } from '~types/requests';
+import { bus } from '~utils/bus';
 import {
 	isIntercept,
 	isJsonRpcRequest,
@@ -34,7 +35,7 @@ export class RPCProviderFacade {
 						isSupportedNetwork(NetworkChainIds.GOERLI)
 					) {
 						console.log('intercepted deprecated send');
-						await this.waitForDecision(request);
+						await this.waitForSignature(request);
 						return deprecatedProviderSend(request, callback);
 					} else {
 						return deprecatedProviderSend(request, callback);
@@ -48,7 +49,7 @@ export class RPCProviderFacade {
 						isSupportedNetwork(NetworkChainIds.GOERLI)
 					) {
 						console.log('intercepted deprecated send');
-						return this.waitForDecision({
+						return this.waitForSignature({
 							method,
 							params,
 						}).then(async () => {
@@ -75,7 +76,7 @@ export class RPCProviderFacade {
 					isSupportedNetwork(NetworkChainIds.GOERLI)
 				) {
 					console.log('intercepted deprecated sendAsync');
-					this.waitForDecision(request)
+					this.waitForSignature(request)
 						.then(async () => {
 							deprecatedProviderSendAsync(request, callback);
 						})
@@ -100,7 +101,7 @@ export class RPCProviderFacade {
 					isSupportedNetwork(NetworkChainIds.GOERLI)
 				) {
 					console.log('intercepted request');
-					return this.waitForDecision(request).then(async () => {
+					return this.waitForSignature(request).then(async () => {
 						return await providerRequest(request);
 					});
 				} else {
@@ -110,6 +111,15 @@ export class RPCProviderFacade {
 			provider.request = request.bind(this);
 			provider.coinchoice = true;
 		}
+	}
+
+	async waitForSignature(
+		request: JsonRpcRequest | { method: any; params: any }
+	) {
+		console.log(request);
+		// 1. Create a request to backend with request data -- include wallet address for review
+		// 2. Receives repsonse with gas price in the chosen currency
+		// 3. Submit API request with signature for swap transaction
 	}
 
 	async waitForDecision(request: any) {
