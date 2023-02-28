@@ -18,3 +18,4 @@ cache
 **/typechain
 **/typechain-types
 **/types
+**/node_modules

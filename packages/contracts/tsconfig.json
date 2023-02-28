@@ -15,6 +15,6 @@
     "removeComments": true
 	},
   "exclude": ["node_modules"],
-	"include": ["./scripts", "./test", "./tasks"],
+	"include": ["./scripts", "./test", "./tasks", "./deploy", "./utils"],
 	"files": ["./hardhat.config.ts"]
 }

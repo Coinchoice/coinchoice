@@ -1,152 +1,227 @@
-/**
- * Concerto Log Store Contracts Hardhat!
- */
-import '@nomicfoundation/hardhat-toolbox';
-import '@nomiclabs/hardhat-ethers';
-import '@openzeppelin/hardhat-upgrades';
+// hardhat.config.ts
+
+import 'dotenv/config';
+import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-solhint';
+// import '@tenderly/hardhat-tenderly';
+import '@nomiclabs/hardhat-waffle';
+import 'hardhat-abi-exporter';
+import 'hardhat-deploy';
+import 'hardhat-deploy-ethers';
+import 'hardhat-gas-reporter';
+import 'hardhat-spdx-license-identifier';
 import '@typechain/hardhat';
-import { config as dotenvConfig } from 'dotenv';
-import type { HardhatUserConfig } from 'hardhat/config';
-import type { MultiSolcUserConfig, NetworkUserConfig } from 'hardhat/types';
-import snakeCase from 'lodash.snakecase';
-import { resolve } from 'path';
+import 'hardhat-watcher';
+import 'solidity-coverage';
+import "hardhat-contract-sizer";
+// import '@openzeppelin/hardhat-upgrades';
+// import {accounts} from './utils/networks';
 
-// import 'solidity-coverage';
-import './tasks/accounts';
+//import './tasks';
+import * as dotenv from 'dotenv';
 
-// import './tasks/deploy';
+dotenv.config();
 
-const dotenvConfigPath: string = process.env.DOTENV_CONFIG_PATH || './.env';
-dotenvConfig({ path: resolve(__dirname, dotenvConfigPath) });
+import { HardhatUserConfig } from 'hardhat/types';
+import { removeConsoleLog } from 'hardhat-preprocessor';
 
-// Ensure that we have all the environment variables we need.
-const mnemonic: string | undefined = process.env.MNEMONIC;
-const ownerPrivateKey: string = process.env.OWNER_PRIVATE_KEY || '';
-if (!mnemonic && !ownerPrivateKey) {
-	throw new Error(
-		'Please set your MNEMONIC or OWNER_PRIVATE_KEY in a .env file'
-	);
-}
-
-const chainIds = {
-	'arbitrum-mainnet': 42161,
-	avalanche: 43114,
-	bsc: 56,
-	hardhat: 31337,
-	'eth-mainnet': 1,
-	'eth-goerli': 5,
-	'optimism-mainnet': 10,
-	'polygon-mainnet': 137,
-	'polygon-mumbai': 80001,
-	sepolia: 11155111,
+const accounts = {
+	mnemonic:
+		'test test test test test test test test test test test junk',
+	accountsBalance: "990000000000000000000",
 };
 
-function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
-	let jsonRpcUrl: string;
-	switch (chain) {
-		case 'avalanche':
-			jsonRpcUrl = 'https://api.avax.network/ext/bc/C/rpc';
-			break;
-		case 'bsc':
-			jsonRpcUrl = 'https://bsc-dataseed1.binance.org';
-			break;
-		default:
-			jsonRpcUrl = process.env[snakeCase(chain).toUpperCase()] || '';
-	}
-	return {
-		accounts: ownerPrivateKey ? [ownerPrivateKey] : [],
-		chainId: chainIds[chain],
-		url: jsonRpcUrl,
-	};
-}
+const pk1: string = process.env.PK_1 || '';
+const pk2: string = process.env.PK_2 || '';
+
+// fetch wallet addresses from env
+const address1: string = process.env.ADDRESS_1 || '';
+const address2: string = process.env.ADDRESS_2 || ''
 
 const config: HardhatUserConfig = {
-	defaultNetwork: 'hardhat',
-	// namedAccounts: {
-	// 	deployer: {
-	// 		default: 0,
-	// 	},
-	// },
-	mocha: {
-		timeout: process.env.MOCHA_TIMEOUT || 300000,
+	abiExporter: {
+		path: './abi',
+		clear: false,
+		flat: true,
+		// only: [],
+		// except: []
 	},
+	defaultNetwork: 'hardhat',
 	etherscan: {
-		apiKey: {
-			arbitrumOne: process.env.ARBISCAN_API_KEY || '',
-			avalanche: process.env.SNOWTRACE_API_KEY || '',
-			bsc: process.env.BSCSCAN_API_KEY || '',
-			mainnet: process.env.ETHERSCAN_API_KEY || '',
-			optimisticEthereum: process.env.OPTIMISM_API_KEY || '',
-			polygon: process.env.POLYGONSCAN_API_KEY || '',
-			polygonMumbai: process.env.POLYGONSCAN_API_KEY || '',
-			sepolia: process.env.ETHERSCAN_API_KEY || '',
-		},
+		apiKey: ''
 	},
 	gasReporter: {
-		currency: 'USD',
-		enabled: !!process.env.REPORT_GAS,
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
-		maxMethodDiff: 10,
+		currency: 'USD',
+		enabled: true,
+		excludeContracts: ['contracts/mocks/', 'contracts/libraries/'],
+	},
+	mocha: {
+		timeout: 50000,
+	},
+	namedAccounts: {
+		operator: address1,
+		user: address2,
+		deployer: {
+			default: address1,
+			localhost: address1,
+			ropsten: address1,
+			'bsc-testnet': address1,
+			kovan: address1,
+			mumbai: address1,
+			fuji: address1,
+			goerli: address1,
+			matic: address1
+		},
+		localhost: {
+			default: address1,
+		},
+		dev: {
+			default: address1,
+			localhost: address1,
+		},
 	},
 	networks: {
-		hardhat: {
-			accounts: {
-				mnemonic,
-			},
-			chainId: chainIds.hardhat,
-			allowUnlimitedContractSize: false,
+		mainnet: {
+			url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+			accounts,
+			gasPrice: 120 * 1000000000,
+			chainId: 1,
 		},
-		// avalanche: getChainConfig('avalanche'),
-		// bsc: getChainConfig('bsc'),
-		// mainnet: getChainConfig('eth-mainnet'),
-		// goerli: getChainConfig('eth-goerli'),
-		// optimism: getChainConfig('optimism-mainnet'),
-		'polygon-mainnet': getChainConfig('polygon-mainnet'),
-		'polygon-mumbai': getChainConfig('polygon-mumbai'),
-		// sepolia: getChainConfig('sepolia'),
+		localhost: {
+			url: 'http://localhost:8545',
+			accounts
+		},
+		hardhat: {
+			forking: {
+				enabled: false,
+				url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+			},
+		},
+		ropsten: {
+			url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
+			accounts,
+			chainId: 3,
+			gasPrice: 5000000000,
+			gasMultiplier: 2,
+		},
+		goerli: {
+			url: "https://goerli.blockpi.network/v1/rpc/public", //'https://rpc.ankr.com/eth_goerli', // 
+			// url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
+			accounts: [pk1, pk2],
+			chainId: 5
+		},
+		moonbase: {
+			url: 'https://rpc.testnet.moonbeam.network',
+			accounts,
+			chainId: 1287,
+			gas: 5198000,
+			gasMultiplier: 2,
+		},
+		matic: {
+			url: 'https://rpc-mainnet.maticvigil.com',
+			accounts: [pk1],
+			chainId: 137,
+		},
+		mumbai: {
+			url: 'https://polygon-testnet.public.blastapi.io', //'https://rpc.ankr.com/polygon_mumbai',
+			accounts: [pk1, pk2],
+			chainId: 80001,
+		},
+		bsc: {
+			url: 'https://bsc-dataseed.binance.org',
+			accounts,
+			chainId: 56,
+		},
+		'bsc-testnet': {
+			url: 'https://data-seed-prebsc-2-s3.binance.org:8545',
+			//accounts,
+			chainId: 97,
+			gasMultiplier: 1,
+			accounts: [pk1],
+			gas: 2100000,
+			gasPrice: 10000000000,
+			// blockGasLimit: 900000000,
+		},
 	},
 	paths: {
-		artifacts: './artifacts',
-		cache: './cache',
-		sources: './src',
-		tests: './test',
+		artifacts: 'artifacts',
+		cache: 'cache',
+		sources: 'src',
+		tests: 'test',
+	},
+	preprocess: {
+		eachLine: removeConsoleLog(
+			(bre: any) =>
+				bre.network.name !== 'hardhat' && bre.network.name !== 'localhost'
+		),
 	},
 	solidity: {
-		version: '0.8.17',
-		settings: {
-			// metadata: {
-			// 	// Not including the metadata hash
-			// 	// https://github.com/paulrberg/hardhat-template/issues/31
-			// 	bytecodeHash: 'none',
-			// },
-			// Disable the optimizer when debugging
-			// https://hardhat.org/hardhat-network/#solidity-optimizer-support
-			optimizer: {
-				enabled: true,
-				runs: 800,
+		compilers: [
+			{
+				version: '0.8.18',
+				settings: {
+					optimizer: {
+						enabled: true,
+						runs: 1_000_000,
+					},
+					evmVersion: 'london',
+				},
 			},
-			viaIR: true,
-		},
+			{
+				version: '0.8.17',
+				settings: {
+					viaIR: true,
+					optimizer: {
+						enabled: true,
+						runs: 1_000_000,
+					},
+					evmVersion: 'london',
+				},
+			},
+			{
+				version: '0.7.6',
+				settings: {
+					optimizer: {
+						enabled: true,
+						runs: 800,
+					},
+					metadata: {
+						// do not include the metadata hash, since this is machine dependent
+						// and we want all generated code to be deterministic
+						// https://docs.soliditylang.org/en/v0.7.6/metadata.html
+						bytecodeHash: 'none',
+					},
+				},
+			},
+			{
+				version: '0.8.10',
+			}
+		],
 	},
+	spdxLicenseIdentifier: {
+		overwrite: false,
+		runOnCompile: true,
+	},
+	// tenderly: {
+	// 	project: process.env.TENDERLY_PROJECT!,
+	// 	username: process.env.TENDERLY_USERNAME!,
+	// },
 	typechain: {
 		outDir: 'types',
 		target: 'ethers-v5',
 	},
+	watcher: {
+		compile: {
+			tasks: ['compile'],
+			files: ['./src'],
+			verbose: true,
+		},
+	},
+	contractSizer: {
+		runOnCompile: false,
+		disambiguatePaths: false,
+	},
 };
-
-if (process.env.TESTING) {
-	(config.solidity as MultiSolcUserConfig).compilers = (
-		config.solidity as MultiSolcUserConfig
-	).compilers.map((compiler) => {
-		return {
-			...compiler,
-			outputSelection: {
-				'*': {
-					'*': ['storageLayout'],
-				},
-			},
-		};
-	});
-}
 
 export default config;

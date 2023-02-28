@@ -1,0 +1,3 @@
+[31m[1mUnknown Syntax Error[22m[39m: Not enough positional arguments.
+
+$ yarn patch-commit [-s,--save] <patchFolder>
