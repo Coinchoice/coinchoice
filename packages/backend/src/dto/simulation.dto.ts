@@ -1,6 +1,6 @@
 export class SimulationDto {
-  input: string;
-  token: string;
-  from: string;
-  to: string;
+	input: string;
+	token: string;
+	from: string;
+	to: string;
 }
