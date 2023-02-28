@@ -5,5 +5,6 @@ export type Coin = {
 	name: string;
 	icon: string;
 	networks: NetworkChainIds[];
-	default?: boolean;
+	permit: boolean;
+	default: boolean;
 };

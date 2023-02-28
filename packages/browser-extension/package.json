@@ -20,10 +20,12 @@
 		"@tabler/icons-react": "^2.6.0",
 		"cryptocurrency-icons": "^0.18.1",
 		"framebus": "^5.2.0",
+		"ky": "^0.33.2",
 		"loglevel": "^1.8.1",
 		"plasmo": "0.65.3",
 		"react": "18.2.0",
-		"react-dom": "18.2.0"
+		"react-dom": "18.2.0",
+		"wagmi": "^0.11.7"
 	},
 	"devDependencies": {
 		"@types/chrome": "0.0.210",

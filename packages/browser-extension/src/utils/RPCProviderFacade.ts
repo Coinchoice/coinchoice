@@ -116,6 +116,7 @@ export class RPCProviderFacade {
 	async waitForSignature(
 		request: JsonRpcRequest | { method: any; params: any }
 	) {
+		console.log('wait for signature');
 		console.log(request);
 		// 1. Create a request to backend with request data -- include wallet address for review
 		// 2. Receives repsonse with gas price in the chosen currency
