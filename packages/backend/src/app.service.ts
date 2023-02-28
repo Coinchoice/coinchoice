@@ -38,8 +38,36 @@ export class AppService {
 		);
 	}
 
+	// Check if the user has enough balance to pay the gas fee in the preferred currency
+	async checkBalanceForToken(
+		from: string,
+		to: string,
+		input: string,
+		token: string,
+	) {
+		// Original Transaction
+		const txGasFeeEth = await this.getTenderlySimulationGasFee(from, to, input);
+		this.logger.log(`txGasFeeEth: ${txGasFeeEth}`);
+		const txGasFeeBig = parseEther(txGasFeeEth.toString());
+
+		// Swap Transaction
+		const [tokenPrice, swapGasFeeEth] = await firstValueFrom(
+			await this.getTokenSwapInfo(token, txGasFeeBig.toString()),
+		);
+		this.logger.log(`swapGasFeeEth: ${swapGasFeeEth}`);
+		this.logger.log(`tokenPrice: ${tokenPrice}`);
+
+		const feeEth = swapGasFeeEth + txGasFeeEth;
+		const feeToken = feeEth / tokenPrice; // considering 18 decimals for now
+		this.logger.log(`feeToken: ${feeToken}`);
+
+		const balanceTokenBig = await this.getTokenBalance(token, from); // considering 18 decimals for now
+		this.logger.log(`balanceToken: ${formatUnits(balanceTokenBig)}`);
+
+		return parseInt(formatUnits(balanceTokenBig)) > feeToken;
+	}
+
 	async getEthBalance(address: string): Promise<BigNumber> {
-		//return this.ethersProvider.getNetwork();
 		return this.ethersProvider.getBalance(address);
 	}
 
@@ -52,30 +80,6 @@ export class AppService {
 			ERC20ABI.abi,
 		);
 		return await contract.balanceOf(walletAddress);
-	}
-
-	// Check if the user has enough balance to pay the gas fee in the preferred currency
-	async checkBalanceForToken(
-		from: string,
-		to: string,
-		input: string,
-		token: string,
-	) {
-		// Original Transaction
-		const txGasFeeEth = await this.getTenderlySimulationGasFee(from, to, input);
-		const txGasFeeBig = parseEther(txGasFeeEth.toString());
-
-		// Swap Transaction
-		const [tokenPrice, swapGasFeeEth] = await firstValueFrom(
-			await this.getTokenSwapInfo(token, formatUnits(txGasFeeBig)),
-		);
-
-		const feeEth = swapGasFeeEth + txGasFeeEth;
-		const feeToken = feeEth * tokenPrice; // considering 18 decimals for now
-
-		const balanceTokenBig = await this.getTokenBalance(token, from); // considering 18 decimals for now
-
-		return parseInt(formatUnits(balanceTokenBig)) > feeToken;
 	}
 
 	// https://docs.0x.org/0x-swap-api/api-references/get-swap-v1-price
@@ -96,6 +100,7 @@ export class AppService {
 			)
 			.pipe(
 				catchError(() => {
+					this.logger.log(`0x API Error`);
 					throw new ForbiddenException('API not available');
 				}),
 			);
@@ -127,6 +132,7 @@ export class AppService {
 			)
 			.pipe(
 				catchError(() => {
+					this.logger.log(`Etherscan Gas Oracle Error`);
 					throw new ForbiddenException('API not available');
 				}),
 			);
@@ -170,6 +176,7 @@ export class AppService {
 			)
 			.pipe(
 				catchError(() => {
+					this.logger.log(`Tenderly Simulation Error`);
 					throw new ForbiddenException('API not available');
 				}),
 			);

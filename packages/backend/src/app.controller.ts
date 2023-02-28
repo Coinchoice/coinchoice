@@ -17,9 +17,23 @@ export class AppController {
 		return this.appService.getDummyProducts();
 	}
 
-	@Get('query')
-	getQuery(@Query('version') version): string {
-		return version;
+	@Post('checkbalance')
+	checkBalanceForToken(@Body() simulationDto: SimulationDto) {
+		return this.appService.checkBalanceForToken(
+			simulationDto.from,
+			simulationDto.to,
+			simulationDto.input,
+			simulationDto.token,
+		);
+	}
+
+	@Post('simulation/gasfee')
+	getTenderlySimulationGasFee(@Body() simulationDto: SimulationDto) {
+		return this.appService.getTenderlySimulationGasFee(
+			simulationDto.from,
+			simulationDto.to,
+			simulationDto.input,
+		);
 	}
 
 	@Get('gasprice')
@@ -30,15 +44,6 @@ export class AppController {
 	@Post('simulation/gas')
 	getTenderlySimulation(@Body() simulationDto: SimulationDto) {
 		return this.appService.getTenderlySimulation(
-			simulationDto.from,
-			simulationDto.to,
-			simulationDto.input,
-		);
-	}
-
-	@Post('simulation/gasfee')
-	getTenderlySimulationGasFee(@Body() simulationDto: SimulationDto) {
-		return this.appService.getTenderlySimulationGasFee(
 			simulationDto.from,
 			simulationDto.to,
 			simulationDto.input,
