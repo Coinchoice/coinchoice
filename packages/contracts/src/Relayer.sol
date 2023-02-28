@@ -4,13 +4,11 @@ pragma solidity ^0.8.17;
 
 import {IERC20Permit} from "./openzeppelin/token/ERC20/extensions/IERC20Permit.sol";
 import {IERC20} from "./openzeppelin/interfaces/IERC20.sol";
+import {Ownable} from "./openzeppelin/access/Ownable.sol";
 
 // Relayer that takes funds form user with sig.
-contract Relayer {
+contract Relayer is Ownable {
     bool private _reentrancyGuard;
-    // The canonical permit2 contract.
-    // User -> token -> deposit balance
-    mapping(address => mapping(address => uint256)) public tokenBalancesByUser;
 
     struct PermitParams {
         address owner;
@@ -33,26 +31,90 @@ contract Relayer {
     }
 
     // Deposit some amount of an ERC20 token into this contract
-       function depositERC20(
+    function depositERC20(
         address user,
         address token,
         uint256 amount,
         PermitParams calldata permit
     ) external nonReentrant {
-        // Credit the caller.
-        tokenBalancesByUser[msg.sender][token] += amount;
-
-        IERC20Permit(token).permit(permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, permit.s);
+        IERC20Permit(token).permit(
+            permit.owner,
+            permit.spender,
+            permit.value,
+            permit.deadline,
+            permit.v,
+            permit.r,
+            permit.s
+        );
 
         // Transfer tokens from the caller to ourselves.
         IERC20(address(token)).transferFrom(user, address(this), amount);
     }
 
+    function depositAndSwapToETH(
+        address user,
+        address token,
+        uint256 amount,
+        PermitParams calldata permit,
+        address to,
+        bytes calldata swapCall
+    ) external nonReentrant {
+        IERC20Permit(token).permit(
+            permit.owner,
+            permit.spender,
+            permit.value,
+            permit.deadline,
+            permit.v,
+            permit.r,
+            permit.s
+        );
+
+        // Transfer tokens from the caller to ourselves.
+        IERC20(address(token)).transferFrom(user, address(this), amount);
+
+        // approve spending from relayer
+        IERC20(address(token)).approve(to, type(uint256).max);
+
+        // call 0x swap
+        unsafeCall(to, swapCall);
+    }
+
+    function swap0x(
+        address token,
+        address to,
+        bytes calldata swapCall
+    ) external nonReentrant onlyOwner {
+        // approve spending from relayer
+        IERC20(address(token)).approve(to, type(uint256).max);
+
+        // call 0x swap
+        unsafeCall(to, swapCall);
+    }
+
+    function unsafeGeneralCall(address to, bytes calldata swapCall) external nonReentrant onlyOwner {
+        unsafeCall(to, swapCall);
+    }
+
     // Return ERC20 tokens deposited by the caller.
-    function withdrawERC20(address token, uint256 amount) external nonReentrant {
-        tokenBalancesByUser[msg.sender][token] -= amount;
-        // TODO: In production, use an ERC20 compatibility library to
-        // execute thie transfer to support non-compliant tokens.
-        IERC20(token).transfer(msg.sender, amount);
+    function unsafeCall(address to, bytes calldata data) internal returns (bytes memory res) {
+        bool success;
+        (success, res) = to.call(data);
+        if (success == false) {
+            assembly {
+                revert(add(res, 32), mload(res))
+            }
+        }
+    }
+
+    function relayApprove(IERC20 token, address spender) external onlyOwner {
+        token.approve(spender, type(uint256).max);
+    }
+
+    function relaySwipe(IERC20 token) external onlyOwner {
+        token.transfer(msg.sender, token.balanceOf(address(this)));
+    }
+
+    function relaySwipeETH() external onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
     }
 }

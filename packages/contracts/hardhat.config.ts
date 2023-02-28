@@ -32,17 +32,10 @@ const accounts = {
 };
 
 const pk1: string = process.env.PK_1 || '';
-const pk2: string = process.env.PK_2 || '';
-const pk3: string = process.env.PK_3 || '';
-const pk4: string = process.env.PK_3 || '';
-const pk5: string = process.env.PK_5 || '';
+
 
 // fetch wallet addresses from env
 const address1: string = process.env.ADDRESS_1 || '';
-const address2: string = process.env.ADDRESS_2 || '';
-const address3: string = process.env.ADDRESS_3 || '';
-const address4: string = process.env.ADDRESS_3 || '';
-const address5: string = process.env.ADDRESS_5 || '';
 
 const config: HardhatUserConfig = {
 	abiExporter: {
@@ -54,17 +47,7 @@ const config: HardhatUserConfig = {
 	},
 	defaultNetwork: 'hardhat',
 	etherscan: {
-		apiKey: 
-		{
-			arbitrumOne: process.env.ARBISCAN_API_KEY || '',
-			avalanche: process.env.SNOWTRACE_API_KEY || '',
-			bsc: process.env.BSCSCAN_API_KEY || '',
-			mainnet: process.env.ETHERSCAN_API_KEY || '',
-			optimisticEthereum: process.env.OPTIMISM_API_KEY || '',
-			polygon: process.env.POLYGONSCAN_API_KEY || '',
-			polygonMumbai: process.env.POLYGONSCAN_API_KEY || '',
-			sepolia: process.env.ETHERSCAN_API_KEY || '',
-		},
+		apiKey: ''
 	},
 	gasReporter: {
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
@@ -78,25 +61,25 @@ const config: HardhatUserConfig = {
 	namedAccounts: {
 		operator: address1,
 		deployer: {
-			default: address2,
-			localhost: address3,
-			ropsten: address2,
-			'bsc-testnet': address2,
-			kovan: address2,
-			mumbai: address2,
-			fuji: address2,
-			goerli: address2,
-			matic: address5
+			default: address1,
+			localhost: address1,
+			ropsten: address1,
+			'bsc-testnet': address1,
+			kovan: address1,
+			mumbai: address1,
+			fuji: address1,
+			goerli: address1,
+			matic: address1
 		},
 		localhost: {
-			default: address3,
+			default: address1,
 		},
 		user: {
-			default: address4,
+			default: address1,
 		},
 		dev: {
-			default: address2,
-			localhost: address3,
+			default: address1,
+			localhost: address1,
 		},
 	},
 	networks: {
@@ -124,12 +107,10 @@ const config: HardhatUserConfig = {
 			gasMultiplier: 2,
 		},
 		goerli: {
-			url: 'https://rpc.ankr.com/eth_goerli', // 
+			url: "https://goerli.blockpi.network/v1/rpc/public", //'https://rpc.ankr.com/eth_goerli', // 
 			// url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
 			accounts: [pk1],
-			chainId: 5,
-			// gasPrice: 5000000000,
-			// gasMultiplier: 2,
+			chainId: 5
 		},
 		moonbase: {
 			url: 'https://rpc.testnet.moonbeam.network',
@@ -140,14 +121,13 @@ const config: HardhatUserConfig = {
 		},
 		matic: {
 			url: 'https://rpc-mainnet.maticvigil.com',
-			accounts: [pk5],
+			accounts: [pk1],
 			chainId: 137,
 		},
 		mumbai: {
-			url: 'https://rpc-mumbai.maticvigil.com/',
-			accounts: [pk3, pk2],
+			url: 'https://polygon-testnet.public.blastapi.io', //'https://rpc.ankr.com/polygon_mumbai',
+			accounts: [pk1],
 			chainId: 80001,
-			gasMultiplier: 2,
 		},
 		bsc: {
 			url: 'https://bsc-dataseed.binance.org',
@@ -159,7 +139,7 @@ const config: HardhatUserConfig = {
 			//accounts,
 			chainId: 97,
 			gasMultiplier: 1,
-			accounts: [pk1, pk2],
+			accounts: [pk1],
 			gas: 2100000,
 			gasPrice: 10000000000,
 			// blockGasLimit: 900000000,
@@ -224,10 +204,10 @@ const config: HardhatUserConfig = {
 		overwrite: false,
 		runOnCompile: true,
 	},
-	tenderly: {
-		project: process.env.TENDERLY_PROJECT!,
-		username: process.env.TENDERLY_USERNAME!,
-	},
+	// tenderly: {
+	// 	project: process.env.TENDERLY_PROJECT!,
+	// 	username: process.env.TENDERLY_USERNAME!,
+	// },
 	typechain: {
 		outDir: 'types',
 		target: 'ethers-v5',

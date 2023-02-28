@@ -1,9 +1,9 @@
 import hre from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ethers, network } from 'hardhat'
-import { ERC20MockWithPermit, ERC20MockWithPermit__factory, Relayer, Relayer__factory } from '../types';
+import { ERC20MockWithPermit, ERC20MockWithPermit__factory, Relayer, Relayer__factory, TestCallee__factory } from '../types';
 
-import { parseEther } from 'ethers/lib/utils';
+import { AbiCoder, parseEther } from 'ethers/lib/utils';
 import { MaxUint256, PermitSingle } from '@uniswap/permit2-sdk';
 import { TypedDataDomain } from 'ethers';
 import { produceSig } from './permitUtils';
@@ -99,6 +99,20 @@ describe('relayer', async () => {
         const bal = await token.balanceOf(relayer.address)
         expect(bal.toString()).to.equal('10')
         expect(balUserBefore.sub(balUserAfter).toString()).to.equal('10')
+    })
+
+
+    it('allows unsafe call', async () => {
+        const testCallee = await new TestCallee__factory(deployer).deploy()
+
+        let call = testCallee.interface.encodeFunctionData('testCall1', [true])
+
+        await relayer.connect(deployer).unsafeGeneralCall(testCallee.address, call)
+
+
+        call = testCallee.interface.encodeFunctionData('testCall2', [true])
+
+        await relayer.connect(deployer).unsafeGeneralCall(testCallee.address, call)
     })
 
 })
