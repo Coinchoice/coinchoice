@@ -1,15 +1,17 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-vendor
-.pnp
-.pnp.js
-.yarn/*
-.turbo
-.turbo/**
+**/vendor
+**/.pnp
+**/.pnp.js
+**/.yarn/*
+**/.turbo
+**/.turbo/**
+**/node_modules
 node_modules
-jspm_packages
-flow-typed
+/node_modules/**
+**/jspm_packages
+**/flow-typed
 
 # testing
 logs
@@ -28,9 +30,6 @@ dist
 # misc
 .DS_Store
 package.json.lerna_backup
-rh_client.toml
-rathole.toml
-.campaigns
 keyfile.json
 cache
 package-lock.json
