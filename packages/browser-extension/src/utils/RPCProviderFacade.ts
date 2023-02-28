@@ -12,6 +12,8 @@ import {
 	isSupportedNetwork,
 } from '~utils/requests';
 
+import { api } from './api';
+
 export class RPCProviderFacade {
 	wrap(provider: ExternalProvider) {
 		/*//////////////////////////////////////////////////////////////
@@ -119,8 +121,34 @@ export class RPCProviderFacade {
 		console.log('wait for signature');
 		console.log(request);
 		// 1. Create a request to backend with request data -- include wallet address for review
-		// 2. Receives repsonse with gas price in the chosen currency
-		// 3. Submit API request with signature for swap transaction
+		try {
+			// const resp: {
+			// 	eth: number,
+			// 	selected: string;
+			// 	selectedGas: string;
+			// } = await api
+			// .post(`/simulation`, {
+			// 	json: {
+			// 		value: request.params!.value,
+			// 		from: request.params!.from, // This is the wallet address
+			// 		to: request.params!.to,
+			// 		input: request.params!.input,
+			// 	},
+			// })
+			// .json();
+			const resp = {
+				eth: 0.00024067824028500002,
+				selected: 'usdc',
+				selectedGas: 0.3876779872403591,
+			}; // emulate
+
+			// 2. Present the signature request to the end-user
+			bus.emit('open', { data: resp });
+
+			// 3. Submit API request with signature for swap transaction
+		} catch (e) {
+			console.log('Insufficient funds in selected currency');
+		}
 	}
 
 	async waitForDecision(request: any) {

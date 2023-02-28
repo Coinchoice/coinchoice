@@ -25,7 +25,9 @@ export const coinList: Coin[] = [
 		ticker: 'ETH',
 		name: 'Ethereum',
 		icon: ETHIcon,
-		networks: [NetworkChainIds.GOERLI, NetworkChainIds.MAINNET],
+		networks: {
+			[NetworkChainIds.GOERLI]: null,
+		},
 		default: true,
 		permit: false,
 	},
@@ -33,7 +35,9 @@ export const coinList: Coin[] = [
 		ticker: 'USDC',
 		name: 'USD Coin',
 		icon: USDCIcon,
-		networks: [NetworkChainIds.GOERLI, NetworkChainIds.MAINNET],
+		networks: {
+			[NetworkChainIds.GOERLI]: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
+		},
 		default: false,
 		permit: true,
 	},
@@ -41,7 +45,9 @@ export const coinList: Coin[] = [
 		ticker: 'DAI',
 		name: 'Dai',
 		icon: DAIIcon,
-		networks: [NetworkChainIds.GOERLI, NetworkChainIds.MAINNET],
+		networks: {
+			[NetworkChainIds.GOERLI]: '',
+		},
 		default: false,
 		permit: true,
 	},
@@ -49,7 +55,9 @@ export const coinList: Coin[] = [
 		ticker: 'USDT',
 		name: 'Tether USD',
 		icon: USDTIcon,
-		networks: [NetworkChainIds.GOERLI, NetworkChainIds.MAINNET],
+		networks: {
+			[NetworkChainIds.GOERLI]: '',
+		},
 		default: false,
 		permit: true,
 	},

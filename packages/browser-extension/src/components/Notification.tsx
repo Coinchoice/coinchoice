@@ -8,8 +8,10 @@ const Notification = () => {
 	// true
 
 	useEffect(() => {
-		bus.on('open', () => {
+		bus.on('open', ({ data }) => {
 			setOpened(true);
+
+			console.log(data);
 		});
 	}, []);
 
