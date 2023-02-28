@@ -48,6 +48,7 @@ async function main() {
     const gasEst = await relayerContract.estimateGas.relaySwapToETH(
         user.address,
         usdc,
+        amount,
         {
             owner: user.address,
             spender: relayerContract.address,
@@ -66,6 +67,7 @@ async function main() {
     const tx = await relayerContract.relaySwapToETH(
         user.address,
         usdc,
+        amount,
         {
             owner: user.address,
             spender: relayerContract.address,

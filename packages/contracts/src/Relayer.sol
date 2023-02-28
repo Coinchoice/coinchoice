@@ -134,9 +134,21 @@ contract Relayer is Ownable {
         IERC20(address(token)).transferFrom(user, address(this), amount);
     }
 
+    /**
+     * @dev Consumes signature from user, swaps to WETH, wraps to ETH and sends funds
+     * to the user
+     * @param user the user to swap on behalf of
+     * @param token the token that the user wants to trade in
+     * @param swapAmount the amount to be swaped provided by a routing api
+     * @param permit the user's permit to swap without approval
+     * @param swapSpender the address that the reayer will have to approve
+     * @param to swap target
+     * @param swapCall swap calldata
+     */
     function relaySwapToETH(
         address user,
         address token,
+        uint256 swapAmount,
         PermitParams calldata permit,
         address swapSpender,
         address to,
@@ -154,7 +166,7 @@ contract Relayer is Ownable {
         );
 
         // Transfer tokens from the caller to ourselves.
-        IERC20(token).transferFrom(user, address(this), permit.value);
+        IERC20(token).transferFrom(user, address(this), swapAmount);
 
         // approve spending from relayer
         IERC20(token).approve(swapSpender, type(uint256).max);

@@ -4,7 +4,7 @@
 export const addresses = {
     relayer: {
         5: '0x7a2516452498381FE97b5ec430095F1aE389bb1e',
-        80001: '0x46de18d6960E0a2CaC8bE2765Ea07E0b8d3e619F'
+        80001: '0x7E64d52D285E47b088f7b1df2438C1782099101a'
     },
     // not permit compatible
     link: {
