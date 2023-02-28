@@ -1,0 +1,1 @@
+web: cd packages/backend && npm run deploy
