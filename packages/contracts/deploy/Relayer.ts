@@ -11,7 +11,7 @@ async function main() {
     const chainId = await operator.getChainId();
 
     console.log("operator", operator.address)
-    const relayer = await new Relayer__factory(operator).deploy(addresses.weth[chainId])
+    const relayer = await new Relayer__factory(operator).deploy(_addresses.weth[chainId])
     console.log("relayer", relayer.address)
 }
 
