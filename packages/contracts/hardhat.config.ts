@@ -32,10 +32,11 @@ const accounts = {
 };
 
 const pk1: string = process.env.PK_1 || '';
-
+const pk2: string = process.env.PK_2 || '';
 
 // fetch wallet addresses from env
 const address1: string = process.env.ADDRESS_1 || '';
+const address2: string = process.env.ADDRESS_2 || ''
 
 const config: HardhatUserConfig = {
 	abiExporter: {
@@ -60,6 +61,7 @@ const config: HardhatUserConfig = {
 	},
 	namedAccounts: {
 		operator: address1,
+		user: address2,
 		deployer: {
 			default: address1,
 			localhost: address1,
@@ -72,9 +74,6 @@ const config: HardhatUserConfig = {
 			matic: address1
 		},
 		localhost: {
-			default: address1,
-		},
-		user: {
 			default: address1,
 		},
 		dev: {
@@ -109,7 +108,7 @@ const config: HardhatUserConfig = {
 		goerli: {
 			url: "https://goerli.blockpi.network/v1/rpc/public", //'https://rpc.ankr.com/eth_goerli', // 
 			// url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
-			accounts: [pk1],
+			accounts: [pk1, pk2],
 			chainId: 5
 		},
 		moonbase: {
@@ -126,7 +125,7 @@ const config: HardhatUserConfig = {
 		},
 		mumbai: {
 			url: 'https://polygon-testnet.public.blastapi.io', //'https://rpc.ankr.com/polygon_mumbai',
-			accounts: [pk1],
+			accounts: [pk1, pk2],
 			chainId: 80001,
 		},
 		bsc: {

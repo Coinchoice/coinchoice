@@ -1,7 +1,6 @@
-import { parseUnits } from "ethers/lib/utils";
 import { ethers } from "hardhat";
-import { ERC20__factory } from "../types";
 import { addresses } from "./addresses";
+
 
 const _addresses = addresses as any
 
@@ -10,15 +9,16 @@ async function main() {
     const operator = accounts[0]
     const chainId = await operator.getChainId();
 
+    console.log("operator", operator.address, "user", accounts[1].address)
+
     const testLINK = _addresses.link[chainId]
     const relayerAddress = _addresses.relayer[chainId]
+    const buyToken = _addresses.weth[chainId]
+    const fetchData = await fetch(
+        `https://${chainId === 5 ? 'goerli' : 'mumbai'}.api.0x.org/swap/v1/quote?buyToken=${buyToken}&sellToken=${testLINK}&sellAmount=100000000000000000`
+    ).then((response) => response.json())
+    console.log('data', fetchData)
 
-    console.log("operator", operator.address)
-    const linkContract = await new ERC20__factory(operator).attach(testLINK)
-    console.log("token", linkContract.address)
-    const tx = await linkContract.transfer(relayerAddress, parseUnits('1', 18))
-    await tx.wait()
-    console.log("completed")
 }
 
 main()
