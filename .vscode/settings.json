@@ -1,7 +1,7 @@
 {
 	"eslint.workingDirectories": [
 		"./packages/contracts",
-		"./packages/ext",
+		"./packages/browser-extension",
 		"./packages/backend"
 	],
 	"eslint.validate": [
