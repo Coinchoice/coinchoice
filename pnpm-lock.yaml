@@ -58,12 +58,15 @@ importers:
     specifiers:
       '@mantine/core': ^5.10.4
       '@metamask/detect-provider': ^2.0.0
+      '@tabler/icons': ^2.6.0
+      '@tabler/icons-react': ^2.6.0
       '@types/chrome': 0.0.210
       '@types/node': 18.11.18
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
       "config\n": |
         link:@plasmo/config
+      cryptocurrency-icons: ^0.18.1
       del-cli: ^5.0.0
       framebus: ^5.2.0
       loglevel: ^1.8.1
@@ -76,6 +79,9 @@ importers:
     dependencies:
       '@mantine/core': 5.10.4_g2dstbwvjxxuesjoyrnpq2ho5q
       '@metamask/detect-provider': 2.0.0
+      '@tabler/icons': 2.6.0
+      '@tabler/icons-react': 2.6.0_react@18.2.0
+      cryptocurrency-icons: 0.18.1
       framebus: 5.2.0
       loglevel: 1.8.1
       plasmo: 0.65.3_biqbaboplfbrettd7655fr4n2y
@@ -3656,6 +3662,20 @@ packages:
       defer-to-connect: 2.0.1
     dev: false
 
+  /@tabler/icons-react/2.6.0_react@18.2.0:
+    resolution: {integrity: sha512-0JncH0yPC1zXtSHhsAqqCuQQFglQk1zNDdHoTubpKNUbwJGhP8ET2LvidhoJgVQnMjC0bhpvkJp450klvZjQVg==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@tabler/icons': 2.6.0
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: false
+
+  /@tabler/icons/2.6.0:
+    resolution: {integrity: sha512-rflJyQSsu2iV6QgrA7ZdGaikSTdIVpXlem0jBIcx18OKg0ZJmLojmrhNo7DpOW7bCT4Hr2r6jcpq8uSYrinqZw==}
+    dev: false
+
   /@trivago/prettier-plugin-sort-imports/4.1.1_prettier@2.8.4:
     resolution: {integrity: sha512-dQ2r2uzNr1x6pJsuh/8x0IRA3CBUB+pWEW3J/7N98axqt7SQSm+2fy0FLNXvXGg77xEDC7KHxJlHfLYyi7PDcw==}
     peerDependencies:
@@ -5419,6 +5439,10 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       type-fest: 1.4.0
+    dev: false
+
+  /cryptocurrency-icons/0.18.1:
+    resolution: {integrity: sha512-dvR5O8JOmav3559Yb0Igpkia+3vpt/aeNvMu5ZIVUG2Bzpq9wNcOJRIQas49XJrPjtZ98GAEn3aDQO+w7uhS2w==}
     dev: false
 
   /css-select/4.3.0:
@@ -10196,6 +10220,14 @@ packages:
     dependencies:
       asap: 2.0.6
     dev: true
+
+  /prop-types/15.8.1:
+    resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      react-is: 16.13.1
+    dev: false
 
   /proper-lockfile/4.1.2:
     resolution: {integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==}

@@ -29,6 +29,7 @@ export interface JsonRpcResponse {
 	result?: unknown;
 	error?: Error;
 }
+
 export type JsonRpcCallback = (
 	error: Error,
 	response: JsonRpcResponse

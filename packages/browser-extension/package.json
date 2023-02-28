@@ -16,6 +16,9 @@
 	"dependencies": {
 		"@mantine/core": "^5.10.4",
 		"@metamask/detect-provider": "^2.0.0",
+		"@tabler/icons": "^2.6.0",
+		"@tabler/icons-react": "^2.6.0",
+		"cryptocurrency-icons": "^0.18.1",
 		"framebus": "^5.2.0",
 		"loglevel": "^1.8.1",
 		"plasmo": "0.65.3",
