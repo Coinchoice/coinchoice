@@ -9,11 +9,15 @@ import {
 	Flex,
 	Image,
 } from '@mantine/core';
-import { IconCurrencyCent, IconArrowLeft } from '@tabler/icons-react';
-import { sendToBackground } from '@plasmohq/messaging';
+import {
+	// IconCurrencyCent,
+	IconArrowLeft,
+} from '@tabler/icons-react';
+import { sendToBackground, sendToContentScript } from '@plasmohq/messaging';
 
 import type { Coin } from './types';
 import { coinList } from './utils/constants';
+import LogoWhite from 'data-base64:~assets/LogoWhite.png';
 
 enum Steps {
 	Primary,
@@ -37,6 +41,14 @@ function IndexPopup() {
 			});
 			if (resp.data?.ticker) {
 				setSelectedCoin(resp.data);
+
+				// await sendToContentScript({
+				// 	name: 'coin',
+				// 	body: {
+				// 		type: 'get',
+				// 		data: resp.data,
+				// 	},
+				// });
 			}
 		})();
 	}, []);
@@ -59,11 +71,18 @@ function IndexPopup() {
 				data: coin,
 			},
 		});
+		// await sendToContentScript({
+		// 	name: 'coin',
+		// 	body: {
+		// 		type: 'set',
+		// 		data: coin,
+		// 	},
+		// });
 	}, []);
 
 	return (
 		<MantineProvider>
-			<Container miw={400} mah={600} p={20} sx={() => ({ overflowY: 'auto' })}>
+			<Container miw={380} mah={600} p={10} sx={() => ({ overflowY: 'auto' })}>
 				{step === Steps.Primary && (
 					<Container>
 						<ThemeIcon
@@ -72,7 +91,8 @@ function IndexPopup() {
 							gradient={{ from: 'indigo', to: 'cyan' }}
 							mb={10}
 						>
-							<IconCurrencyCent size={24} />
+							{/* <IconCurrencyCent size={24} /> */}
+							<Image src={LogoWhite} maw={28} />
 						</ThemeIcon>
 						<Title size="h2">Welcome to CoinChoice!</Title>
 						<Text fz="xl" mb={40}>
@@ -105,6 +125,7 @@ function IndexPopup() {
 							sx={() => ({
 								width: '100%',
 							})}
+							mb={10}
 						>
 							Choose Gas Coin
 						</Button>

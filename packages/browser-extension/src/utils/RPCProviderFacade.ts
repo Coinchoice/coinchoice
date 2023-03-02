@@ -1,3 +1,4 @@
+import { sendToBackground } from '@plasmohq/messaging';
 import {
 	ExternalProvider,
 	JsonRpcCallback,
@@ -11,8 +12,6 @@ import {
 	isJsonRpcRequest,
 	isSupportedNetwork,
 } from '~utils/requests';
-
-import { api } from './api';
 
 export class RPCProviderFacade {
 	wrap(provider: ExternalProvider) {
@@ -122,57 +121,46 @@ export class RPCProviderFacade {
 		console.log(request);
 		// 1. Create a request to backend with request data -- include wallet address for review
 		try {
-			// const resp: {
-			// 	eth: number,
-			// 	selected: string;
-			// 	selectedGas: string;
-			// } = await api
-			// .post(`/simulation`, {
-			// 	json: {
-			// 		value: request.params!.value,
-			// 		from: request.params!.from, // This is the wallet address
-			// 		to: request.params!.to,
-			// 		input: request.params!.input,
+			// const simResp = await sendToBackground({
+			// 	name: 'wallet',
+			// 	body: {
+			// 		type: 'tx',
+			// 		data: {
+			// 			tx: request,
+			// 		},
 			// 	},
-			// })
-			// .json();
+			// });
+
 			const resp = {
-				eth: 0.00024067824028500002,
-				selected: 'usdc',
-				selectedGas: 0.3876779872403591,
+				wallet: {
+					address: '0x1203812903',
+					network: 5,
+				},
+				swap: {
+					feeEth: 0.00018012,
+					feeToken: 0.000034,
+					price: 0.19,
+					token: 'USDC',
+					balance: '1',
+					chainId: 5,
+				},
 			}; // emulate
 
 			// 2. Present the signature request to the end-user
 			bus.emit('open', { data: resp });
 
 			// 3. Submit API request with signature for swap transaction
+			// const resp = await sendToBackground({
+			// 	name: 'wallet',
+			// 	body: {
+			// 		type: 'tx-submit',
+			// 		data: {
+			// 			tx: request
+			// 		}
+			// 	},
+			// });
 		} catch (e) {
 			console.log('Insufficient funds in selected currency');
 		}
-	}
-
-	async waitForDecision(request: any) {
-		// const rpcRequestId = uuidv4();
-		const rpcRequestId = 'DUMMY';
-		const event = new CustomEvent('COINCHOICE', {
-			detail: {
-				rpcRequestId,
-				...request,
-				userAddress: window.ethereum.selectedAddress,
-			},
-		});
-		window.dispatchEvent(event);
-		return new Promise((res, rej) => {
-			window.addEventListener('message', (event) => {
-				if (
-					event.data.origin === 'coinchoice' &&
-					event.data.rpcRequestId === rpcRequestId
-				) {
-					event.data.approval
-						? res(undefined)
-						: rej({ message: 'Rejected in CoinChoice' });
-				}
-			});
-		});
 	}
 }

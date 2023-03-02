@@ -1,4 +1,4 @@
-import { ethers, Wallet } from 'ethers';
+import { ethers, Signer, Wallet } from 'ethers';
 
 import ERC20 from '../abi/erc20.json';
 import type { ERC20MockWithPermit } from '../types/ERC20MockWithPermit';
@@ -19,7 +19,7 @@ const TOKEN_DICT: { [id: string]: { [chainId: number]: string } } = {
 
 export const getToken = (
 	provider: any,
-	signer: Wallet,
+	signer: Signer | Wallet,
 	chainId: number,
 	id: string
 ) => {

@@ -64,3 +64,4 @@ export const coinList: Coin[] = [
 ];
 
 export const storageKeyCoin = 'coinchoice_storage__coin';
+export const storageKeyWallet = 'coinchoice_storage__wallet';

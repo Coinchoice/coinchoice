@@ -1,7 +1,11 @@
-import type { BigNumber, Signer, Wallet } from 'ethers';
+import type {
+	// BigNumber,
+	Signer,
+	Wallet,
+} from 'ethers';
 import { ethers } from 'ethers';
-import { splitSignature } from 'ethers/lib/utils';
 
+// import { splitSignature } from 'ethers/lib/utils';
 import type { ERC20MockWithPermit } from '../types/ERC20MockWithPermit';
 
 const EIP712_DOMAIN_TYPE = [
@@ -72,7 +76,7 @@ const structure = (
 	};
 };
 
-const permitVersion = '1';
+// const permitVersion = '1';
 
 const buildData = async (
 	amount: string,
