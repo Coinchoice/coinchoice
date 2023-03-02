@@ -11,7 +11,7 @@ import { WalletService } from './wallet/wallet.service';
 import { Observable } from 'rxjs';
 import { SimulationDto } from './dto/simulation.dto';
 import { ApproveDto } from './dto/approve.dto';
-import { TransactionDto, TransactionTestDto } from './dto/transaction.dto';
+import { TransactionDto } from './dto/transaction.dto';
 
 @Controller()
 export class AppController {
@@ -31,25 +31,24 @@ export class AppController {
 	}
 
 	@Post('transactions/test')
-	testMetaTransaction(@Body() transactionTestDto: TransactionTestDto) {
-		return this.appService.test_executeMetaTransaction(
-			transactionTestDto.swapSpender,
-			transactionTestDto.to,
-			transactionTestDto.swapCall,
-		);
+	testMetaTransaction() {
+		return this.appService.test_executeMetaTransaction();
 	}
 
-	@Post('transactions/relayswap')
-	executeMetaTransaction(@Body() transactionDto: TransactionDto) {
-		return this.appService.executeMetaTransaction(
-			transactionDto.user,
-			transactionDto.token,
-			transactionDto.swapAmount,
-			transactionDto.permit,
-			transactionDto.swapSpender,
-			transactionDto.to,
-			transactionDto.swapCall,
-		);
+	@Post('transactions/relayed')
+	async executeMetaTransaction(@Body() transactionDto: TransactionDto) {
+		const wallet = await this.walletService.findOne(transactionDto.user);
+		if (wallet)
+			return this.appService.executeMetaTransaction(
+				transactionDto.user,
+				wallet.token,
+				transactionDto.amount,
+				transactionDto.permit,
+				transactionDto.spender,
+				transactionDto.to,
+				transactionDto.data,
+			);
+		else throw new NotFoundException('Wallet not found');
 	}
 
 	@Post('transactions/approve')
@@ -101,8 +100,8 @@ export class AppController {
 	}
 
 	@Get('tokenprice')
-	getTokenSwapInfo(@Query('token') token, @Query('amount') amount) {
-		return this.appService.getTokenSwapInfo(token, amount);
+	getTokenSwapQuote(@Query('token') token, @Query('amount') amount) {
+		return this.appService.getTokenSwapQuote(token, amount);
 	}
 
 	@Get('ethbalance')

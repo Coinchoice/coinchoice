@@ -1,6 +1,4 @@
-import { splitSignature } from "ethers/lib/utils"
-import { BigNumber, Signer, Wallet } from "ethers";
-import { ethers } from "ethers";
+import { ethers, Wallet } from "ethers";
 import { ERC20MockWithPermit } from "../../types/ERC20MockWithPermit";
 
 const EIP712_DOMAIN_TYPE = [
@@ -81,9 +79,7 @@ export const Sign = async (
     spender: string,
     deadline: string,
 ) => {
-    console.log("build data params", amount, userAddress, spender, chainId, token, deadline)
     const data = await buildData(amount, userAddress, spender, chainId, token, deadline);
-    console.log("data", data)
     const digest = await user._signTypedData(data.domain, data.types, data.message);
     const { v, r, s } = ethers.utils.splitSignature(digest);
     return { signature: digest, split: { v, r, s } }

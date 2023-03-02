@@ -62,13 +62,13 @@ export class AppService {
 	}
 
 	async executeMetaTransaction(
-		user: string,
+		userAddress: string,
 		token: string,
-		swapAmount: string,
+		amount: string,
 		permit: PermitDto,
-		swapSpender: string,
+		spender: string, //allowanceTarget
 		to: string,
-		swapCall: string,
+		data: string,
 	): Promise<any> {
 		const contract = new Contract(
 			process.env.RELAYER_CONTRACT_ADDRESS,
@@ -76,37 +76,35 @@ export class AppService {
 			this.getSigner(),
 		) as Relayer;
 
+		console.log('inputs:');
+		console.log(userAddress, token, amount, permit, spender, to, data);
+
 		const tx = await contract.relaySwapToETH(
-			user,
+			userAddress,
 			token,
-			swapAmount,
+			amount,
 			permit,
-			swapSpender,
+			spender,
 			to,
-			swapCall,
+			data,
 		);
 		console.log('tx:', tx);
 		return tx;
 	}
 
-	async test_executeMetaTransaction(
-		swapSpender: string,
-		to: string,
-		swapCall: string,
-	): Promise<any> {
+	async test_executeMetaTransaction(): Promise<any> {
 		const sign_wallet: Wallet = this.ethersSigner.createWallet(
 			process.env.WALLET_PRIVATE_KEY,
 		);
-
 		const signer = this.getSigner();
 		const relayer = new Contract(
 			process.env.RELAYER_CONTRACT_ADDRESS,
 			RELAYERABI.abi,
 			signer,
 		) as Relayer;
-		this.logger.log(`test 2`);
+
 		const signAmount = '1000000000000000'; // in usdc
-		const chainId = 5;
+		const chainId = parseInt(process.env.NETWORK_ID);
 
 		// buy this amount of ether
 		const buyAmount = '100000000000000';
@@ -115,11 +113,7 @@ export class AppService {
 		const token = getToken(signer, chainId, 'USDC');
 
 		const fetchData = await fetch(
-			`https://${
-				chainId === 5 ? 'goerli' : 'mumbai'
-			}.api.0x.org/swap/v1/quote?buyToken=${buyToken}&sellToken=${
-				token.address
-			}&buyAmount=${buyAmount}`,
+			`${process.env.OX_ENDPOINT}/swap/v1/quote?buyToken=${buyToken}&sellToken=${token.address}&buyAmount=${buyAmount}`,
 		).then((response) => response.json());
 
 		const plusMargin = (num: any) => {
@@ -129,7 +123,7 @@ export class AppService {
 		const amount = plusMargin(fetchData.sellAmount);
 
 		const signedParams = await Sign(
-			5,
+			chainId,
 			token,
 			sign_wallet,
 			sign_wallet.address,
@@ -138,25 +132,53 @@ export class AppService {
 			ethers.constants.MaxUint256.toString(),
 		);
 
+		const permit = {
+			value: signAmount,
+			owner: sign_wallet.address,
+			spender: relayer.address,
+			deadline: ethers.constants.MaxUint256.toString(),
+			v: signedParams.split.v,
+			r: signedParams.split.r,
+			s: signedParams.split.s,
+		};
+
+		const data = fetchData.data;
+		const allowanceTarget = fetchData.allowanceTarget;
+		const to = fetchData.to;
+
+		console.log('user:');
+		console.log(sign_wallet.address);
+
+		console.log('token:');
+		console.log(token.address);
+
+		console.log('amount:');
+		console.log(amount);
+
+		console.log('permit:');
+		console.log(permit);
+
+		console.log('allowanceTarget:');
+		console.log(allowanceTarget);
+
+		console.log('to:');
+		console.log(to);
+
+		console.log('data:');
+		console.log(data);
+
+		//return true;
+
 		const tx = await relayer.relaySwapToETH(
 			sign_wallet.address,
 			token.address,
 			amount,
-			{
-				value: signAmount,
-				owner: sign_wallet.address,
-				spender: relayer.address,
-				deadline: ethers.constants.MaxUint256.toString(),
-				v: signedParams.split.v,
-				r: signedParams.split.r,
-				s: signedParams.split.s,
-			},
-			fetchData.allowanceTarget,
-			fetchData.to,
-			fetchData.data,
+			permit,
+			allowanceTarget,
+			to,
+			data,
 		);
 		console.log('tx:', tx);
-		await tx.wait();
 		return tx;
 	}
 
@@ -210,7 +232,7 @@ export class AppService {
 
 		// Swap Transaction
 		const [tokenPrice, swapGasFeeEth] = await firstValueFrom(
-			await this.getTokenSwapInfo(token, txGasFeeBig.toString()),
+			await this.getTokenSwapQuote(token, txGasFeeBig.toString()),
 		);
 		this.logger.log(`swapGasFeeEth: ${swapGasFeeEth}`);
 		this.logger.log(`tokenPrice: ${tokenPrice}`);
@@ -250,11 +272,14 @@ export class AppService {
 
 	// https://docs.0x.org/0x-swap-api/api-references/get-swap-v1-price
 	// Netwok: Configurable via .env file (OX_ENDPOINT)
-	async getTokenSwapInfo(token: string, amount: string) {
-		this.logger.log(`0x Swap Price for token ${token} and amount ${amount}`);
+	async getTokenSwapQuote(sellToken: string, buyAmount: string) {
+		const buyToken = TOKEN_DICT.WETH[process.env.NETWORK_ID];
+		this.logger.log(
+			`0x Swap Quote: ${buyToken} for token ${sellToken} and amount ${buyAmount}`,
+		);
 		return this.httpService
 			.get(
-				`${process.env.OX_ENDPOINT}/swap/v1/price?buyToken=ETH&sellToken=${token}&sellAmount=${amount}`,
+				`${process.env.OX_ENDPOINT}/swap/v1/quote?buyToken=${buyToken}&sellToken=${sellToken}&buyAmount=${buyAmount}`,
 			)
 			.pipe(
 				map((result) => {

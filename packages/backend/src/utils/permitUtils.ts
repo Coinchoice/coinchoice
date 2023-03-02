@@ -89,7 +89,6 @@ export const Sign = async (
 	spender: string,
 	deadline: string,
 ) => {
-	console.log('build data params', amount, spender, chainId, token, deadline);
 	const data = await buildData(
 		amount,
 		address,
