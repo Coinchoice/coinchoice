@@ -1,3 +1,3 @@
 import Framebus from 'framebus';
 
-export const bus = new Framebus();
+export const bus = new Framebus({ channel: 'COINCHOICE' });

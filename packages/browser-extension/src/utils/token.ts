@@ -1,5 +1,4 @@
 import { ethers, Wallet } from 'ethers';
-import { useProvider } from 'wagmi';
 
 import ERC20 from '../abi/erc20.json';
 import type { ERC20MockWithPermit } from '../types/ERC20MockWithPermit';
@@ -18,8 +17,12 @@ const TOKEN_DICT: { [id: string]: { [chainId: number]: string } } = {
 	DAI: {},
 };
 
-export const useToken = (signer: Wallet, chainId: number, id: string) => {
-	const provider = useProvider({ chainId });
+export const getToken = (
+	provider: any,
+	signer: Wallet,
+	chainId: number,
+	id: string
+) => {
 	try {
 		return new ethers.Contract(
 			TOKEN_DICT[id][chainId],

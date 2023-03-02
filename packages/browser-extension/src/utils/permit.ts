@@ -104,7 +104,7 @@ export const Sign = async (
 	chainId: number,
 	userAddress: string,
 	token: ERC20MockWithPermit,
-	user: Wallet,
+	user: Signer | Wallet,
 	amount: string,
 	spender: string,
 	deadline: string
