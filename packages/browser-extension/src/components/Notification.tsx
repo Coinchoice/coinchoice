@@ -9,36 +9,10 @@ import {
 	Text,
 } from '@mantine/core';
 
-// import type { Wallet } from 'ethers';
-// import {
-// 	useAccount,
-// 	useSignMessage,
-// 	useNetwork,
-// 	useProvider,
-// 	useConnect,
-// } from 'wagmi';
-// import { useSign } from '../hooks/useSignMessage';
-// import { useToken } from '../hooks/useToken';
-// import { fetchSigner, ProviderRpcError } from '@wagmi/core';
-// import { usePort } from '@plasmohq/messaging/hook';
-// import { IconArrowRightCircle } from '@tabler/icons-react';
 import { coinList } from '~utils/constants';
 import { bus } from '~utils/bus';
 import type { GasPayload, Coin } from '~types';
 import LogoWhite from 'data-base64:~assets/LogoWhite.png';
-
-// import '@rainbow-me/rainbowkit/styles.css';
-
-// import detectEthereumProvider from '@metamask/detect-provider';
-// import type { BaseProvider } from '@metamask/providers';
-
-// const spender = '0x7E64d52D285E47b088f7b1df2438C1782099101a';
-const defaultCoin = coinList.find((coin) => !!coin.default);
-
-// Steps required?
-// enum Steps {
-// 	Primary,
-// }
 
 const Notification = () => {
 	const [isOpened, setOpened] = useState(
@@ -53,30 +27,12 @@ const Notification = () => {
 		);
 	}
 
-	// const { account } = wallet;
-	// const account = useAccount();
-	// console.log('account', account, account.address);
-	// const coinPort = usePort('coin');
-	// let defCoin = defaultCoin;
-	// if (coinPort?.data?.ticker) {
-	// 	defCoin = coinPort.data;
-	// }
-	// TODO: Use selected coin for UI -- indicate how much will be transfered.
-	// const [selectedCoin, setSelectedCoin] = useState(defCoin);
-
 	useEffect(() => {
 		bus.on('open', (data: GasPayload) => {
 			console.log('open-data', data);
 			setPayload(data);
 		});
 	}, []);
-
-	// useEffect(() => {
-	// 	// console.log('coin', coinPort);
-	// 	if (coinPort?.data?.ticker) {
-	// 		setSelectedCoin(coinPort.data);
-	// 	}
-	// }, [coinPort]);
 
 	const handleSign = useCallback(() => {
 		bus.emit('sign', { amount: payload.swap.feeToken });

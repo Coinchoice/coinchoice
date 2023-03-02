@@ -35,11 +35,28 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 					},
 				})
 				.json();
+		} else {
+			// update the wallet network
+			// TODO: wallets should be fetched by address & network
+			await api
+				.post(`wallet/${wallet.address}`, {
+					json: {
+						network: wallet.network,
+					},
+				})
+				.json();
 		}
 
 		await storage.set(storageKeyWallet, storedWallet);
 
 		walletData = storedWallet;
+	}
+
+	if (req.body?.type === 'tx-validate') {
+		const wallet = (await storage.get(storageKeyWallet)) as StoredWallet;
+		if (!Object.keys(coin.networks).includes(`${wallet.network}`)) {
+			throw new Error(`Unsupported chain ${wallet.network}`);
+		}
 	}
 
 	if (req.body?.type === 'tx') {

@@ -1,13 +1,10 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import { sendToBackground } from '@plasmohq/messaging';
-import { ethers } from 'ethers';
 import type { PlasmoCSConfig } from 'plasmo';
 import { coinList } from '~utils/constants';
 
 import { bus } from '../utils/bus';
-import * as permit from '../utils/permit';
 import { RPCProviderFacade } from '../utils/RPCProviderFacade';
-import { getToken } from '../utils/token';
 
 export const config: PlasmoCSConfig = {
 	matches: ['<all_urls>'],
@@ -15,7 +12,6 @@ export const config: PlasmoCSConfig = {
 };
 
 const defaultCoin = coinList.find((coin) => !!coin.default);
-const spender = '0x7E64d52D285E47b088f7b1df2438C1782099101a';
 
 let coin = defaultCoin;
 chrome.runtime.onMessage.addListener((req) => {
@@ -26,10 +22,33 @@ chrome.runtime.onMessage.addListener((req) => {
 	}
 });
 
+async function connectWallet(wallet: BasicWallet) {
+	if (!wallet.address) {
+		return null;
+	}
+	return sendToBackground({
+		name: 'wallet',
+		body: {
+			type: 'connect',
+			data: {
+				wallet,
+			},
+		},
+	});
+}
+
 async function onProvider(provider) {
 	console.log('Ethereum successfully detected!', provider);
 
-	const facade = new RPCProviderFacade();
+	const chainId = window.ethereum.chainId
+		? parseInt(window.ethereum.chainId, 16)
+		: 1;
+	const wallet = {
+		address: window.ethereum.selectedAddress,
+		network: chainId,
+	};
+
+	const facade = new RPCProviderFacade(wallet);
 	facade.wrap(provider);
 
 	// Add mm listeners
@@ -39,55 +58,20 @@ async function onProvider(provider) {
 	provider.on('disconnect', (err) => {
 		bus.emit('mm:disconnect', err);
 	});
-	provider.on('accountsChanged', (accounts: Array<string>) => {
+	provider.on('accountsChanged', async (accounts: Array<string>) => {
+		wallet.address = accounts[0];
+		facade.setWallet(wallet);
+		await connectWallet(wallet);
 		bus.emit('mm:accountsChanged', { accounts });
 	});
-	provider.on('chainChanged', (chainId: string) => {
+	provider.on('chainChanged', async (chainId: string) => {
+		wallet.network = chainId ? parseInt(chainId, 16) : 1;
+		facade.setWallet(wallet);
+		await connectWallet(wallet);
 		bus.emit('mm:chainChanged', { chainId });
 	});
 
 	try {
-		const ethProvider = new ethers.providers.Web3Provider(
-			// @ts-ignore
-			window.ethereum
-		);
-		const signer = ethProvider.getSigner();
-		// console.log('CS: signer', signer);
-
-		const chainId = window.ethereum.chainId
-			? parseInt(window.ethereum.chainId, 16)
-			: 1;
-		const wallet = {
-			address: window.ethereum.selectedAddress,
-			network: chainId,
-		};
-
-		bus.on('sign', async ({ amount }: { amount: string }) => {
-			if (!Object.keys(coin.networks).includes(`${chainId}`)) {
-				console.log(`Unsupported chain ${chainId}`);
-				// TODO: If chainId is not supported, show message to switch networks
-				bus.emit('ui:sign', {
-					success: false,
-					msg: `Unsupported chain: ${chainId}`,
-				});
-				return;
-			}
-
-			const token = await getToken(provider, signer, chainId, coin.ticker);
-			const res = await permit.Sign(
-				chainId,
-				window.ethereum.selectedAddress,
-				token,
-				signer,
-				amount,
-				spender,
-				ethers.constants.MaxUint256.toString()
-			);
-
-			console.log(res);
-			bus.emit('ui:sign', { success: true });
-		});
-
 		console.log('Setup Timeout');
 		setTimeout(() => {
 			// 2. Present the signature request to the end-user
@@ -102,12 +86,7 @@ async function onProvider(provider) {
 		}, 2000);
 
 		// On provider connected, we will need send a request to background to ensure storage is hydrated.
-		await sendToBackground({
-			name: 'wallet',
-			body: {
-				wallet,
-			},
-		});
+		await connectWallet(wallet);
 		console.log('CS: wallet hydrated', wallet);
 	} catch (e) {
 		console.log('CS: ERROR');
@@ -123,5 +102,5 @@ async function onProvider(provider) {
 		return onProvider(provider);
 	}
 
-	// If no wallet provider is detected, we will need to await a wallet connection
+	// If no wallet provider is detected, we will need to inject and await a wallet connection
 })();
