@@ -5,8 +5,10 @@ import { AxiosResponse } from 'axios';
 import { HttpService } from '@nestjs/axios';
 import {
 	EthersContract,
+	EthersSigner,
 	InjectContractProvider,
 	InjectEthersProvider,
+	InjectSignerProvider,
 } from 'nestjs-ethers';
 
 import { Contract } from '@ethersproject/contracts';
@@ -21,12 +23,12 @@ import {
 	FireblocksWeb3Provider,
 	ApiBaseUrl,
 } from '@fireblocks/fireblocks-web3-provider';
-import { ethers } from 'ethers';
+import { ethers, Wallet } from 'ethers';
 
 import * as ERC20ABI from './utils/erc20.json';
 import * as RELAYERABI from './utils/relayer.json';
 import { Sign } from './utils/permitUtils';
-import { getToken } from './utils/getToken';
+import { getToken, TOKEN_DICT } from './utils/getToken';
 import { Relayer } from './types/Relayer';
 import { PermitDto } from './dto/permit.dto';
 
@@ -42,6 +44,8 @@ export class AppService {
 		private readonly ethersProvider: BaseProvider,
 		@InjectContractProvider()
 		private readonly ethersContract: EthersContract,
+		@InjectSignerProvider()
+		private readonly ethersSigner: EthersSigner,
 		private readonly httpService: HttpService,
 	) {}
 
@@ -90,46 +94,69 @@ export class AppService {
 		to: string,
 		swapCall: string,
 	): Promise<any> {
+		const sign_wallet: Wallet = this.ethersSigner.createWallet(
+			process.env.WALLET_PRIVATE_KEY,
+		);
+
 		const signer = this.getSigner();
 		const relayer = new Contract(
 			process.env.RELAYER_CONTRACT_ADDRESS,
 			RELAYERABI.abi,
 			signer,
 		) as Relayer;
-
-		const signAmount = '11000000'; // in usdc
-		const swapAmount = '1000000000000000'; // in network ccy
+		this.logger.log(`test 2`);
+		const signAmount = '1000000000000000'; // in usdc
 		const chainId = 5;
+
+		// buy this amount of ether
+		const buyAmount = '100000000000000';
+		const buyToken = TOKEN_DICT.WETH[chainId];
+
 		const token = getToken(signer, chainId, 'USDC');
+
+		const fetchData = await fetch(
+			`https://${
+				chainId === 5 ? 'goerli' : 'mumbai'
+			}.api.0x.org/swap/v1/quote?buyToken=${buyToken}&sellToken=${
+				token.address
+			}&buyAmount=${buyAmount}`,
+		).then((response) => response.json());
+
+		const plusMargin = (num: any) => {
+			return BigNumber.from(11).mul(String(num)).div(10).toString();
+		};
+
+		const amount = plusMargin(fetchData.sellAmount);
+
 		const signedParams = await Sign(
 			5,
 			token,
-			signer,
-			process.env.FIREBLOCKS_WALLET_ADDRESS,
+			sign_wallet,
+			sign_wallet.address,
 			signAmount,
 			relayer.address,
 			ethers.constants.MaxUint256.toString(),
 		);
 
 		const tx = await relayer.relaySwapToETH(
-			process.env.FIREBLOCKS_WALLET_ADDRESS,
+			sign_wallet.address,
 			token.address,
-			swapAmount,
+			amount,
 			{
 				value: signAmount,
-				owner: process.env.FIREBLOCKS_WALLET_ADDRESS,
+				owner: sign_wallet.address,
 				spender: relayer.address,
 				deadline: ethers.constants.MaxUint256.toString(),
 				v: signedParams.split.v,
 				r: signedParams.split.r,
 				s: signedParams.split.s,
 			},
-			swapSpender,
-			to,
-			swapCall,
+			fetchData.allowanceTarget,
+			fetchData.to,
+			fetchData.data,
 		);
 		console.log('tx:', tx);
-		//await tx.wait();
+		await tx.wait();
 		return tx;
 	}
 

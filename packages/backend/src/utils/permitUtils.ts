@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { ethers } from 'ethers';
+import { ethers, Wallet } from 'ethers';
 import { ERC20MockWithPermit } from 'src/types/ERC20MockWithPermit';
 
 const structure = (
@@ -83,7 +83,7 @@ const buildData = async (
 export const Sign = async (
 	chainId: number,
 	token: ERC20MockWithPermit,
-	signer: JsonRpcSigner,
+	signer: JsonRpcSigner | Wallet,
 	address: string,
 	amount: string,
 	spender: string,
