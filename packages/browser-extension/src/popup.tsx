@@ -10,10 +10,10 @@ import {
 	Image,
 } from '@mantine/core';
 import { IconCurrencyCent, IconArrowLeft } from '@tabler/icons-react';
+import { sendToBackground } from '@plasmohq/messaging';
 
 import type { Coin } from './types';
 import { coinList } from './utils/constants';
-import { bus } from './utils/bus';
 
 enum Steps {
 	Primary,
@@ -28,6 +28,17 @@ function IndexPopup() {
 
 	useEffect(() => {
 		// Request default currency from DB
+		(async () => {
+			const resp = await sendToBackground({
+				name: 'coin',
+				body: {
+					type: 'get',
+				},
+			});
+			if (resp.data?.ticker) {
+				setSelectedCoin(resp.data);
+			}
+		})();
 	}, []);
 
 	const onCoinSelectStart = useCallback(() => {
@@ -38,10 +49,16 @@ function IndexPopup() {
 		setStep(Steps.Primary);
 	}, []);
 
-	const onCoinSelectFinal = useCallback((coin: Coin) => {
+	const onCoinSelectFinal = useCallback(async (coin: Coin) => {
 		setSelectedCoin(coin);
 		setStep(Steps.Primary);
-		// Set request to backend to mark coin as selected
+		await sendToBackground({
+			name: 'coin',
+			body: {
+				type: 'set',
+				data: coin,
+			},
+		});
 	}, []);
 
 	return (
@@ -96,12 +113,9 @@ function IndexPopup() {
 				{step === Steps.CurrencySelect && (
 					<Container>
 						<Flex direction="row" align="center" justify="flex-start" mb={20}>
-							<Button
-								onClick={onBackButton}
-								variant="subtle"
-								leftIcon={<IconArrowLeft />}
-								mr={10}
-							/>
+							<Button onClick={onBackButton} variant="subtle" mr={10}>
+								<IconArrowLeft />
+							</Button>
 							<Text fz="lg" fw={700}>
 								Select a Gas Coin
 							</Text>

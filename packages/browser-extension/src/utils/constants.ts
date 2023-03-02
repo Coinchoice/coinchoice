@@ -62,3 +62,5 @@ export const coinList: Coin[] = [
 		permit: true,
 	},
 ];
+
+export const storageKeyCoin = 'coinchoice_storage__coin';

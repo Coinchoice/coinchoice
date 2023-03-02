@@ -1,5 +1,5 @@
 import { ethers, Wallet } from 'ethers';
-import { useNetwork, useProvider } from 'wagmi';
+import { useProvider } from 'wagmi';
 
 import ERC20 from '../abi/erc20.json';
 import type { ERC20MockWithPermit } from '../types/ERC20MockWithPermit';

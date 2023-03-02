@@ -1,7 +1,8 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import type { PlasmoCSConfig } from 'plasmo';
 
-import { RPCProviderFacade } from './utils/RPCProviderFacade';
+// import { bus } from '../utils/bus';
+import { RPCProviderFacade } from '../utils/RPCProviderFacade';
 
 export const config: PlasmoCSConfig = {
 	matches: ['<all_urls>'],
@@ -15,5 +16,9 @@ export const config: PlasmoCSConfig = {
 
 		const facade = new RPCProviderFacade();
 		facade.wrap(provider);
+
+		// bus.emit('provider', {
+		// 	provider: true,
+		// });
 	}
 })();

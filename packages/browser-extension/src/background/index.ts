@@ -1,3 +1,5 @@
+import '@plasmohq/messaging/background';
+
 /**
  * There will only be one instance of the service-worker running per coinchoice chrome-extension
  */
@@ -54,5 +56,3 @@ console.log('Clearing Tx store during boot.');
 // 			break;
 // 	}
 // });
-
-export {};

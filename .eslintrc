@@ -5,25 +5,23 @@
 		"node": true
 	},
 	"parserOptions": {
-		"project": "./tsconfig.json"
+		"project": "./tsconfig.json",
+		"sourceType": "module"
 	},
 	"settings": {
-		"import/parsers": {
-			"@typescript-eslint/parser": [".ts", ".tsx"]
-		},
 		"import/resolver": {
 			"typescript": {
-				"alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
-				"project": "./tsconfig.*json"
+				"alwaysTryTypes": true // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
 			}
 		}
 	},
-	"plugins": ["@typescript-eslint", "import", "unused-imports", "jest", "simple-import-sort"],
+	"plugins": ["@typescript-eslint/eslint-plugin", "import", "unused-imports", "jest", "simple-import-sort"],
 	"extends": [
-    "eslint:recommended",
-		"plugin:prettier/recommended",
-    "plugin:@typescript-eslint/recommended"
+		"plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
 	],
+	"ignorePatterns": [".eslintrc.js"], // !!! new and important part !!!
 	"rules": {
 		"import/prefer-default-export": "off",
 		"no-underscore-dangle": "off",
