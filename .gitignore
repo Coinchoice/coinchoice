@@ -1,0 +1,61 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+**/vendor
+**/.pnp
+**/.pnp.js
+**/.yarn/*
+**/.turbo
+**/.turbo/**
+**/node_modules
+node_modules
+/node_modules/**
+**/jspm_packages
+**/flow-typed
+
+# testing
+logs
+tmp
+report.*
+.test_temp
+
+# next.js
+.next
+out
+
+# production
+build
+dist
+
+# misc
+.DS_Store
+package.json.lerna_backup
+keyfile.json
+cache
+package-lock.json
+yarn.lock
+ipfs
+.secrets
+notes.txt
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# env files
+!.env.example
+*.env
+
+# Typescript
+tsconfig.tsbuildinfo
+
+# files
+*.log
+.pnp.*
+coverage.json
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
