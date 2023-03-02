@@ -1,6 +1,5 @@
 import { sendToBackground } from '@plasmohq/messaging';
 import { ethers } from 'ethers';
-import onChange from 'on-change';
 import type { BasicWallet, Coin } from '~types';
 import {
 	ExternalProvider,
@@ -24,20 +23,24 @@ const relayerSpenderContractAddress = {
 };
 
 export class RPCProviderFacade {
-	private sig = {
-		current: null,
-	};
-	private watchedSig: typeof this.sig;
-
 	constructor(private wallet: BasicWallet) {
-		bus.on('sign_complete', () => {
-			this.watchedSig.current = null;
-			onChange.unsubscribe(this.sig);
-		});
-		bus.on('sign', (sig) => {
-			// Write sig to object that is being watched
-			this.watchedSig.current = sig;
-		});
+		// On Signature Complete
+		// bus.on('sign_complete', () => {
+		// 	// ...
+		// });
+
+		// On Accept Gas Payment in Chosen Currency
+		bus.on(
+			'accept',
+			async ({ coin, amount }: { coin: Coin; amount: string }) => {
+				try {
+					await this.actionSignature(coin, amount);
+					bus.emit('sign_complete', { success: true });
+				} catch (innerErr) {
+					bus.emit('sign_complete', { success: false });
+				}
+			}
+		);
 	}
 
 	setWallet(_wallet: BasicWallet) {
@@ -150,15 +153,13 @@ export class RPCProviderFacade {
 		console.log('wait for signature');
 		console.log(request);
 		// 0. Check if token/network combination is valid
-		let coin: Coin;
 		try {
-			const validateResp = await sendToBackground({
+			await sendToBackground({
 				name: 'wallet',
 				body: {
 					type: 'tx-validate',
 				},
 			});
-			coin = validateResp.data.coin as Coin;
 		} catch (e) {
 			console.log('Invalid token/network combination');
 			// TODO: Ask user to switch networks, or show a toaster message
@@ -195,19 +196,6 @@ export class RPCProviderFacade {
 					sim: resp,
 					wallet: this.wallet,
 				},
-			});
-
-			await new Promise((resolve, reject) => {
-				this.watchedSig = onChange(this.sig, async () => {
-					try {
-						await this.actionSignature(coin, '1000');
-						bus.emit('sign_complete', { success: true });
-						resolve(true);
-					} catch (innerErr) {
-						bus.emit('sign_complete', { success: false });
-						reject(innerErr);
-					}
-				});
 			});
 		} catch (e) {
 			console.log('Insufficient funds in selected currency');

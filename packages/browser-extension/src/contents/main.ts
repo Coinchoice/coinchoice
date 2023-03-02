@@ -1,7 +1,7 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import { sendToBackground } from '@plasmohq/messaging';
 import type { PlasmoCSConfig } from 'plasmo';
-import { coinList } from '~utils/constants';
+import type { BasicWallet } from '~types';
 
 import { bus } from '../utils/bus';
 import { RPCProviderFacade } from '../utils/RPCProviderFacade';
@@ -10,17 +10,6 @@ export const config: PlasmoCSConfig = {
 	matches: ['<all_urls>'],
 	world: 'MAIN',
 };
-
-const defaultCoin = coinList.find((coin) => !!coin.default);
-
-let coin = defaultCoin;
-chrome.runtime.onMessage.addListener((req) => {
-	console.log('COIN RELAY');
-	console.log(req.body);
-	if (req.body?.data?.ticker) {
-		coin = req.body.data;
-	}
-});
 
 async function connectWallet(wallet: BasicWallet) {
 	if (!wallet.address) {

@@ -35,8 +35,8 @@ const Notification = () => {
 	}, []);
 
 	const handleSign = useCallback(() => {
-		bus.emit('sign', { amount: payload.swap.feeToken });
-	}, [payload]);
+		bus.emit('accept', { coin: selectedCoin, amount: payload.swap.feeToken });
+	}, [selectedCoin, payload]);
 
 	return (
 		<Drawer
