@@ -1,3 +1,7 @@
+type BasicProfile @loadModel(id: "kjzl6hvfrbw6c57p6t99krxnhqbxb24suuvxfhq1hnqujfecq0fap356ai7sjk9") {
+  id: ID!
+}
+
 type Wallets @createModel(accountRelation: LIST, description: "Wallet preferences") {
   address: String! @string(minLength: 1, maxLength: 100)
   token: String! @string(minLength: 1, maxLength: 100)
@@ -5,4 +9,6 @@ type Wallets @createModel(accountRelation: LIST, description: "Wallet preference
   network: Int!
   edited: DateTime
   created: DateTime!
+  ownerId: StreamID! @documentReference(model:"BasicProfile")
+  owner: BasicProfile! @relationDocument(property: "ownerId")
 }
