@@ -4,4 +4,4 @@ export const ETH_GOERLI_ENDPOINT =
 export const POLYGON_MUMBAI_ENDPOINT =
 	process.env.PUBLIC_PLASMO_POLYGON_MUMBAI_ENDPOINT || '';
 export const CERAMIC_CLIENT =
-	process.env.CERAMIC_CLIENT || 'http://localhost:7007';
+	process.env.PUBLIC_PLASMO_CERAMIC_CLIENT || 'http://localhost:7007';
