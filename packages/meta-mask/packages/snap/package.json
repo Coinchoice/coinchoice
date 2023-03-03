@@ -21,8 +21,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
     "serve": "mm-snap serve",
-    "start": "mm-snap watch",
-    "postinstall": "patch-package"
+    "start": "mm-snap watch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
@@ -57,7 +56,6 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "patch-package": "^6.5.1",
     "postinstall-postinstall": "^2.1.0"
   }
 }
