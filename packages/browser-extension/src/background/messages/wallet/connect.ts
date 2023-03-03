@@ -12,7 +12,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const coin = (await storage.get(storageKeyCoin)) as Coin;
 	console.log('WALLET BGSW: coin fetched', coin);
 
-	const { wallet }: { wallet: BasicWallet } = req.body.data;
+	const { wallet }: { wallet: BasicWallet } = req.body;
 	if (!coin.networks[wallet.network]) {
 		throw new Error(
 			`No coin address exists for network -- Coin: ${coin.ticker}, Network: ${wallet.network}`

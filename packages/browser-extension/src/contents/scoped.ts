@@ -10,12 +10,9 @@ bus.on('connect-wallet', async ({ wallet }: { wallet: BasicWallet }) => {
 			return null;
 		}
 		await sendToBackground({
-			name: 'wallet',
+			name: 'wallet/connect',
 			body: {
-				type: 'connect',
-				data: {
-					wallet,
-				},
+				wallet,
 			},
 		});
 		console.log('SCOPED CS: Wallet Set', wallet);
@@ -52,10 +49,7 @@ bus.on(
 bus.on('tx-validate', async () => {
 	try {
 		await sendToBackground({
-			name: 'wallet',
-			body: {
-				type: 'tx-validate',
-			},
+			name: 'tx/validate',
 		});
 		bus.emit('resp:tx-validate', { err: null, resp: null });
 	} catch (e) {
