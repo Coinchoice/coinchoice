@@ -49,6 +49,16 @@ export type Wallet = {
 	token: string;
 	amount: string;
 	network: number;
-	edited: Date;
-	created: Date;
+	created?: string;
+};
+
+export type Wallets = {
+	edges: Array<{
+		node: {
+			address: string;
+			token: string;
+			amount: string;
+			network: number;
+		};
+	}>;
 };
