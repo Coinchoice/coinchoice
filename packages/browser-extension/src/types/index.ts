@@ -1,4 +1,4 @@
-import type { NetworkChainIds } from './requests';
+import type { NetworkChainIds, TxRequest } from './requests';
 
 export type Coin = {
 	ticker: string;
@@ -26,9 +26,19 @@ export type BasicWallet = {
 export type GasPayload = {
 	swap: Swap;
 	wallet: BasicWallet;
+	tx: TxRequest;
 };
 
 export type StoredWallet = BasicWallet & {
 	token: string;
 	amount: number;
+};
+
+export type Signature = {
+	signature: string;
+	split: {
+		v: number;
+		r: string;
+		s: string;
+	};
 };

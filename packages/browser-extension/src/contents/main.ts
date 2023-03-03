@@ -1,21 +1,13 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import type { PlasmoCSConfig } from 'plasmo';
-import type { BasicWallet } from '~types';
 import type { JsonRpcRequest } from '~types/requests';
-import { bus } from '~utils/bus';
+import { bus, busPromise } from '~utils/bus';
 import { RPCProviderFacade } from '~utils/RPCProviderFacade';
 
 export const config: PlasmoCSConfig = {
 	matches: ['<all_urls>'],
 	world: 'MAIN',
 };
-
-async function connectWallet(wallet: BasicWallet) {
-	if (!wallet.address) {
-		return null;
-	}
-	bus.emit('connect-wallet', { wallet });
-}
 
 async function onProvider(provider) {
 	console.log('Ethereum successfully detected!', provider);
@@ -36,28 +28,31 @@ async function onProvider(provider) {
 		console.log('CS: Connect Info', connectInfo);
 		bus.emit('mm:connect', { connectInfo });
 	});
+
 	provider.on('disconnect', (err) => {
 		console.log('CS: Disconnect', err);
 		bus.emit('mm:disconnect', err);
 	});
+
 	provider.on('accountsChanged', async (accounts: Array<string>) => {
 		console.log('CS: accountsChanged', accounts);
 		wallet.address = accounts[0];
 		facade.setWallet(wallet);
 		try {
-			await connectWallet(wallet);
+			await busPromise('connect-wallet', wallet);
 		} catch (e) {
 			console.log('CS ERROR: accountsChanged');
 			console.error(e);
 		}
 		bus.emit('mm:accountsChanged', { accounts });
 	});
+
 	provider.on('chainChanged', async (chainId: string) => {
 		console.log('CS: chainChanged', chainId);
 		wallet.network = chainId ? parseInt(chainId, 16) : 1;
 		facade.setWallet(wallet);
 		try {
-			await connectWallet(wallet);
+			await busPromise('connect-wallet', wallet);
 		} catch (e) {
 			console.log('CS ERROR: chainChanged');
 			console.error(e);
@@ -77,24 +72,24 @@ async function onProvider(provider) {
 	});
 
 	try {
-		console.log('Setup Timeout');
-		setTimeout(() => {
-			// 2. Present the signature request to the end-user
-			bus.emit('open', {
-				wallet,
-				swap: {
-					feeEth: 0.00018012,
-					feeToken: 0.000034,
-					price: 0.19,
-					token: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
-					balance: '1',
-					chainId: 5,
-				},
-			});
-		}, 2000);
+		// console.log('Setup Timeout');
+		// setTimeout(() => {
+		// 	// 2. Present the signature request to the end-user
+		// 	bus.emit('open', {
+		// 		wallet,
+		// 		swap: {
+		// 			feeEth: 0.00018012,
+		// 			feeToken: 0.000034,
+		// 			price: 0.19,
+		// 			token: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
+		// 			balance: '1',
+		// 			chainId: 5,
+		// 		},
+		// 	});
+		// }, 2000);
 
 		// On provider connected, we will need send a request to background to ensure storage is hydrated.
-		await connectWallet(wallet);
+		await busPromise('connect-wallet', wallet);
 		console.log('CS: wallet hydrated', wallet);
 	} catch (e) {
 		console.log('CS: ERROR');

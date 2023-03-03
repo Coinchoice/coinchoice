@@ -1,31 +1,18 @@
-import { ethers, Signer, Wallet } from 'ethers';
+import { ethers } from 'ethers';
+import type { Coin } from '~types';
 
 import ERC20 from '../abi/erc20.json';
 import type { ERC20MockWithPermit } from '../types/ERC20MockWithPermit';
 
-const TOKEN_META = {
-	USDC: { decimals: 6, symbol: 'USDC', name: 'USD Coin' },
-};
-
-const TOKEN_DICT: { [id: string]: { [chainId: number]: string } } = {
-	USDC: {
-		1: '0xe9DcE89B076BA6107Bb64EF30678efec11939234',
-		5: '0xe9DcE89B076BA6107Bb64EF30678efec11939234',
-		80001: '0xe9DcE89B076BA6107Bb64EF30678efec11939234',
-		137: '0xe9DcE89B076BA6107Bb64EF30678efec11939234',
-	},
-	DAI: {},
-};
-
 export const getToken = (
-	provider: any,
-	signer: Signer | Wallet,
+	provider: ethers.providers.Web3Provider,
 	chainId: number,
-	id: string
+	coin: Coin
 ) => {
+	const signer = provider.getSigner();
 	try {
 		return new ethers.Contract(
-			TOKEN_DICT[id][chainId],
+			coin.networks[chainId],
 			new ethers.utils.Interface(ERC20),
 			signer
 		) as ERC20MockWithPermit;
@@ -33,12 +20,12 @@ export const getToken = (
 		console.log(e);
 		try {
 			return new ethers.Contract(
-				TOKEN_DICT[id][chainId],
+				coin.networks[chainId],
 				new ethers.utils.Interface(ERC20),
 				provider
 			) as ERC20MockWithPermit;
 		} catch (e2) {
-			console.log('signer', chainId, signer, TOKEN_DICT[id][chainId]);
+			console.log('signer', chainId, signer, coin.networks[chainId]);
 			console.log('Provider', provider);
 			return null;
 		}

@@ -52,6 +52,8 @@ export type ExternalProvider = {
 	request?: (request: JsonRpcRequest) => Promise<any>;
 };
 
+export type TxRequest = JsonRpcRequest | { method: any; params: any };
+
 declare global {
 	interface Window {
 		ethereum: ExternalProvider;

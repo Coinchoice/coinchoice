@@ -1,8 +1,4 @@
-import type {
-	// BigNumber,
-	Signer,
-	Wallet,
-} from 'ethers';
+import * as sigUtil from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 
 // import { splitSignature } from 'ethers/lib/utils';
@@ -104,17 +100,53 @@ const buildData = async (
 	);
 };
 
+const signTypedData = async (
+	provider: ethers.providers.Web3Provider,
+	from: string,
+	msgParams: string
+) => {
+	const params = [from, msgParams];
+	const method = 'eth_signTypedData_v4';
+
+	const result = await provider.send(method, params);
+	// if (err) return console.dir(err);
+	// 		if (result.error) {
+	// 			alert(result.error.message);
+	// 		}
+	// 		if (result.error) return console.error('ERROR', result);
+	console.log('TYPED SIGNED');
+	console.log(result);
+
+	// const recovered = sigUtil.recoverTypedSignature({
+	// 	data: JSON.parse(msgParams),
+	// 	signature: result.result,
+	// 	version: sigUtil.
+	// });
+
+	// if (
+	// 	ethUtil.toChecksumAddress(recovered) === ethUtil.toChecksumAddress(from)
+	// ) {
+	// 	alert('Successfully recovered signer as ' + from);
+	// } else {
+	// 	alert(
+	// 		'Failed to verify signer when comparing ' + result + ' to ' + from
+	// 	);
+	// }
+
+	return result;
+};
+
 export const Sign = async (
+	provider: ethers.providers.Web3Provider,
 	chainId: number,
 	userAddress: string,
 	token: ERC20MockWithPermit,
-	user: Signer | Wallet,
 	amount: string,
 	spender: string,
 	deadline: string
 ) => {
 	console.log(
-		'build data params',
+		'permit: build data params',
 		amount,
 		userAddress,
 		spender,
@@ -130,11 +162,13 @@ export const Sign = async (
 		token,
 		deadline
 	);
-	console.log('data', data);
-	const digest = await user._signTypedData(
-		data.domain,
-		data.types,
-		data.message
+	console.log('permit: data', data);
+
+	// Example Reference: https://codesandbox.io/s/335wo
+	const digest = await signTypedData(
+		provider,
+		userAddress,
+		JSON.stringify(data)
 	);
 	const { v, r, s } = ethers.utils.splitSignature(digest);
 	return { signature: digest, split: { v, r, s } };

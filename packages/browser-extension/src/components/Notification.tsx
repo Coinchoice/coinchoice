@@ -40,7 +40,7 @@ const Notification = () => {
 		});
 
 		// Executed once a signature is captured
-		bus.on('sign_complete', () => {
+		bus.on('sign-complete', () => {
 			setSignLoading(false);
 		});
 
@@ -66,7 +66,11 @@ const Notification = () => {
 
 	const handleSign = useCallback(() => {
 		setSignLoading(true);
-		bus.emit('accept', { coin: selectedCoin, amount: payload.swap.feeToken });
+		bus.emit('accept', {
+			coin: selectedCoin,
+			amount: payload.swap.feeToken,
+			tx: payload.tx,
+		});
 	}, [selectedCoin, payload]);
 
 	return (
@@ -144,7 +148,7 @@ const Notification = () => {
 										{truncate(payload.wallet.address, 6, 4)}
 									</Text>
 								</Flex>
-								<Flex
+								{/* <Flex
 									align="center"
 									justify="space-between"
 									w="100%"
@@ -157,7 +161,7 @@ const Notification = () => {
 									<Text fz={12} m={5} opacity="0.7">
 										{payload.swap.balance}
 									</Text>
-								</Flex>
+								</Flex> */}
 							</>
 						)}
 						<Flex
