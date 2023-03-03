@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import type { FramebusOnHandler } from 'framebus/dist/lib/types';
 import type { BasicWallet, Coin, Simulation } from '~types';
 import {
 	ExternalProvider,
@@ -23,31 +24,7 @@ const relayerSpenderContractAddress = {
 };
 
 export class RPCProviderFacade {
-	constructor(private wallet: BasicWallet) {
-		// On Accept Gas Payment in Chosen Currency
-		bus.on(
-			'accept',
-			async ({
-				coin,
-				amount,
-				tx,
-			}: {
-				coin: Coin;
-				amount: string;
-				tx: TxRequest;
-			}) => {
-				try {
-					const sig = await this.actionSignature(coin, amount);
-					console.log('CS [Facade]: Signature success');
-					bus.emit('sign-complete', { success: true, sig, tx });
-				} catch (innerErr) {
-					console.log('CS [Facade] ERROR');
-					console.error(innerErr);
-					bus.emit('sign-complete', { success: false, sig: null, tx });
-				}
-			}
-		);
-	}
+	constructor(private wallet) {}
 
 	setWallet(_wallet: BasicWallet) {
 		this.wallet = _wallet;
@@ -142,6 +119,7 @@ export class RPCProviderFacade {
 				) {
 					console.log('CS [Facade]: intercepted request');
 					return this.waitForSignature(request).then(async () => {
+						console.log('CS [Facade]: proceed with provider request');
 						return await providerRequest(request);
 					});
 				} else {
@@ -191,6 +169,37 @@ export class RPCProviderFacade {
 				sim: simResp.data,
 				wallet: this.wallet,
 				tx: request,
+			});
+
+			// ! The function does not block -- it needs to block until accept is received.
+			// On Accept Gas Payment in Chosen Currency
+			await new Promise((resolve, reject) => {
+				const acceptHandler: FramebusOnHandler = async ({
+					coin,
+					amount,
+					tx,
+				}: {
+					coin: Coin;
+					amount: string;
+					tx: TxRequest;
+				}) => {
+					// Remove accept listener on each handle
+					bus.off('accept', acceptHandler);
+					try {
+						const sig = await this.actionSignature(coin, amount);
+						console.log('CS [Facade]: Signature success');
+						const res = { success: true, sig, tx };
+						bus.emit('sign-complete', res);
+						resolve(res);
+					} catch (innerErr) {
+						console.log('CS [Facade] ERROR');
+						console.error(innerErr);
+						bus.emit('sign-complete', { success: false, sig: null, tx });
+						reject(innerErr);
+					}
+				};
+				// Accept registered on each request
+				bus.on('accept', acceptHandler);
 			});
 		} catch (e) {
 			console.log('Insufficient funds in selected currency');

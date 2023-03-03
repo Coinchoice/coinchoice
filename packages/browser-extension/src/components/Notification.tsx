@@ -156,7 +156,7 @@ const Notification = () => {
 										{selectedCoin.ticker} Balance
 									</Text>
 									<Text fz={12} m={5} opacity="0.7">
-										{parseInt(payload.sim.balance.hex, 16)}
+										{parseInt(payload.sim.balance.hex, 16).toFixed(6)}
 									</Text>
 								</Flex>
 							</>
@@ -172,7 +172,9 @@ const Notification = () => {
 								Gas to pay
 							</Text>
 							<Text fz={14} m={5}>
-								{payload.sim.feeToken}{' '}
+								{payload.sim.feeToken < 0.000001
+									? `< 0.000001`
+									: payload.sim.feeToken.toFixed(6)}{' '}
 								<strong>{selectedCoin.ticker.toUpperCase()}</strong>
 							</Text>
 						</Flex>
@@ -187,7 +189,10 @@ const Notification = () => {
 								Native gas
 							</Text>
 							<Text fz={14} m={5}>
-								{payload.sim.feeEth} <strong>ETH</strong>
+								{payload.sim.feeEth < 0.000001
+									? `< 0.000001`
+									: payload.sim.feeEth.toFixed(6)}{' '}
+								<strong>ETH</strong>
 							</Text>
 						</Flex>
 					</>
