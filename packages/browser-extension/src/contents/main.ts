@@ -39,7 +39,7 @@ async function onProvider(provider) {
 		wallet.address = accounts[0];
 		facade.setWallet(wallet);
 		try {
-			await busPromise('connect-wallet', wallet);
+			await busPromise('connect-wallet', { wallet });
 		} catch (e) {
 			console.log('CS ERROR: accountsChanged');
 			console.error(e);
@@ -52,7 +52,7 @@ async function onProvider(provider) {
 		wallet.network = chainId ? parseInt(chainId, 16) : 1;
 		facade.setWallet(wallet);
 		try {
-			await busPromise('connect-wallet', wallet);
+			await busPromise('connect-wallet', { wallet });
 		} catch (e) {
 			console.log('CS ERROR: chainChanged');
 			console.error(e);
@@ -89,7 +89,7 @@ async function onProvider(provider) {
 		// }, 2000);
 
 		// On provider connected, we will need send a request to background to ensure storage is hydrated.
-		await busPromise('connect-wallet', wallet);
+		await busPromise('connect-wallet', { wallet });
 		console.log('CS: wallet hydrated', wallet);
 	} catch (e) {
 		console.log('CS: ERROR');

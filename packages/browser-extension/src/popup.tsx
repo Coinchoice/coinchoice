@@ -34,10 +34,7 @@ function IndexPopup() {
 		// Request default currency from DB
 		(async () => {
 			const resp = await sendToBackground({
-				name: 'coin',
-				body: {
-					type: 'get',
-				},
+				name: 'coin/get',
 			});
 			if (resp.data?.ticker) {
 				setSelectedCoin(resp.data);
@@ -57,11 +54,8 @@ function IndexPopup() {
 		setSelectedCoin(coin);
 		setStep(Steps.Primary);
 		await sendToBackground({
-			name: 'coin',
-			body: {
-				type: 'set',
-				data: coin,
-			},
+			name: 'coin/set',
+			body: coin,
 		});
 	}, []);
 

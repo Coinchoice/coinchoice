@@ -5,6 +5,7 @@ import { bus } from '~utils/bus';
 
 bus.on('connect-wallet', async ({ wallet }: { wallet: BasicWallet }) => {
 	try {
+		// console.log('SCOPED CS: connect-wallet', wallet);
 		if (!wallet.address) {
 			return null;
 		}
@@ -38,13 +39,10 @@ bus.on(
 		if (success) {
 			// Submit meta-tx in API request for swap transaction
 			await sendToBackground({
-				name: 'wallet',
+				name: 'tx/submit',
 				body: {
-					type: 'tx-submit',
-					data: {
-						tx,
-						sig,
-					},
+					tx,
+					sig,
 				},
 			});
 		}
@@ -68,12 +66,9 @@ bus.on('tx-validate', async () => {
 bus.on('tx-simulate', async ({ tx }: { tx: TxRequest }) => {
 	try {
 		const simResp = await sendToBackground({
-			name: 'wallet',
+			name: 'tx/simulate',
 			body: {
-				type: 'tx',
-				data: {
-					tx,
-				},
+				tx,
 			},
 		});
 		bus.emit('resp:tx-simulate', {

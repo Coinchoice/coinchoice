@@ -3,5 +3,13 @@ import ky from 'ky-universal';
 
 import { API_HOST } from './env';
 
-console.log('API_HOST', API_HOST);
 export const api = ky.create({ prefixUrl: API_HOST, fetch });
+
+export const handleReqErr = async (e: any) => {
+	if (e.name === 'HTTPError') {
+		const eJson = await e.response.json();
+		console.error(eJson);
+	} else {
+		console.error(e);
+	}
+};
