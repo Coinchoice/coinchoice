@@ -65,3 +65,7 @@ export const coinList: Coin[] = [
 
 export const storageKeyCoin = 'coinchoice_storage__coin';
 export const storageKeyWallet = 'coinchoice_storage__wallet';
+
+export const relayerSpenderContractAddress = {
+	[NetworkChainIds.GOERLI]: '0x7E64d52D285E47b088f7b1df2438C1782099101a',
+};

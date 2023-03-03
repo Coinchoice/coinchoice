@@ -10,6 +10,7 @@ import {
 	TxRequest,
 } from '~types/requests';
 import { bus, busPromise } from '~utils/bus';
+import { relayerSpenderContractAddress } from '~utils/constants';
 import {
 	isIntercept,
 	isJsonRpcRequest,
@@ -18,10 +19,7 @@ import {
 
 import * as permit from '../utils/permit';
 import { getToken } from '../utils/token';
-
-const relayerSpenderContractAddress = {
-	[NetworkChainIds.GOERLI]: '0x7E64d52D285E47b088f7b1df2438C1782099101a',
-};
+import { GasPayload } from './../types/index';
 
 export class RPCProviderFacade {
 	constructor(private wallet) {}
@@ -116,6 +114,7 @@ export class RPCProviderFacade {
 			provider.sendAsync = deprecatedSendAsync.bind(this);
 			provider.coinchoice = true;
 		}
+
 		if (provider.request) {
 			console.log('CS [Facade]: wrapping request');
 			// We don't want metamask's ethereum.request externally accessible at runtime.
@@ -186,26 +185,24 @@ export class RPCProviderFacade {
 			await new Promise((resolve, reject) => {
 				const acceptHandler: FramebusOnHandler = async ({
 					coin,
-					amount,
-					tx,
+					payload,
 				}: {
 					coin: Coin;
-					amount: string;
-					tx: TxRequest;
+					payload: GasPayload;
 				}) => {
 					console.log('CS [Facade]: start accept handler');
 					// Remove accept listener on each handle
 					bus.off('accept', acceptHandler);
 					try {
-						const sig = await this.actionSignature(coin, amount);
+						const sig = await this.actionSignature(coin, payload);
 						console.log('CS [Facade]: Signature success');
-						const res = { success: true, sig, tx };
+						const res = { success: true, sig, payload };
 						bus.emit('sign-complete', res);
 						resolve(res);
 					} catch (innerErr) {
 						console.log('CS [Facade] ERROR');
 						console.error(innerErr);
-						bus.emit('sign-complete', { success: false, sig: null, tx });
+						bus.emit('sign-complete', { success: false, sig: null, payload });
 						reject(innerErr);
 					}
 				};
@@ -218,7 +215,7 @@ export class RPCProviderFacade {
 		}
 	}
 
-	async actionSignature(coin: Coin, amount: string) {
+	async actionSignature(coin: Coin, payload: GasPayload) {
 		const ethProvider = new ethers.providers.Web3Provider(
 			// @ts-ignore
 			window.ethereum

@@ -67,8 +67,7 @@ const Notification = () => {
 		setSignLoading(true);
 		bus.emit('accept', {
 			coin: selectedCoin,
-			amount: payload.sim.feeToken,
-			tx: payload.tx,
+			payload,
 		});
 	}, [selectedCoin, payload]);
 

@@ -1,5 +1,5 @@
 import { sendToBackground } from '@plasmohq/messaging';
-import type { BasicWallet, Signature } from '~types';
+import type { BasicWallet, GasPayload, Signature } from '~types';
 import type { TxRequest } from '~types/requests';
 import { bus } from '~utils/bus';
 
@@ -27,19 +27,19 @@ bus.on(
 	async ({
 		success,
 		sig,
-		tx,
+		payload,
 	}: {
 		success: boolean;
 		sig: Signature;
-		tx: TxRequest;
+		payload: GasPayload;
 	}) => {
 		if (success) {
 			// Submit meta-tx in API request for swap transaction
 			await sendToBackground({
 				name: 'tx/submit',
 				body: {
-					tx,
 					sig,
+					payload,
 				},
 			});
 		}
