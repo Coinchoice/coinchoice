@@ -1,0 +1,32 @@
+{
+  "name": "@fluencelabs/aqua-eth-gateway",
+  "version": "0.0.11",
+  "description": "",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "run:example": "fluence aqua -i aqua/ -o aqua-compiled/ --js && node src/index.js \"config.json\"",
+    "run": "fluence aqua -i aqua/ -o aqua-compiled/ --js && node src/index.js",
+    "compile": "fluence aqua -i aqua/ -o aqua-compiled/ --js",
+    "req": "node web3run.js"
+  },
+  "bin": {
+    "aqua-eth-gateway": "src/index.js"
+  },
+  "files": [
+    "src/*",
+    "aqua/*",
+    "aqua-compiled/*"
+  ],
+  "author": "Fluence Labs",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "json-rpc-2.0": "1.4.2",
+    "web3": "1.8.2"
+  },
+  "devDependencies": {
+    "@fluencelabs/cli": "^0.3.9",
+    "@fluencelabs/js-client.api": "0.11.4",
+    "@fluencelabs/js-client.node": "0.6.6"
+  }
+}

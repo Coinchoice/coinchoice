@@ -1,0 +1,15 @@
+{
+  "providers": [
+    "https://goerli.infura.io/v3/8630b9d9b0a7483499426b76055c5171",
+    "https://rpc.ankr.com/eth_goerli",
+    "https://eth-goerli.g.alchemy.com/v2/0FCrFB3dB5kRJCjWEa_CSdmODFxt_sLG"
+  ],
+  "mode": "round-robin",
+  "relay": "/dns4/stage.fluence.dev/tcp/19002/wss/p2p/12D3KooWMigkP4jkVyufq5JnDJL6nXvyjeaDNpRfEZqQhsG3sYCU",
+  "port": 3001,
+  "counterServiceId": null,
+  "counterPeerId": null,
+  "quorumServiceId": null,
+  "quorumPeerId": null,
+  "quorumNumber": null
+}
