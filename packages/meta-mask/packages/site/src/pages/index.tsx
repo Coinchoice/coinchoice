@@ -129,10 +129,10 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>Coinchoice</Span>
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+       Install our Snap to never worry about having enough ETH for gas ever again.
       </Subtitle>
       <CardContainer>
         {state.error && (
@@ -183,7 +183,7 @@ const Index = () => {
             disabled={!state.installedSnap}
           />
         )}
-        <Card
+        {/* <Card
           content={{
             title: 'Send Hello message',
             description:
@@ -201,7 +201,7 @@ const Index = () => {
             Boolean(state.installedSnap) &&
             !shouldDisplayReconnectButton(state.installedSnap)
           }
-        />
+        /> */}
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}

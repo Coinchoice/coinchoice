@@ -1,0 +1,4 @@
+# app netlify.toml
+[build]
+  command = "yarn install && yarn start"
+  publish = "packages/site/public"
