@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import type { BasicWallet, Coin, Swap } from '~types';
+import type { BasicWallet, Coin, Simulation } from '~types';
 import {
 	ExternalProvider,
 	JsonRpcCallback,
@@ -168,7 +168,7 @@ export class RPCProviderFacade {
 		try {
 			const simResp = (await busPromise('tx-simulate', { tx: request })) as {
 				success: boolean;
-				data: Swap;
+				data: Simulation;
 			};
 
 			console.log('CS [Facade]: simulated tx', simResp);

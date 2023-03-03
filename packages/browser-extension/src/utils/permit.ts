@@ -1,4 +1,3 @@
-import * as sigUtil from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 
 // import { splitSignature } from 'ethers/lib/utils';

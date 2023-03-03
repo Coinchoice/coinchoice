@@ -1,7 +1,7 @@
 import type { PlasmoMessaging } from '@plasmohq/messaging';
 import { Storage } from '@plasmohq/storage';
 import type { Coin, StoredWallet } from '~types';
-// import type { Swap } from '~types';
+// import type { Simulation } from '~types';
 // import type { TxRequest } from '~types/requests';
 // import { api, handleReqErr } from '~utils/api';
 import { storageKeyCoin, storageKeyWallet } from '~utils/constants';
@@ -10,7 +10,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const storage = new Storage();
 
 	const coin = (await storage.get(storageKeyCoin)) as Coin;
-	console.log('WALLET BGSW: coin fetched', coin);
+	console.log('TX:SUBMIT BGSW: coin fetched', coin);
 
 	const wallet = (await storage.get(storageKeyWallet)) as StoredWallet;
 

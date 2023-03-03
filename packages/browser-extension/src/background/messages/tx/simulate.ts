@@ -1,7 +1,7 @@
 import type { PlasmoMessaging } from '@plasmohq/messaging';
 import { Storage } from '@plasmohq/storage';
 import type { Coin, StoredWallet } from '~types';
-import type { Swap } from '~types';
+import type { Simulation } from '~types';
 import type { TxRequest } from '~types/requests';
 import { api, handleReqErr } from '~utils/api';
 import { storageKeyCoin, storageKeyWallet } from '~utils/constants';
@@ -10,9 +10,10 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const storage = new Storage();
 
 	const coin = (await storage.get(storageKeyCoin)) as Coin;
-	console.log('WALLET BGSW: coin fetched', coin);
+	console.log('TX:SIMULATE BGSW: coin fetched', coin);
 
 	const wallet = (await storage.get(storageKeyWallet)) as StoredWallet;
+	console.log('TX:SIMULATE BGSW: wallet fetched', wallet);
 	if (!coin.networks[wallet.network]) {
 		throw new Error(
 			`No coin address exists for network -- Coin: ${coin.ticker}, Network: ${wallet.network}`
@@ -21,27 +22,34 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 
 	// Update the wallet with the selected coin at the point of simuilating the request.
 	try {
-		await api.put(`wallet/${wallet.address}`, {
-			json: {
-				token: coin.networks[wallet.network],
-			},
-		});
+		await api
+			.put(`wallet/${wallet.id}`, {
+				json: {
+					// address: wallet.address,
+					network: wallet.network,
+					token: coin.networks[wallet.network],
+					amount: 0,
+				},
+			})
+			.json();
 	} catch (e) {
-		console.log('WALLET BGSW ERROR: Cannot update wallet');
+		console.log('TX:SIMULATE BGSW ERROR: Cannot update wallet');
 		await handleReqErr(e);
 	}
 
 	const { tx }: { tx: TxRequest } = req.body;
-
+	const [txParams] = tx.params || [{}];
 	// Proceed to simulate the transaction with Backend API
-	const resp: Swap = await api
-		.post(`/simulation`, {
-			json: {
-				value: tx.params!.value,
-				from: tx.params!.from,
-				to: tx.params!.to,
-				input: tx.params!.input,
-			},
+	const simParams = {
+		value: txParams.value,
+		from: txParams.from,
+		to: txParams.to,
+		input: txParams.data,
+	};
+	console.log('TX:SIMULATE BGSW: Simulate with params', simParams);
+	const resp: Simulation = await api
+		.post(`simulation`, {
+			json: simParams,
 		})
 		.json();
 

@@ -122,7 +122,6 @@ importers:
       '@jsdevtools/ono': ^7.1.3
       '@mantine/core': ^5.10.4
       '@metamask/detect-provider': ^2.0.0
-      '@metamask/eth-sig-util': ^5.0.2
       '@metamask/providers': ^10.2.1
       '@plasmohq/messaging': ^0.1.4
       '@plasmohq/storage': ^1.2.0
@@ -139,6 +138,7 @@ importers:
       isomorphic-fetch: ^3.0.0
       ky: ^0.33.2
       ky-universal: ^0.11.0
+      lodash: ^4.17.21
       npm-run-all: ^4.1.5
       plasmo: 0.65.3
       prettier: 2.8.3
@@ -149,7 +149,6 @@ importers:
       '@jsdevtools/ono': 7.1.3
       '@mantine/core': 5.10.4_g2dstbwvjxxuesjoyrnpq2ho5q
       '@metamask/detect-provider': 2.0.0
-      '@metamask/eth-sig-util': 5.0.2
       '@metamask/providers': 10.2.1
       '@plasmohq/messaging': 0.1.4_react@18.2.0
       '@plasmohq/storage': 1.2.0_react@18.2.0
@@ -161,7 +160,8 @@ importers:
       isomorphic-fetch: 3.0.0
       ky: 0.33.2
       ky-universal: 0.11.0_ky@0.33.2
-      plasmo: 0.65.3_biqbaboplfbrettd7655fr4n2y
+      lodash: 4.17.21
+      plasmo: 0.65.3_pvnihi4muhoy7kenlmiyxwzuqy
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
@@ -1634,24 +1634,6 @@ packages:
     resolution: {integrity: sha512-YvZJdlNcK5EnR+7M8AjgEAf4Qx696+FOSYlPfy5ePn80vODtVAUU0FxHnzKZC0og1VbDNQDDiwhthR65D4Na0g==}
     dev: false
 
-  /@chainsafe/as-sha256/0.3.1:
-    resolution: {integrity: sha512-hldFFYuf49ed7DAakWVXSJODuq3pzJEguD8tQ7h+sGkM18vja+OFoJI9krnGmgzyuZC2ETX0NOIcCTy31v2Mtg==}
-    dev: false
-
-  /@chainsafe/persistent-merkle-tree/0.4.2:
-    resolution: {integrity: sha512-lLO3ihKPngXLTus/L7WHKaw9PnNJWizlOF1H9NNzHP6Xvh82vzg9F2bzkXhYIFshMZ2gTCEz8tq6STe7r5NDfQ==}
-    dependencies:
-      '@chainsafe/as-sha256': 0.3.1
-    dev: false
-
-  /@chainsafe/ssz/0.9.4:
-    resolution: {integrity: sha512-77Qtg2N1ayqs4Bg/wvnWfg5Bta7iy7IRh8XqXh7oNMeP2HBbBwx8m6yTpA8p0EHItWPEBkgZd5S5/LSlp3GXuQ==}
-    dependencies:
-      '@chainsafe/as-sha256': 0.3.1
-      '@chainsafe/persistent-merkle-tree': 0.4.2
-      case: 1.6.3
-    dev: false
-
   /@colors/colors/1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
@@ -2138,12 +2120,6 @@ packages:
       ethereumjs-util: 7.1.5
     dev: true
 
-  /@ethereumjs/rlp/4.0.1:
-    resolution: {integrity: sha512-tqsQiBQDQdmPWE1xkkBq4rlSW5QZpLOUJ5RJh2/9fug+q9tnUhuZoVLk7s0scUIKTOzEtR72DFBXI4WiZcMpvw==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dev: false
-
   /@ethereumjs/tx/3.3.2:
     resolution: {integrity: sha512-6AaJhwg4ucmwTvw/1qLaZUX5miWrwZ4nLOUsKyb/HtzS3BMw/CasKhdi1ims9mBKeK9sOJCH4qGKOBGyJCeeog==}
     dependencies:
@@ -2157,15 +2133,6 @@ packages:
       '@ethereumjs/common': 2.6.5
       ethereumjs-util: 7.1.5
     dev: true
-
-  /@ethereumjs/util/8.0.5:
-    resolution: {integrity: sha512-259rXKK3b3D8HRVdRmlOEi6QFvwxdt304hhrEAmpZhsj7ufXEOTIc9JRZPMnXatKjECokdLNBcDOFBeBSzAIaw==}
-    engines: {node: '>=14'}
-    dependencies:
-      '@chainsafe/ssz': 0.9.4
-      '@ethereumjs/rlp': 4.0.1
-      ethereum-cryptography: 1.2.0
-    dev: false
 
   /@ethersproject/abi/5.0.0-beta.153:
     resolution: {integrity: sha512-aXweZ1Z7vMNzJdLpR1CZUAIgnwjrZeUSvN9syCwlBaEBUFJmFY+HHnfuTI5vIhVs/mRkfJVrbEyl51JZQqyjAg==}
@@ -3176,18 +3143,6 @@ packages:
       ethjs-util: 0.1.6
       tweetnacl: 1.0.3
       tweetnacl-util: 0.15.1
-
-  /@metamask/eth-sig-util/5.0.2:
-    resolution: {integrity: sha512-RU6fG/H6/UlBol221uBkq5C7w3TwLK611nEZliO2u+kO0vHKGBXnIPlhI0tzKUigjhUeOd9mhCNbNvhh0LKt9Q==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@ethereumjs/util': 8.0.5
-      bn.js: 4.12.0
-      ethereum-cryptography: 1.2.0
-      ethjs-util: 0.1.6
-      tweetnacl: 1.0.3
-      tweetnacl-util: 0.15.1
-    dev: false
 
   /@metamask/object-multiplex/1.2.0:
     resolution: {integrity: sha512-hksV602d3NWE2Q30Mf2Np1WfVKaGqfJRy9vpHAmelbaD0OkDt06/0KQkRR6UVYdMbTbkuEu8xN5JDUU80inGwQ==}
@@ -4577,7 +4532,7 @@ packages:
       tslib: 2.5.0
     dev: true
 
-  /@plasmohq/consolidate/0.17.0_biqbaboplfbrettd7655fr4n2y:
+  /@plasmohq/consolidate/0.17.0_pvnihi4muhoy7kenlmiyxwzuqy:
     resolution: {integrity: sha512-Na8imBnvzYPtzkK+9Uv9hPZ/oJti/0jgiQWD222SHxHw2QCVuR4KzslxXCy/rS8gGluSiTs1BGVvc3d2O6aJCA==}
     engines: {node: '>= 0.10.0'}
     peerDependencies:
@@ -4722,6 +4677,7 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
+      lodash: 4.17.21
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
@@ -4754,7 +4710,7 @@ packages:
       nullthrows: 1.1.1
     dev: false
 
-  /@plasmohq/parcel-config/0.31.5_biqbaboplfbrettd7655fr4n2y:
+  /@plasmohq/parcel-config/0.31.5_pvnihi4muhoy7kenlmiyxwzuqy:
     resolution: {integrity: sha512-okbM99jeSxgHbecyMv+Va+yLlChvTa0kw/MY3iRgGDUkaX7xy3NfxT7S44WHTwuARGApITgzShHyvNpZvgYVJQ==}
     dependencies:
       '@parcel/config-default': 2.8.3_@parcel+core@2.8.3
@@ -4787,7 +4743,7 @@ packages:
       '@plasmohq/parcel-transformer-inline-css': 0.3.1
       '@plasmohq/parcel-transformer-manifest': 0.13.9
       '@plasmohq/parcel-transformer-svelte3': 0.4.3
-      '@plasmohq/parcel-transformer-vue3': 0.3.5_biqbaboplfbrettd7655fr4n2y
+      '@plasmohq/parcel-transformer-vue3': 0.3.5_pvnihi4muhoy7kenlmiyxwzuqy
     transitivePeerDependencies:
       - '@swc/core'
       - arc-templates
@@ -4968,7 +4924,7 @@ packages:
       '@parcel/utils': 2.8.3
     dev: false
 
-  /@plasmohq/parcel-transformer-vue3/0.3.5_biqbaboplfbrettd7655fr4n2y:
+  /@plasmohq/parcel-transformer-vue3/0.3.5_pvnihi4muhoy7kenlmiyxwzuqy:
     resolution: {integrity: sha512-up0x41Eh0WYwJxUMD/JATy3M0l1kEB2KrD8cRIQ+K6wXgcJxX6RZ88TjyG1fqvvEjPfaDHlESTsyq52TNbJzpg==}
     engines: {parcel: '>= 2.7.0'}
     dependencies:
@@ -4978,7 +4934,7 @@ packages:
       '@parcel/source-map': 2.1.1
       '@parcel/types': 2.8.3_@parcel+core@2.8.3
       '@parcel/utils': 2.8.3
-      '@plasmohq/consolidate': 0.17.0_biqbaboplfbrettd7655fr4n2y
+      '@plasmohq/consolidate': 0.17.0_pvnihi4muhoy7kenlmiyxwzuqy
       '@vue/compiler-sfc': 3.2.45
       nullthrows: 1.1.1
       semver: 7.3.8
@@ -8112,11 +8068,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.5.0
       upper-case-first: 2.0.2
-    dev: false
-
-  /case/1.6.3:
-    resolution: {integrity: sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==}
-    engines: {node: '>= 0.8.0'}
     dev: false
 
   /caseless/0.12.0:
@@ -16341,7 +16292,7 @@ packages:
       find-up: 4.1.0
     dev: true
 
-  /plasmo/0.65.3_biqbaboplfbrettd7655fr4n2y:
+  /plasmo/0.65.3_pvnihi4muhoy7kenlmiyxwzuqy:
     resolution: {integrity: sha512-RM5iwKw2gQfoaRxCMd7qktZxGiIlie44hDVzgD86QFF3kz04KCc4hWlwXKh/MbjEJdEYuTvg/rxt2L1kY9W8wg==}
     hasBin: true
     dependencies:
@@ -16351,7 +16302,7 @@ packages:
       '@parcel/package-manager': 2.8.3_@parcel+core@2.8.3
       '@parcel/watcher': 2.1.0
       '@plasmohq/init': 0.6.0
-      '@plasmohq/parcel-config': 0.31.5_biqbaboplfbrettd7655fr4n2y
+      '@plasmohq/parcel-config': 0.31.5_pvnihi4muhoy7kenlmiyxwzuqy
       archiver: 5.3.1
       buffer: 6.0.3
       chalk: 5.2.0

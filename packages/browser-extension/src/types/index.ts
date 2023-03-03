@@ -9,13 +9,15 @@ export type Coin = {
 	default: boolean;
 };
 
-export type Swap = {
+export type Simulation = {
 	feeEth: number;
 	feeToken: number;
 	price: number;
 	token: string;
-	balance: string;
-	chainId: number;
+	balance: {
+		type: string;
+		hex: string;
+	};
 };
 
 export type BasicWallet = {
@@ -24,12 +26,13 @@ export type BasicWallet = {
 };
 
 export type GasPayload = {
-	swap: Swap;
+	sim: Simulation;
 	wallet: BasicWallet;
 	tx: TxRequest;
 };
 
 export type StoredWallet = BasicWallet & {
+	id: string; // The ID of the wallet in  DB
 	token: string;
 	amount: number;
 };

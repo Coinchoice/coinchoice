@@ -59,6 +59,7 @@ bus.on('tx-validate', async () => {
 
 bus.on('tx-simulate', async ({ tx }: { tx: TxRequest }) => {
 	try {
+		console.log('SCOPED CS: Simulate', { tx });
 		const simResp = await sendToBackground({
 			name: 'tx/simulate',
 			body: {

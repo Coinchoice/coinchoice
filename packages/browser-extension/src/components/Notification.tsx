@@ -24,9 +24,8 @@ const Notification = () => {
 	const [payload, setPayload] = useState<GasPayload | null>(null);
 	let selectedCoin: Coin | null = null;
 	if (payload !== null) {
-		console.log(payload);
 		selectedCoin = coinList.find(
-			(c) => c.networks[payload.wallet.network] === payload.swap.token
+			(c) => c.networks[payload.wallet.network] === payload.sim.token
 		);
 	}
 	const [isSignLoading, setSignLoading] = useState(false);
@@ -68,7 +67,7 @@ const Notification = () => {
 		setSignLoading(true);
 		bus.emit('accept', {
 			coin: selectedCoin,
-			amount: payload.swap.feeToken,
+			amount: payload.sim.feeToken,
 			tx: payload.tx,
 		});
 	}, [selectedCoin, payload]);
@@ -138,7 +137,6 @@ const Notification = () => {
 									align="center"
 									justify="space-between"
 									w="100%"
-									pb={5}
 									sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
 								>
 									<Text fz={12} fw={700} m={5} opacity="0.7">
@@ -148,20 +146,19 @@ const Notification = () => {
 										{truncate(payload.wallet.address, 6, 4)}
 									</Text>
 								</Flex>
-								{/* <Flex
+								<Flex
 									align="center"
 									justify="space-between"
 									w="100%"
-									pb={5}
 									sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
 								>
 									<Text fz={12} fw={700} m={5} opacity="0.7">
-										Balance
+										{selectedCoin.ticker} Balance
 									</Text>
 									<Text fz={12} m={5} opacity="0.7">
-										{payload.swap.balance}
+										{parseInt(payload.sim.balance.hex, 16)}
 									</Text>
-								</Flex> */}
+								</Flex>
 							</>
 						)}
 						<Flex
@@ -175,7 +172,7 @@ const Notification = () => {
 								Gas to pay
 							</Text>
 							<Text fz={14} m={5}>
-								{payload.swap.feeToken}{' '}
+								{payload.sim.feeToken}{' '}
 								<strong>{selectedCoin.ticker.toUpperCase()}</strong>
 							</Text>
 						</Flex>
@@ -190,7 +187,7 @@ const Notification = () => {
 								Native gas
 							</Text>
 							<Text fz={14} m={5}>
-								{payload.swap.feeEth} <strong>ETH</strong>
+								{payload.sim.feeEth} <strong>ETH</strong>
 							</Text>
 						</Flex>
 					</>
