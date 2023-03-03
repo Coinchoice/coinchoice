@@ -1,4 +1,4 @@
-# TypeScript Example Snap Front-end
+# Coinchoice Snap Install Front-end
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -14,6 +14,7 @@ import {
   SendHelloButton,
   Card,
 } from '../components';
+import { CCLogoFlex } from '../components/CCLogo';
 
 const Container = styled.div`
   display: flex;
@@ -128,6 +129,7 @@ const Index = () => {
 
   return (
     <Container>
+      <CCLogoFlex size={'200px'}/>
       <Heading>
         Welcome to <Span>Coinchoice</Span>
       </Heading>
@@ -156,7 +158,7 @@ const Index = () => {
             content={{
               title: 'Connect',
               description:
-                'Get started by connecting to and installing the example snap.',
+                'Get started by connecting to and installing our snap.',
               button: (
                 <ConnectButton
                   onClick={handleConnectClick}

@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import { connectSnap, getThemePreference, getSnap } from '../utils';
 import { HeaderButtons } from './Buttons';
+import { CCLogo } from './CCLogo';
 import { SnapLogo } from './SnapLogo';
 import { Toggle } from './Toggle';
 
@@ -62,8 +63,9 @@ export const Header = ({
   return (
     <HeaderWrapper>
       <LogoWrapper>
-        <SnapLogo color={theme.colors.icon.default} size={36} />
-        <Title>Coinchoice Snap</Title>
+        <CCLogo/>
+        {/* <SnapLogo color={theme.colors.icon.default} size={36} /> */}
+        {/* <Title>Coinchoice Snap</Title> */}
       </LogoWrapper>
       <RightContainer>
         <Toggle
