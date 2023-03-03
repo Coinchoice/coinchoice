@@ -187,12 +187,10 @@ export class RPCProviderFacade {
 
 			// 2. Present the signature request to the end-user
 			bus.emit('open', {
-				data: {
-					// sim: resp,
-					sim: simResp.data,
-					wallet: this.wallet,
-					tx: request,
-				},
+				// sim: resp,
+				sim: simResp.data,
+				wallet: this.wallet,
+				tx: request,
 			});
 		} catch (e) {
 			console.log('Insufficient funds in selected currency');
