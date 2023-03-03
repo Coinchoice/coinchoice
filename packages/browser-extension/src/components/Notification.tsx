@@ -7,12 +7,20 @@ import {
 	Image,
 	ThemeIcon,
 	Text,
+	createStyles,
 } from '@mantine/core';
 
 import { coinList } from '~utils/constants';
 import { bus } from '~utils/bus';
 import type { GasPayload, Coin } from '~types';
+import { truncate } from '~utils/truncate';
 import LogoWhite from 'data-base64:~assets/LogoWhite.png';
+
+const useStyles = createStyles(() => ({
+	root: {
+		marginTop: '-50px',
+	},
+}));
 
 const Notification = () => {
 	const [isOpened, setOpened] = useState(
@@ -20,8 +28,10 @@ const Notification = () => {
 		// true
 	);
 	const [payload, setPayload] = useState<GasPayload | null>(null);
+	const { classes } = useStyles();
 	let selectedCoin: Coin | null = null;
 	if (payload !== null) {
+		console.log(payload);
 		selectedCoin = coinList.find(
 			(c) => c.networks[payload.wallet.network] === payload.swap.token
 		);
@@ -30,6 +40,7 @@ const Notification = () => {
 	useEffect(() => {
 		bus.on('open', (data: GasPayload) => {
 			console.log('open-data', data);
+			setOpened(true);
 			setPayload(data);
 		});
 	}, []);
@@ -47,8 +58,20 @@ const Notification = () => {
 			position="right"
 			zIndex={9999}
 			closeOnClickOutside={false}
+			// className={classes.body}
+			sx={() => ({
+				'&  .mantine-Drawer-body': {
+					marginTop: '-50px',
+				},
+			})}
 		>
-			<Flex gap="md" direction="column">
+			<Flex
+				gap="md"
+				direction="column"
+				sx={() => ({
+					overflowY: 'auto',
+				})}
+			>
 				<Flex direction="row" mb={20}>
 					<ThemeIcon
 						size="xl"
@@ -89,13 +112,41 @@ const Notification = () => {
 							align="center"
 							justify="space-between"
 							w="100%"
-							pb={10}
+							pb={5}
 							sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
 						>
-							<Text fz={16} fw={700} m={5}>
+							<Text fz={12} fw={700} m={5} opacity="0.7">
+								Wallet
+							</Text>
+							<Text fz={12} m={5} opacity="0.7">
+								{truncate(payload.wallet.address, 6, 4)}
+							</Text>
+						</Flex>
+						<Flex
+							align="center"
+							justify="space-between"
+							w="100%"
+							pb={5}
+							sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
+						>
+							<Text fz={12} fw={700} m={5} opacity="0.7">
+								Balance
+							</Text>
+							<Text fz={12} m={5} opacity="0.7">
+								{payload.swap.balance}
+							</Text>
+						</Flex>
+						<Flex
+							align="center"
+							justify="space-between"
+							w="100%"
+							pb={5}
+							sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
+						>
+							<Text fz={14} fw={700} m={5}>
 								Gas to pay
 							</Text>
-							<Text fz={16} m={5}>
+							<Text fz={14} m={5}>
 								{payload.swap.feeToken}{' '}
 								<strong>{selectedCoin.ticker.toUpperCase()}</strong>
 							</Text>
@@ -104,13 +155,13 @@ const Notification = () => {
 							align="center"
 							justify="space-between"
 							w="100%"
-							pb={10}
+							pb={5}
 							sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
 						>
-							<Text fz={16} fw={700} m={5}>
+							<Text fz={14} fw={700} m={5}>
 								Native gas
 							</Text>
-							<Text fz={16} m={5}>
+							<Text fz={14} m={5}>
 								{payload.swap.feeEth} <strong>ETH</strong>
 							</Text>
 						</Flex>
@@ -122,7 +173,12 @@ const Notification = () => {
 							<Button size="lg" onClick={handleSign} w="100%">
 								Get Gas
 							</Button>
-							<Button size="lg" variant="subtle" w="100%">
+							<Button
+								size="lg"
+								variant="subtle"
+								w="100%"
+								onClick={() => setOpened(false)}
+							>
 								Cancel
 							</Button>
 						</>

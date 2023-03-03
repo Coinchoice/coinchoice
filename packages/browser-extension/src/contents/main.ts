@@ -65,12 +65,15 @@ async function onProvider(provider) {
 		setTimeout(() => {
 			// 2. Present the signature request to the end-user
 			bus.emit('open', {
-				feeEth: 0.00018012,
-				feeToken: 0.000034,
-				price: 0.19,
-				token: 'USDC',
-				balance: '1',
-				chainId: 5,
+				wallet,
+				swap: {
+					feeEth: 0.00018012,
+					feeToken: 0.000034,
+					price: 0.19,
+					token: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
+					balance: '1',
+					chainId: 5,
+				},
 			});
 		}, 2000);
 
