@@ -12,5 +12,8 @@
 	],
 	"prettier.configPath": "./.prettierrc",
 	"prettier.prettierPath": "./node_modules/prettier",
-	"solidity.formatter": "prettier"
+	"solidity.formatter": "prettier",
+	"cSpell.words": [
+		"coinchoice"
+	]
 }

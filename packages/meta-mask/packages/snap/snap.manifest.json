@@ -8,7 +8,7 @@
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "ethdenver-snaps-workshop-snap",
+        "packageName": "coinchoice-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
