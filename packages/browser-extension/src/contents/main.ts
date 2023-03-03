@@ -1,7 +1,9 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import type { PlasmoCSConfig } from 'plasmo';
+import { io } from 'socket.io-client';
 import type { JsonRpcRequest } from '~types/requests';
 import { bus, busPromise } from '~utils/bus';
+import { API_HOST } from '~utils/env';
 import { RPCProviderFacade } from '~utils/RPCProviderFacade';
 
 export const config: PlasmoCSConfig = {
@@ -95,6 +97,29 @@ async function onProvider(provider) {
 		console.log('CS: ERROR');
 		console.error(e);
 	}
+
+	// Setup Socket for Extra Gas inside of Snap
+	const socket = io(API_HOST);
+	socket.on('connect', function () {
+		console.log('Connected');
+
+		// socket.emit('events', { test: 'hello' });
+		// socket.emit('identity', 0, response =>
+		// 	console.log('identity', response),
+		// );
+		// socket.emit('identity', 1, response =>
+		// 	console.log('identity', response),
+		// );
+	});
+	socket.on('events', function (data) {
+		console.log('event', data);
+	});
+	// socket.on('exception', function(data) {
+	// 	console.log('event', data);
+	// });
+	// socket.on('disconnect', function() {
+	// 	console.log('Disconnected');
+	// });
 }
 
 (async () => {
