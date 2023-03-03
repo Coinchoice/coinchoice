@@ -129,12 +129,12 @@ const Index = () => {
 
   return (
     <Container>
-      <CCLogoFlex size={'200px'}/>
+      <CCLogoFlex size={'200px'} />
       <Heading>
         Welcome to <Span>Coinchoice</Span>
       </Heading>
       <Subtitle>
-       Install our Snap to never worry about having enough ETH for gas ever again.
+        Install our Snap to never worry about having enough ETH for gas ever again.
       </Subtitle>
       <CardContainer>
         {state.error && (
@@ -153,8 +153,9 @@ const Index = () => {
             fullWidth
           />
         )}
-        {!state.installedSnap && (
+        {!state.installedSnap ? (
           <Card
+          fullWidth
             content={{
               title: 'Connect',
               description:
@@ -168,7 +169,15 @@ const Index = () => {
             }}
             disabled={!state.isFlask}
           />
-        )}
+        ) : <Card
+        fullWidth
+          content={{
+            title: 'Installed!',
+            description:
+              'You now can easily receive ETH when triggering a transaction and clicking on the "Need ETH?" tab.',
+          }}
+          disabled={!state.isFlask}
+        />}
         {shouldDisplayReconnectButton(state.installedSnap) && (
           <Card
             content={{

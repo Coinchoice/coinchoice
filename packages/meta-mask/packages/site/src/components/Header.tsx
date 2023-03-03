@@ -64,8 +64,6 @@ export const Header = ({
     <HeaderWrapper>
       <LogoWrapper>
         <CCLogo/>
-        {/* <SnapLogo color={theme.colors.icon.default} size={36} /> */}
-        {/* <Title>Coinchoice Snap</Title> */}
       </LogoWrapper>
       <RightContainer>
         <Toggle

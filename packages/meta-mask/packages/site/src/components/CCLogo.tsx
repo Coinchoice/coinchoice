@@ -5,17 +5,14 @@ const Container = styled.div`
 `
 
 export const CCLogo = () => (
-  <Container
-  >
+  <Container>
     <CC height='50px' width='100%' />
   </Container>
 
 );
 
-
 export const CCLogoFlex = ({ size }: { size: string }) => (
-  <Container
-  >
+  <Container>
     <CC style={{ height: size, width: size }} />
   </Container>
 
