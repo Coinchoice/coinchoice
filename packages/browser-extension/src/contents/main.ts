@@ -2,6 +2,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { sendToBackground } from '@plasmohq/messaging';
 import type { PlasmoCSConfig } from 'plasmo';
 import type { BasicWallet } from '~types';
+import { onboard } from '~utils/onboard';
 
 import { bus } from '../utils/bus';
 import { RPCProviderFacade } from '../utils/RPCProviderFacade';
@@ -60,6 +61,12 @@ async function onProvider(provider) {
 		bus.emit('mm:chainChanged', { chainId });
 	});
 
+	// Add UI listeners
+	bus.on('connect', async () => {
+		console.log('CS: Connect Wallet');
+		await onboard.connectWallet();
+	});
+
 	try {
 		console.log('Setup Timeout');
 		setTimeout(() => {
@@ -94,5 +101,5 @@ async function onProvider(provider) {
 		return onProvider(provider);
 	}
 
-	// If no wallet provider is detected, we will need to inject and await a wallet connection
+	// If no wallet provider is detected, our application will not work
 })();

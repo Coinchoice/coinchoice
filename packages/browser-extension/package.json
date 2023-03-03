@@ -21,6 +21,8 @@
 		"@plasmohq/storage": "^1.2.0",
 		"@tabler/icons": "^2.6.0",
 		"@tabler/icons-react": "^2.6.0",
+		"@web3-onboard/core": "^2.15.4",
+		"@web3-onboard/injected-wallets": "^2.8.1",
 		"cryptocurrency-icons": "^0.18.1",
 		"ethers": "^5.3.1",
 		"framebus": "^5.2.0",

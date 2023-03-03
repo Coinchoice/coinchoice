@@ -7,7 +7,6 @@ import {
 	Image,
 	ThemeIcon,
 	Text,
-	createStyles,
 } from '@mantine/core';
 
 import { coinList } from '~utils/constants';
@@ -15,12 +14,7 @@ import { bus } from '~utils/bus';
 import type { GasPayload, Coin } from '~types';
 import { truncate } from '~utils/truncate';
 import LogoWhite from 'data-base64:~assets/LogoWhite.png';
-
-const useStyles = createStyles(() => ({
-	root: {
-		marginTop: '-50px',
-	},
-}));
+import ConnectButton from './ConnectButton';
 
 const Notification = () => {
 	const [isOpened, setOpened] = useState(
@@ -28,7 +22,6 @@ const Notification = () => {
 		// true
 	);
 	const [payload, setPayload] = useState<GasPayload | null>(null);
-	const { classes } = useStyles();
 	let selectedCoin: Coin | null = null;
 	if (payload !== null) {
 		console.log(payload);
@@ -36,6 +29,7 @@ const Notification = () => {
 			(c) => c.networks[payload.wallet.network] === payload.swap.token
 		);
 	}
+	const [isSignLoading, setSignLoading] = useState(false);
 
 	useEffect(() => {
 		bus.on('open', (data: GasPayload) => {
@@ -43,9 +37,15 @@ const Notification = () => {
 			setOpened(true);
 			setPayload(data);
 		});
+
+		// Executed once a signature is captured
+		bus.on('sign_complete', () => {
+			setSignLoading(false);
+		});
 	}, []);
 
 	const handleSign = useCallback(() => {
+		setSignLoading(true);
 		bus.emit('accept', { coin: selectedCoin, amount: payload.swap.feeToken });
 	}, [selectedCoin, payload]);
 
@@ -66,7 +66,7 @@ const Notification = () => {
 			})}
 		>
 			<Flex
-				gap="md"
+				gap="sm"
 				direction="column"
 				sx={() => ({
 					overflowY: 'auto',
@@ -168,9 +168,14 @@ const Notification = () => {
 					</>
 				)}
 				<Flex gap="sm" align="center" direction="column">
-					{true ? (
+					{payload !== null && payload.wallet.address ? (
 						<>
-							<Button size="lg" onClick={handleSign} w="100%">
+							<Button
+								size="lg"
+								onClick={handleSign}
+								w="100%"
+								loading={isSignLoading}
+							>
 								Get Gas
 							</Button>
 							<Button
@@ -183,7 +188,7 @@ const Notification = () => {
 							</Button>
 						</>
 					) : (
-						<div>Connect wallet please</div>
+						<ConnectButton />
 					)}
 				</Flex>
 			</Flex>

@@ -13,7 +13,7 @@ import {
 	// IconCurrencyCent,
 	IconArrowLeft,
 } from '@tabler/icons-react';
-import { sendToBackground, sendToContentScript } from '@plasmohq/messaging';
+import { sendToBackground } from '@plasmohq/messaging';
 
 import type { Coin } from './types';
 import { coinList } from './utils/constants';
@@ -41,14 +41,6 @@ function IndexPopup() {
 			});
 			if (resp.data?.ticker) {
 				setSelectedCoin(resp.data);
-
-				// await sendToContentScript({
-				// 	name: 'coin',
-				// 	body: {
-				// 		type: 'get',
-				// 		data: resp.data,
-				// 	},
-				// });
 			}
 		})();
 	}, []);
@@ -71,13 +63,6 @@ function IndexPopup() {
 				data: coin,
 			},
 		});
-		// await sendToContentScript({
-		// 	name: 'coin',
-		// 	body: {
-		// 		type: 'set',
-		// 		data: coin,
-		// 	},
-		// });
 	}, []);
 
 	return (

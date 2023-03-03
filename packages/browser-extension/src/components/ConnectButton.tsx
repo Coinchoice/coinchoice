@@ -1,24 +1,30 @@
-import { useState } from 'react';
-import { useWallet } from 'use-wallet';
+import React, { useEffect, useState } from 'react';
+import { Button } from '@mantine/core';
+import { IconWallet } from '@tabler/icons-react';
 
-export default function CustomButton() {
+import { bus } from '~utils/bus';
+
+export default function ConnectButton() {
 	const [loading, setLoading] = useState(false);
-	const wallet = useWallet();
-	const label = wallet.isConnected() ? 'Disconnect' : 'Connect Custom';
+
+	useEffect(() => {
+		bus.on('connected', () => {
+			setLoading(false);
+		});
+	}, []);
 
 	async function onClick() {
 		setLoading(true);
-		if (wallet.isConnected()) {
-			await wallet.reset();
-		} else {
-			await wallet.connect();
-		}
-		setLoading(false);
+		bus.emit('connect');
 	}
 
 	return (
-		<button onClick={onClick} disabled={loading}>
-			{loading ? 'Loading...' : label}
-		</button>
+		<Button
+			onClick={onClick}
+			leftIcon={<IconWallet size={24} />}
+			loading={loading}
+		>
+			Connect Wallet
+		</Button>
 	);
 }
