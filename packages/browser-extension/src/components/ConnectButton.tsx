@@ -1,14 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import { useCeramicContext } from '../context';
+import type { CeramicApi } from '@ceramicnetwork/common';
+import type { ComposeClient } from '@composedb/client';
 import { Button } from '@mantine/core';
 import { IconWallet } from '@tabler/icons-react';
-
+import { DIDSession } from 'did-session';
+import React, { useEffect, useState } from 'react';
 import { bus } from '~utils/bus';
 
 export default function ConnectButton({ ...props }) {
 	const [loading, setLoading] = useState(false);
+	const clients = useCeramicContext();
+	const { ceramic, composeClient } = clients;
 
 	useEffect(() => {
-		bus.on('connected', () => {
+		const authenticateCeramic = async (
+			ceramic: CeramicApi,
+			compose: ComposeClient
+		) => {
+			const sessionStr = localStorage.getItem('did');
+			let session;
+			if (sessionStr) {
+				session = await DIDSession.fromSession(sessionStr);
+			}
+			if (session) {
+				compose.setDID(session.did);
+				ceramic.did = session.did;
+			}
+		};
+		bus.on('connected', async () => {
+			await authenticateCeramic(ceramic, composeClient);
 			setLoading(false);
 		});
 	}, []);
