@@ -1,11 +1,9 @@
 import detectEthereumProvider from '@metamask/detect-provider';
-import { sendToBackground } from '@plasmohq/messaging';
 import type { PlasmoCSConfig } from 'plasmo';
 import type { BasicWallet } from '~types';
-import { onboard } from '~utils/onboard';
-
-import { bus } from '../utils/bus';
-import { RPCProviderFacade } from '../utils/RPCProviderFacade';
+import type { JsonRpcRequest } from '~types/requests';
+import { bus } from '~utils/bus';
+import { RPCProviderFacade } from '~utils/RPCProviderFacade';
 
 export const config: PlasmoCSConfig = {
 	matches: ['<all_urls>'],
@@ -16,15 +14,7 @@ async function connectWallet(wallet: BasicWallet) {
 	if (!wallet.address) {
 		return null;
 	}
-	return sendToBackground({
-		name: 'wallet',
-		body: {
-			type: 'connect',
-			data: {
-				wallet,
-			},
-		},
-	});
+	bus.emit('connect-wallet', { wallet });
 }
 
 async function onProvider(provider) {
@@ -43,28 +33,47 @@ async function onProvider(provider) {
 
 	// Add mm listeners
 	provider.on('connect', (connectInfo) => {
+		console.log('CS: Connect Info', connectInfo);
 		bus.emit('mm:connect', { connectInfo });
 	});
 	provider.on('disconnect', (err) => {
+		console.log('CS: Disconnect', err);
 		bus.emit('mm:disconnect', err);
 	});
 	provider.on('accountsChanged', async (accounts: Array<string>) => {
+		console.log('CS: accountsChanged', accounts);
 		wallet.address = accounts[0];
 		facade.setWallet(wallet);
-		await connectWallet(wallet);
+		try {
+			await connectWallet(wallet);
+		} catch (e) {
+			console.log('CS ERROR: accountsChanged');
+			console.error(e);
+		}
 		bus.emit('mm:accountsChanged', { accounts });
 	});
 	provider.on('chainChanged', async (chainId: string) => {
+		console.log('CS: chainChanged', chainId);
 		wallet.network = chainId ? parseInt(chainId, 16) : 1;
 		facade.setWallet(wallet);
-		await connectWallet(wallet);
+		try {
+			await connectWallet(wallet);
+		} catch (e) {
+			console.log('CS ERROR: chainChanged');
+			console.error(e);
+		}
 		bus.emit('mm:chainChanged', { chainId });
 	});
 
 	// Add UI listeners
 	bus.on('connect', async () => {
 		console.log('CS: Connect Wallet');
-		await onboard.connectWallet();
+		const req = { method: 'eth_requestAccounts' } as JsonRpcRequest;
+		const accounts = await window.ethereum.request(req);
+		console.log('CS: Wallet Connected', accounts);
+		bus.emit('connected', {
+			address: accounts[0],
+		});
 	});
 
 	try {

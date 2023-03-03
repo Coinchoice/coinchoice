@@ -14,6 +14,7 @@
 		"test": "echo \"No tests yet!\""
 	},
 	"dependencies": {
+		"@jsdevtools/ono": "^7.1.3",
 		"@mantine/core": "^5.10.4",
 		"@metamask/detect-provider": "^2.0.0",
 		"@metamask/providers": "^10.2.1",
@@ -21,12 +22,10 @@
 		"@plasmohq/storage": "^1.2.0",
 		"@tabler/icons": "^2.6.0",
 		"@tabler/icons-react": "^2.6.0",
-		"@web3-onboard/core": "^2.15.4",
-		"@web3-onboard/injected-wallets": "^2.8.1",
 		"cryptocurrency-icons": "^0.18.1",
 		"ethers": "^5.3.1",
 		"framebus": "^5.2.0",
-		"got": "^12.5.3",
+		"isomorphic-fetch": "^3.0.0",
 		"ky": "^0.33.2",
 		"ky-universal": "^0.11.0",
 		"plasmo": "0.65.3",
@@ -34,14 +33,11 @@
 		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
-		"@babel/eslint-parser": "^7.19.1",
-		"@next/eslint-plugin-next": "^13.2.3",
 		"@types/chrome": "0.0.210",
 		"@types/node": "18.11.18",
 		"@types/react": "18.0.27",
 		"@types/react-dom": "18.0.10",
 		"del-cli": "^5.0.0",
-		"eslint-config-next": "^13.2.3",
 		"npm-run-all": "^4.1.5",
 		"prettier": "2.8.3",
 		"typescript": "4.9.4"

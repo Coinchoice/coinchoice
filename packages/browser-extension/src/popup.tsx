@@ -128,6 +128,7 @@ function IndexPopup() {
 						</Flex>
 						{coinList.map((coin) => (
 							<Button
+								key={coin.ticker}
 								variant="outline"
 								leftIcon={
 									<Container w={30} mah={30}>

@@ -14,11 +14,13 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	if (req.body.type === 'set') {
 		const coin = req.body?.data as Coin;
 		await storage.set(storageKeyCoin, coin);
+		console.log('COIN BGSW: Successfully set coin', coin);
 		data = coin;
 	}
 	if (req.body.type === 'get') {
 		let coin = (await storage.get(storageKeyCoin)) as Coin;
 		if (!coin) {
+			console.log('COIN BGSW: No coin exists in storage');
 			// Get wallet from local storage
 			const wallet = (await storage.get(storageKeyWallet)) as StoredWallet;
 			if (wallet) {
@@ -26,6 +28,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 					(c) => c.networks[wallet.network] === wallet.token
 				);
 				if (coinFromWallet) {
+					console.log('COIN BGSW: Derived coin from wallet', coinFromWallet);
 					coin = coinFromWallet;
 				}
 			}

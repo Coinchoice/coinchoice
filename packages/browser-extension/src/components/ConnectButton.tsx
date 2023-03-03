@@ -4,7 +4,7 @@ import { IconWallet } from '@tabler/icons-react';
 
 import { bus } from '~utils/bus';
 
-export default function ConnectButton() {
+export default function ConnectButton({ ...props }) {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -23,6 +23,7 @@ export default function ConnectButton() {
 			onClick={onClick}
 			leftIcon={<IconWallet size={24} />}
 			loading={loading}
+			{...props}
 		>
 			Connect Wallet
 		</Button>

@@ -30,6 +30,7 @@ const Notification = () => {
 		);
 	}
 	const [isSignLoading, setSignLoading] = useState(false);
+	const [newAccount, setNewAccount] = useState('');
 
 	useEffect(() => {
 		bus.on('open', (data: GasPayload) => {
@@ -42,7 +43,26 @@ const Notification = () => {
 		bus.on('sign_complete', () => {
 			setSignLoading(false);
 		});
+
+		// On wallet connection, update the payload
+		bus.on('mm:accountsChanged', ({ accounts }) => {
+			setNewAccount(accounts[0]);
+		});
 	}, []);
+
+	useEffect(() => {
+		if (newAccount && payload !== null) {
+			if (payload.wallet.address !== newAccount) {
+				setPayload({
+					...payload,
+					wallet: {
+						...payload.wallet,
+						address: newAccount,
+					},
+				});
+			}
+		}
+	}, [payload, newAccount]);
 
 	const handleSign = useCallback(() => {
 		setSignLoading(true);
@@ -108,34 +128,38 @@ const Notification = () => {
 								Pay gas in {selectedCoin.name}
 							</Title>
 						</Flex>
-						<Flex
-							align="center"
-							justify="space-between"
-							w="100%"
-							pb={5}
-							sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
-						>
-							<Text fz={12} fw={700} m={5} opacity="0.7">
-								Wallet
-							</Text>
-							<Text fz={12} m={5} opacity="0.7">
-								{truncate(payload.wallet.address, 6, 4)}
-							</Text>
-						</Flex>
-						<Flex
-							align="center"
-							justify="space-between"
-							w="100%"
-							pb={5}
-							sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
-						>
-							<Text fz={12} fw={700} m={5} opacity="0.7">
-								Balance
-							</Text>
-							<Text fz={12} m={5} opacity="0.7">
-								{payload.swap.balance}
-							</Text>
-						</Flex>
+						{payload !== null && payload.wallet.address && (
+							<>
+								<Flex
+									align="center"
+									justify="space-between"
+									w="100%"
+									pb={5}
+									sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
+								>
+									<Text fz={12} fw={700} m={5} opacity="0.7">
+										Wallet
+									</Text>
+									<Text fz={12} m={5} opacity="0.7">
+										{truncate(payload.wallet.address, 6, 4)}
+									</Text>
+								</Flex>
+								<Flex
+									align="center"
+									justify="space-between"
+									w="100%"
+									pb={5}
+									sx={() => ({ borderBottom: `1px solid rgba(0, 0, 0, 0.1)` })}
+								>
+									<Text fz={12} fw={700} m={5} opacity="0.7">
+										Balance
+									</Text>
+									<Text fz={12} m={5} opacity="0.7">
+										{payload.swap.balance}
+									</Text>
+								</Flex>
+							</>
+						)}
 						<Flex
 							align="center"
 							justify="space-between"
@@ -188,7 +212,7 @@ const Notification = () => {
 							</Button>
 						</>
 					) : (
-						<ConnectButton />
+						<ConnectButton w="100%" size="lg" />
 					)}
 				</Flex>
 			</Flex>
