@@ -4,13 +4,65 @@ import type { BasicWallet, Coin } from '~types';
 import { api, handleReqErr } from '~utils/api';
 import { storageKeyCoin, storageKeyWallet } from '~utils/constants';
 
+import { useCeramicContext } from '../../../context';
+
 // On wallet connection, we store the wallet, or create it.
 // On wallet interaction, we update the wallet
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const storage = new Storage();
+	const clients = useCeramicContext();
+	const { ceramic, composeClient } = clients;
 
 	const coin = (await storage.get(storageKeyCoin)) as Coin;
 	console.log('WALLET BGSW: coin fetched', coin);
+
+	// const createWallet = async (
+	// 	address: string,
+	// 	token: string,
+	// 	network: number
+	// ) => {
+	// 	if (ceramic.did !== undefined) {
+	// 		const wallet = await composeClient.executeQuery(`
+	// 		mutation {
+	// 		  createWallets(input: {
+	// 			content: {
+	// 			  address: "${address}"
+	// 			  token: "${token}"
+	// 			  network: "${network}"
+	// 			  created: "${new Date().toISOString()}"
+	// 			  owner: "${ceramic.did.id}"
+	// 			}
+	// 		  })
+	// 		  {
+	// 			document {
+	// 			  body
+	// 			}
+	// 		  }
+	// 		}
+	// 	  `);
+	// 	}
+	// };
+
+	// const getWallet = async (address: string) => {
+	// 	const wallet = await composeClient.executeQuery(`
+	// 	query {
+	// 	  postsIndex(last:300) {
+	// 		edges {
+	// 		  node {
+	// 			id
+	// 			body
+	// 			created
+	// 			profile{
+	// 			  id
+	// 			  name
+	// 			  username
+	// 			}
+	// 		  }
+	// 		}
+	// 	  }
+	// 	}
+	//   `);
+	// };
 
 	const { wallet }: { wallet: BasicWallet } = req.body;
 	if (!coin.networks[wallet.network]) {
