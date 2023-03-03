@@ -1,0 +1,8 @@
+type Wallets @createModel(accountRelation: LIST, description: "Wallet preferences") {
+  address: String! @string(minLength: 1, maxLength: 100)
+  token: String! @string(minLength: 1, maxLength: 100)
+  amount: String @string(minLength: 1, maxLength: 18)
+  network: Int!
+  edited: DateTime
+  created: DateTime!
+}

@@ -1,0 +1,4 @@
+.ceramic
+node_modules
+
+ceramic_privatekey.txt
