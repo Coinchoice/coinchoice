@@ -1,5 +1,5 @@
 {
-  "name": "ethdenver-snaps-workshop-snap",
+  "name": "coinchoice-metamask-snap",
   "version": "0.1.0",
   "private": true,
   "description": "This snap adds transaction insights to MetaMask showing what % of an ETH transfer is paid in gas fees.",
@@ -42,6 +42,7 @@
     "eslint-plugin-jsdoc": "^39.2.9",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "execa": "^5.1.1",
     "prettier": "^2.2.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",

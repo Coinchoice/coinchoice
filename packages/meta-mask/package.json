@@ -1,8 +1,8 @@
 {
-  "name": "ethdenver-snaps-workshop",
+  "name": "coinchoice-metamask",
   "version": "0.1.0",
   "private": true,
-  "description": "This project contains the code for the ETHDenver 2023 MetaMask Snaps Workshop",
+  "description": "Coinchoice MetaMask Snap code",
   "license": "MIT",
   "author": "Achim <achim@1delta.io>",
   "workspaces": [
@@ -15,7 +15,8 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' --ignore-path .gitignore",
     "start": "yarn workspaces foreach --parallel --interlaced --verbose run start",
-    "test": "echo \"TODO\""
+    "test": "echo \"TODO\"",
+    "publish:all": "./scripts/publish-all.sh"
   },
   "devDependencies": {
     "@metamask/eslint-config": "^10.0.0",
@@ -31,6 +32,7 @@
     "eslint-plugin-jsdoc": "^39.2.9",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "execa": "^7.0.0",
     "patch-package": "^6.5.1",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.2.1",

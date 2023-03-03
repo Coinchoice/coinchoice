@@ -8,7 +8,7 @@
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "coinchoice-snap",
+        "packageName": "coinchoice-metamask-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
