@@ -65,6 +65,7 @@ async function onProvider(provider) {
 		console.log('CS: Connect Wallet');
 		const req = { method: 'eth_requestAccounts' } as JsonRpcRequest;
 		const accounts = await window.ethereum.request(req);
+		// Need to add authenticateCearmic logic here
 		console.log('CS: Wallet Connected', accounts);
 		bus.emit('connected', {
 			address: accounts[0],

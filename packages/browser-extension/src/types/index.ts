@@ -42,3 +42,13 @@ export type Signature = {
 		s: string;
 	};
 };
+
+// Ceramic composite
+export type Wallet = {
+	address: string;
+	token: string;
+	amount: string;
+	network: number;
+	edited: Date;
+	created: Date;
+};
