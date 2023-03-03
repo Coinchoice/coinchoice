@@ -231,7 +231,7 @@ export class AppService {
 		const txGasFeeBig = parseEther(txGasFeeEth.toString());
 
 		// Swap Transaction
-		const [tokenPrice, swapGasFeeEth] = await firstValueFrom(
+		const [tokenPrice, swapGasFeeEth, data] = await firstValueFrom(
 			await this.getTokenSwapQuote(token, txGasFeeBig.toString()),
 		);
 		this.logger.log(`swapGasFeeEth: ${swapGasFeeEth}`);
@@ -252,6 +252,7 @@ export class AppService {
 			price: +tokenPrice,
 			token: token,
 			balance: balanceTokenBig,
+			data: data,
 		};
 	}
 
@@ -289,6 +290,7 @@ export class AppService {
 							(result?.data.gasPrice * result?.data.estimatedGas) /
 							1e18
 						).toFixed(18), // ETH
+						result?.data.data,
 					];
 				}),
 			)
