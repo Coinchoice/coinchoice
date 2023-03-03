@@ -3,4 +3,4 @@
  * Will default to the local hosted snap if no value is provided in environment.
  */
 export const defaultSnapOrigin =
-  process.env.REACT_APP_SNAP_ORIGIN ?? `https://www.cchoice.xyz/`;
+  process.env.REACT_APP_SNAP_ORIGIN ?? `npm:coinchoice-metamask-snap`;
