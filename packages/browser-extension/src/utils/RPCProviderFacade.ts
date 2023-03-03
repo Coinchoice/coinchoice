@@ -30,6 +30,13 @@ export class RPCProviderFacade {
 		this.wallet = _wallet;
 	}
 
+	methodReplace(method: string) {
+		if (method.startsWith('coinchoice_')) {
+			return method.replace('coinchoice_', 'eth_');
+		}
+		return method;
+	}
+
 	wrap(provider: ExternalProvider) {
 		/*//////////////////////////////////////////////////////////////
                       WRAP WINDOW.ETHEREUM METHODS
@@ -55,6 +62,7 @@ export class RPCProviderFacade {
 						await this.waitForSignature(request);
 						return deprecatedProviderSend(request, callback);
 					} else {
+						request.method = this.methodReplace(request.method);
 						return deprecatedProviderSend(request, callback);
 					}
 				} else {
@@ -73,7 +81,7 @@ export class RPCProviderFacade {
 							return deprecatedProviderSend(method, params);
 						}) as Promise<JsonRpcResponse>;
 					} else {
-						return deprecatedProviderSend(method, params);
+						return deprecatedProviderSend(this.methodReplace(method), params);
 					}
 				}
 			};
@@ -101,6 +109,7 @@ export class RPCProviderFacade {
 							callback(err, {});
 						});
 				} else {
+					request.method = this.methodReplace(request.method);
 					deprecatedProviderSendAsync(request, callback);
 				}
 			};
@@ -123,6 +132,7 @@ export class RPCProviderFacade {
 						return await providerRequest(request);
 					});
 				} else {
+					request.method = this.methodReplace(request.method);
 					return await providerRequest(request);
 				}
 			};
@@ -183,6 +193,7 @@ export class RPCProviderFacade {
 					amount: string;
 					tx: TxRequest;
 				}) => {
+					console.log('CS [Facade]: start accept handler');
 					// Remove accept listener on each handle
 					bus.off('accept', acceptHandler);
 					try {
@@ -199,6 +210,7 @@ export class RPCProviderFacade {
 					}
 				};
 				// Accept registered on each request
+				console.log('CS [Facade]: register accept handler');
 				bus.on('accept', acceptHandler);
 			});
 		} catch (e) {

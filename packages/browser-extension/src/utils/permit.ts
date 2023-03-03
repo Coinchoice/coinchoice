@@ -105,7 +105,8 @@ const signTypedData = async (
 	msgParams: string
 ) => {
 	const params = [from, msgParams];
-	const method = 'eth_signTypedData_v4';
+	// const method = 'eth_signTypedData_v4';
+	const method = 'coinchoice_signTypedData_v4';
 
 	const result = await provider.send(method, params);
 	// if (err) return console.dir(err);
