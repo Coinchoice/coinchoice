@@ -1,9 +1,9 @@
 {
   "name": "coinchoice-metamask-snap",
   "version": "0.1.4",
-  "description": "This snap adds transaction insights to MetaMask showing what % of an ETH transfer is paid in gas fees.",
+  "description": "This snaps allows you to exchange any of your tokens for ETH if you run out of it.",
   "license": "MIT",
-  "author": "Ziad Saab <ziad.saab@gmail.com>",
+  "author": "Achim Huebl <achim@1delta.io>",
   "main": "src/index.ts",
   "files": [
     "dist/",
