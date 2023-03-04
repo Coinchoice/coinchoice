@@ -93,7 +93,7 @@ export class AppService {
 			data,
 		);
 		console.log('tx:', tx);
-		return tx;
+		return tx.hash;
 	}
 
 	async test_executeMetaTransaction(): Promise<any> {
