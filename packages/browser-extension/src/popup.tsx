@@ -208,6 +208,7 @@ function IndexPopup() {
 							label={`Top up ${selectedCoin.ticker}`}
 							value={topUpAmount}
 							onChange={setTopUpAmount}
+							precision={10}
 							mb={20}
 						/>
 						<Button
