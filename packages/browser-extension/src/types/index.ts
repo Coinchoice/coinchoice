@@ -12,6 +12,7 @@ export type Coin = {
 export type Simulation = {
 	feeEth: number;
 	feeToken: number;
+	feeWei: number; // TODO: Is this ETH or native token?
 	price: number;
 	token: string;
 	balance: {
@@ -24,6 +25,7 @@ export type Simulation = {
 };
 
 export type BasicWallet = {
+	clientId: string;
 	network: NetworkChainIds;
 	address: string;
 };

@@ -23,6 +23,7 @@ async function onProvider(provider) {
 	const wallet = {
 		address: window.ethereum.selectedAddress,
 		network: chainId,
+		clientId: '',
 	};
 
 	const facade = new RPCProviderFacade(wallet);
@@ -102,39 +103,46 @@ async function onProvider(provider) {
 	}
 
 	// Setup Socket for Extra Gas inside of Snap
+	console.log('CS SOCKET: Connecting to', API_HOST);
 	const socket = io(API_HOST);
 	socket.on('connect', function () {
-		console.log('Connected');
-
-		// socket.emit('events', { test: 'hello' });
-		// socket.emit('identity', 0, response =>
-		// 	console.log('identity', response),
-		// );
-		// socket.emit('identity', 1, response =>
-		// 	console.log('identity', response),
-		// );
+		console.log('CS SOCKET: Connected');
 	});
 	socket.on('events', function (data) {
-		console.log('event', data);
+		console.log('CS SOCKET: event', data);
 	});
-	// socket.on('exception', function(data) {
-	// 	console.log('event', data);
-	// });
-	// socket.on('disconnect', function() {
-	// 	console.log('Disconnected');
-	// });
+	socket.on('onMessage', async function (data) {
+		console.log('CS SOCKET: onMessage', data);
+		if (data.msg.startsWith('Hello client')) {
+			const [_, clientId] = data.msg.split('#');
+			wallet.clientId = clientId;
+			facade.setWallet(wallet);
+			try {
+				await busPromise('connect-wallet', { wallet });
+			} catch (e) {
+				console.log('CS SOCKET ERROR: onMessage - connect wallet');
+				console.error(e);
+			}
+		}
+	});
+	socket.on('onMetamask', async function (data) {
+		console.log('CS SOCKET: onMetamask', data);
+	});
 
 	// Register topup event handler
 	const scriptId = 'coinchoice-topup-script';
 	const loadTopUp = (topUp: TopUp) => {
 		// Load topup ui
+		// ! Using live wallet and live networks for the sake of demonstration
 		// @ts-ignore
 		window.Cypher({
-			address: wallet.address,
-			targetChainIdHex: '0x5', // Eth - Goreli
+			// address: wallet.address,
+			address: '0xc6D330E5B7Deb31824B837Aa77771178bD8e6713',
+			// targetChainIdHex: '0x5', // Eth - Goreli
+			targetChainIdHex: '0x1', // Eth - Goreli
 			requiredTokenBalance: topUp.amount,
 			// requiredTokenContractAddress: topUp.coin.networks[NetworkChainIds.GOERLI],
-			isTestnet: true,
+			// isTestnet: true,
 			callBack: () => {
 				console.log('topup exchange cypher loaded');
 			},

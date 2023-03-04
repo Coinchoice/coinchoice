@@ -19,17 +19,13 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const { sig, payload }: { sig: Signature; payload: GasPayload } = req.body;
 	const [txParams] = payload.tx.params || [{}]; // Original transaction parameters
 
-	const fee = ethers.utils.parseEther(payload.sim.feeToken.toString());
-
-	console.log('TX:SUBMIT BGSW: amount to wei', payload.sim.feeToken, fee);
-
 	const submitBody = {
 		user: txParams.from,
-		amount: fee,
+		amount: payload.sim.feeWei,
 		spender: payload.sim.spender,
 		to: payload.sim.to,
 		permit: {
-			value: fee,
+			value: payload.sim.feeWei,
 			owner: txParams.from,
 			spender: payload.sim.spender,
 			deadline: ethers.constants.MaxUint256.toString(),

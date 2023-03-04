@@ -39,6 +39,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 		// create the wallet
 		try {
 			const cWallet = {
+				clientId: wallet.clientId,
 				address: wallet.address,
 				network: wallet.network,
 				token,
@@ -72,6 +73,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 		try {
 			const sWallet: StoredWallet = {
 				id: foundWallet._id,
+				clientId: wallet.clientId,
 				address: wallet.address,
 				network: wallet.network, // This will constantly update the same wallet's network
 				token,
