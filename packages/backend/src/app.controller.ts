@@ -3,24 +3,24 @@ import {
 	Controller,
 	Get,
 	NotFoundException,
-	Param,
 	Post,
 	Query,
 } from '@nestjs/common';
-import { AppService } from './app.service';
-import { WalletService } from './wallet/wallet.service';
 import { Observable } from 'rxjs';
-import { SimulationDto } from './dto/simulation.dto';
-import { ApproveDto } from './dto/approve.dto';
-import { TransactionDto } from './dto/transaction.dto';
+
 import { AppGateway } from './app.gateway';
+import { AppService } from './app.service';
+import { ApproveDto } from './dto/approve.dto';
+import { SimulationDto } from './dto/simulation.dto';
+import { TransactionDto } from './dto/transaction.dto';
+import { WalletService } from './wallet/wallet.service';
 
 @Controller()
 export class AppController {
 	constructor(
 		private readonly appService: AppService,
 		private readonly walletService: WalletService,
-		private readonly appGateway: AppGateway,
+		private readonly appGateway: AppGateway
 	) {}
 
 	@Get('hello')
@@ -33,14 +33,15 @@ export class AppController {
 		return this.appService.getDummyProducts();
 	}
 
-	@Get('metamask/:address')
-	async metamask(@Param('address') address: string) {
+	@Post('metamask')
+	async metamask(@Body() data: any) {
+		const address = data.from;
 		const wallet = await this.walletService.findOne(address);
 		if (wallet) {
 			console.log(`clientId for ${address} is: ${wallet.clientId}`);
 			if (wallet.clientId) {
 				this.appGateway.server.to(wallet.clientId).emit('onMetamask', {
-					msg: 'New message has arrived',
+					msg: data,
 					content: 'Hello from the backend!',
 				});
 			} else throw new NotFoundException('ClientId not found for this wallet');
@@ -79,7 +80,7 @@ export class AppController {
 				transactionDto.permit,
 				transactionDto.spender,
 				transactionDto.to,
-				transactionDto.data,
+				transactionDto.data
 			);
 		else throw new NotFoundException('Wallet not found');
 	}
@@ -89,7 +90,7 @@ export class AppController {
 		return this.appService.executeApprove(
 			approveDto.token,
 			approveDto.spender,
-			approveDto.amount,
+			approveDto.amount
 		);
 	}
 
@@ -102,7 +103,7 @@ export class AppController {
 				simulationDto.to,
 				simulationDto.input,
 				simulationDto.value,
-				wallet.token,
+				wallet.token
 			);
 		else throw new NotFoundException('Wallet not found');
 	}
@@ -113,7 +114,7 @@ export class AppController {
 			simulationDto.from,
 			simulationDto.to,
 			simulationDto.input,
-			simulationDto.value,
+			simulationDto.value
 		);
 	}
 
@@ -123,7 +124,7 @@ export class AppController {
 			simulationDto.from,
 			simulationDto.to,
 			simulationDto.input,
-			simulationDto.value,
+			simulationDto.value
 		);
 	}
 
@@ -145,7 +146,7 @@ export class AppController {
 	@Get('tokenbalance')
 	getTokenBalance(
 		@Query('token') tokenAddress,
-		@Query('address') walletAddress,
+		@Query('address') walletAddress
 	) {
 		return this.appService.getTokenBalance(tokenAddress, walletAddress);
 	}

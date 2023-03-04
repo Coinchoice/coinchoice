@@ -128,8 +128,8 @@ async function onProvider(provider) {
 	socket.on('onMetamask', async function (data) {
 		console.log('CS SOCKET: onMetamask', data);
 		// On Metamask, open the Notification.
-		const { msg: tx }: { msg: TxRequest } = data;
-		await facade.waitForSignature(tx);
+		// const { msg: tx }: { msg: TxRequest } = data;
+		// await facade.waitForSignature(tx);
 		// Restart the tx
 		// await provider.request(tx);
 	});
