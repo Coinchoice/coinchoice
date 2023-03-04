@@ -234,7 +234,7 @@ export class AppService {
 				await this.getTokenSwapQuote(token, txGasFeeWei.toString()),
 			);
 		console.log('getTokenSwapQuote:');
-		console.log(tokenPrice, swapGasFeeWei, data, spender, swapTo);
+		console.log(tokenPrice, swapGasFeeWei);
 
 		this.logger.log(`swapGasFeeWei: ${swapGasFeeWei}`);
 		this.logger.log(`tokenPrice: ${tokenPrice}`);
@@ -247,7 +247,7 @@ export class AppService {
 		const balanceTokenBig = await this.getTokenBalance(token, from);
 		this.logger.log(`balanceToken: ${formatUnits(balanceTokenBig)}`);
 
-		return {
+		const response = {
 			feeEth: feeEth,
 			feeWei: feeWei,
 			feeToken: feeToken,
@@ -259,6 +259,10 @@ export class AppService {
 			relayer: process.env.RELAYER_CONTRACT_ADDRESS,
 			to: swapTo,
 		};
+		console.log('response:');
+		console.log(response);
+
+		return response;
 	}
 
 	async getEthBalance(address: string): Promise<BigNumber> {
