@@ -11,7 +11,7 @@
   "node": {},
   "state-store": { "mode": "fs", "local-directory": ".ceramic/statestore/" },
   "indexing": {
-    "db": "sqlite:.ceramic/indexing_v2.sqlite",
+    "db": "sqlite:.ceramic/indexing_v3.sqlite",
     "allow-queries-before-historical-sync": true	
   }
 }

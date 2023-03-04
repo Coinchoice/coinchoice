@@ -215,10 +215,10 @@ const Index = () => {
         /> */}
         <Notice>
           <p>
-            Using Coinchoice allows you to <b>fund</b> your wallet{' '}
-            with the <b>network gas currency</b>. Therefore, you no longer need to
-            worry about having enough of it in your wallet. It is flexibly usable at any time
-            and ready whenever you need it.
+            Please note that the <b>snap.manifest.json</b> and{' '}
+            <b>package.json</b> must be located in the server root directory and
+            the bundle must be hosted at the location specified by the location
+            field.
           </p>
         </Notice>
       </CardContainer>
