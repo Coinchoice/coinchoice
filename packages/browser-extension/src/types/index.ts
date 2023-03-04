@@ -12,7 +12,8 @@ export type Coin = {
 export type Simulation = {
 	feeEth: number;
 	feeToken: number;
-	feeWei: number; // TODO: Is this ETH or native token?
+	feeWei: number;
+	txGasFeeWei: number;
 	price: number;
 	token: string;
 	balance: {

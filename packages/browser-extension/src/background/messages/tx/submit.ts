@@ -21,11 +21,11 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 
 	const submitBody = {
 		user: txParams.from,
-		amount: payload.sim.feeWei,
+		amount: payload.sim.txGasFeeWei.toString(),
 		spender: payload.sim.spender,
 		to: payload.sim.to,
 		permit: {
-			value: payload.sim.feeWei,
+			value: payload.sim.txGasFeeWei.toString(),
 			owner: txParams.from,
 			spender: payload.sim.relayer,
 			deadline: ethers.constants.MaxUint256.toString(),

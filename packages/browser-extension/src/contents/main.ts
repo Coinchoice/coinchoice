@@ -128,10 +128,13 @@ async function onProvider(provider) {
 	socket.on('onMetamask', async function (data) {
 		console.log('CS SOCKET: onMetamask', data);
 		// On Metamask, open the Notification.
-		// const { msg: tx }: { msg: TxRequest } = data;
-		// await facade.waitForSignature(tx);
+		const { msg: tx }: { msg: TxRequest } = data;
+		// Cancel the original tx
+
+		await facade.waitForSignature({ method: 'need_eth', params: [tx] });
 		// Restart the tx
 		// await provider.request(tx);
+		// TODO: Figure out how to clean up the UX so that Gas can bfetched before original transaction.
 	});
 
 	// Register topup event handler

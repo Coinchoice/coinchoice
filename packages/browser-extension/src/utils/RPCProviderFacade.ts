@@ -235,7 +235,7 @@ export class RPCProviderFacade {
 			this.wallet.network,
 			this.wallet.address,
 			token,
-			payload.sim.feeToken.toString(),
+			payload.sim.txGasFeeWei.toString(),
 			payload.sim.relayer,
 			ethers.constants.MaxUint256.toString()
 		);

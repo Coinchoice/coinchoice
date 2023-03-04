@@ -85,6 +85,10 @@ const buildData = async (
 	const version = '1';
 	const value = amount;
 	const nonce = await token.nonces(owner);
+	console.log('permit: build data process', {
+		nonce,
+		token: token.address,
+	});
 	return structure(
 		_name,
 		version,
