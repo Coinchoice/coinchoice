@@ -132,7 +132,7 @@ async function onProvider(provider) {
 			address: wallet.address,
 			targetChainIdHex: '0x5', // Eth - Goreli
 			requiredTokenBalance: topUp.amount,
-			requiredTokenContractAddress: topUp.coin.networks[5],
+			// requiredTokenContractAddress: topUp.coin.networks[5],
 			isTestnet: true,
 			callBack: () => {
 				console.log('topup exchange cypher loaded');
@@ -154,13 +154,11 @@ async function onProvider(provider) {
 			script.onerror = () => {
 				console.log('TOPUP: Error occurred while loading script');
 			};
-			script.onload = () => {
-				loadTopUp(topUp);
-			};
 			document.body.appendChild(script);
-		} else {
-			loadTopUp(topUp);
 		}
+		setTimeout(() => {
+			loadTopUp(topUp);
+		}, 1000);
 	});
 }
 
