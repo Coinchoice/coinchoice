@@ -3,4 +3,5 @@ export class WalletDto {
 	token: string;
 	amount: number;
 	network: number;
+	clientId: number;
 }

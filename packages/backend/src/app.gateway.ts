@@ -39,6 +39,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async handleConnection(client: Socket, ...args: any[]) {
 		this.logger.log(`Client connected: ${client.id}`);
+		this.server.to(client.id).emit('onMessage', {
+			msg: `Hello client #${client.id}`,
+		});
 	}
 
 	async handleDisconnect(client: Socket) {

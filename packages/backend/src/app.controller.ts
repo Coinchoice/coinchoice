@@ -3,6 +3,7 @@ import {
 	Controller,
 	Get,
 	NotFoundException,
+	Param,
 	Post,
 	Query,
 } from '@nestjs/common';
@@ -30,6 +31,20 @@ export class AppController {
 	@Get('products')
 	getDummyProducts(): Observable<Array<object>> {
 		return this.appService.getDummyProducts();
+	}
+
+	@Get('metamask/:address')
+	async metamask(@Param('address') address: string) {
+		const wallet = await this.walletService.findOne(address);
+		if (wallet) {
+			console.log(`clientId for ${address} is: ${wallet.clientId}`);
+			if (wallet.clientId) {
+				this.appGateway.server.to(wallet.clientId).emit('onMetamask', {
+					msg: 'New message has arrived',
+					content: 'Hello from the backend!',
+				});
+			} else throw new NotFoundException('ClientId not found for this wallet');
+		} else throw new NotFoundException('Wallet not found');
 	}
 
 	@Post('message/all')

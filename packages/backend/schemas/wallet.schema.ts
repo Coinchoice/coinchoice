@@ -17,6 +17,9 @@ export class Wallet {
 	@Prop({ required: true })
 	network: number;
 
+	@Prop()
+	clientId: string;
+
 	@Prop({ required: true })
 	createdAt: Date;
 }

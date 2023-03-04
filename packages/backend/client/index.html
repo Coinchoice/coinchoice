@@ -6,7 +6,6 @@
       socket.on('connect', function() {
         console.log('Connected');
 
-        socket.emit('events', { test: 'hello' });
         socket.emit('identity', 0, response =>
           console.log('identity', response),
         );
@@ -14,11 +13,11 @@
           console.log('identity', response),
         );
       });
-      socket.on('events', function(data) {
-        console.log('log event', data);
-      });
       socket.on('onMessage', function(data) {
         console.log('log messages', data);
+      });
+      socket.on('onMetamask', function(data) {
+        console.log('log metamask', data);
       });
       socket.on('exception', function(data) {
         console.log('log exception', data);
