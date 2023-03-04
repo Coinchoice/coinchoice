@@ -53,5 +53,10 @@
 		"host_permissions": [
 			"https://*/*"
 		]
-	}
+	},
+	"pnpm": {
+        "overrides": {
+            "uint8arrays": "^2.1.10"
+        }
+    }
 }
