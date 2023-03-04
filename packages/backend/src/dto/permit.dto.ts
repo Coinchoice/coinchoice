@@ -3,7 +3,7 @@ import { BytesLike } from 'ethers';
 
 export class PermitDto {
 	owner: string;
-	spender: string;
+	spender: string; //relayer
 	value: BigNumberish;
 	deadline: BigNumberish;
 	v: BigNumberish;

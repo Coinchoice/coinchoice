@@ -233,6 +233,9 @@ export class AppService {
 			await firstValueFrom(
 				await this.getTokenSwapQuote(token, txGasFeeWei.toString()),
 			);
+		console.log('getTokenSwapQuote:');
+		console.log(tokenPrice, swapGasFeeWei, data, spender, swapTo);
+
 		this.logger.log(`swapGasFeeWei: ${swapGasFeeWei}`);
 		this.logger.log(`tokenPrice: ${tokenPrice}`);
 
@@ -253,6 +256,7 @@ export class AppService {
 			balance: balanceTokenBig,
 			data: data,
 			spender: spender,
+			relayer: process.env.RELAYER_CONTRACT_ADDRESS,
 			to: swapTo,
 		};
 	}
@@ -354,7 +358,7 @@ export class AppService {
 				// the transaction
 				{
 					/* Simulation Configuration */
-					save: false, // if true simulation is saved and shows up in the dashboard
+					save: true, // if true simulation is saved and shows up in the dashboard
 					save_if_fails: false, // if true, reverting simulations show up in the dashboard
 					simulation_type: 'full', // full or quick (full is default)
 
