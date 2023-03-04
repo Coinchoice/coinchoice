@@ -279,10 +279,10 @@ export class AppService {
 		this.logger.log(
 			`0x Swap Quote: ${buyToken} for token ${sellToken} and amount ${buyAmount}`,
 		);
+		const quote = `${process.env.OX_ENDPOINT}/swap/v1/quote?buyToken=${buyToken}&sellToken=${sellToken}&buyAmount=${buyAmount}`;
+		this.logger.log(`quote: ${quote}`);
 		return this.httpService
-			.get(
-				`${process.env.OX_ENDPOINT}/swap/v1/quote?buyToken=${buyToken}&sellToken=${sellToken}&buyAmount=${buyAmount}`,
-			)
+			.get(quote)
 			.pipe(
 				map((result) => {
 					return [

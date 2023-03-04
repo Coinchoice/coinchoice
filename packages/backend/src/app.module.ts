@@ -6,9 +6,9 @@ import { EthersModule, GOERLI_NETWORK } from 'nestjs-ethers';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { WalletService } from './wallet/wallet.service';
-import { EventsModule } from './events/events.module';
 import { WalletModule } from './wallet/wallet.module';
 import { Wallet, WalletSchema } from 'schemas/wallet.schema';
+import { AppGateway } from './app.gateway';
 
 @Module({
 	imports: [
@@ -28,10 +28,9 @@ import { Wallet, WalletSchema } from 'schemas/wallet.schema';
 			// quorum: 1,
 			// useDefaultProvider: true,
 		}),
-		EventsModule,
 		WalletModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, WalletService],
+	providers: [AppService, WalletService, AppGateway],
 })
 export class AppModule {}

@@ -12,12 +12,14 @@ import { Observable } from 'rxjs';
 import { SimulationDto } from './dto/simulation.dto';
 import { ApproveDto } from './dto/approve.dto';
 import { TransactionDto } from './dto/transaction.dto';
+import { AppGateway } from './app.gateway';
 
 @Controller()
 export class AppController {
 	constructor(
 		private readonly appService: AppService,
 		private readonly walletService: WalletService,
+		private readonly appGateway: AppGateway,
 	) {}
 
 	@Get('hello')
@@ -28,6 +30,22 @@ export class AppController {
 	@Get('products')
 	getDummyProducts(): Observable<Array<object>> {
 		return this.appService.getDummyProducts();
+	}
+
+	@Post('message/all')
+	messageAll(@Body() data: any) {
+		this.appGateway.server.emit('onMessage', {
+			msg: 'New message has arrived',
+			content: data.content,
+		});
+	}
+
+	@Post('message')
+	message(@Body() data: any) {
+		this.appGateway.server.to(data.to).emit('onMessage', {
+			msg: 'New message has arrived',
+			content: data.content,
+		});
 	}
 
 	@Post('transactions/test')
