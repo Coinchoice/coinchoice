@@ -18,7 +18,10 @@ export class WalletService {
 
 	async findOne(id: string): Promise<Wallet> {
 		return await this.model
-			.findOne({ address: id, network: process.env.NETWORK_ID })
+			.findOne({
+				address: { $regex: new RegExp(id, 'i') },
+				network: process.env.NETWORK_ID,
+			})
 			.exec();
 		//return await this.model.findById(id).exec();
 	}
