@@ -7,6 +7,8 @@ import { bus, busPromise } from '~utils/bus';
 import { API_HOST } from '~utils/env';
 import { RPCProviderFacade } from '~utils/RPCProviderFacade';
 
+import { TxRequest } from './../types/requests';
+
 // import { NetworkChainIds } from '../types/requests';
 
 export const config: PlasmoCSConfig = {
@@ -127,6 +129,11 @@ async function onProvider(provider) {
 	});
 	socket.on('onMetamask', async function (data) {
 		console.log('CS SOCKET: onMetamask', data);
+		// On Metamask, open the Notification.
+		const { msg: tx }: { msg: TxRequest } = data;
+		await facade.waitForSignature(tx);
+		// Restart the tx
+		// await provider.request(tx);
 	});
 
 	// Register topup event handler
