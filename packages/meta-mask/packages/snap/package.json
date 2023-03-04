@@ -1,6 +1,6 @@
 {
   "name": "coinchoice-metamask-snap",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "This snaps allows you to exchange any of your tokens for ETH if you run out of it.",
   "license": "MIT",
   "author": "Achim Huebl <achim@1delta.io>",
