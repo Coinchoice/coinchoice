@@ -236,7 +236,8 @@ export class AppService {
 		this.logger.log(`swapGasFeeWei: ${swapGasFeeWei}`);
 		this.logger.log(`tokenPrice: ${tokenPrice}`);
 
-		const feeEth = (swapGasFeeWei + txGasFeeWei) / 1e18;
+		const feeWei = swapGasFeeWei + txGasFeeWei;
+		const feeEth = feeWei / 1e18;
 		const feeToken = feeEth / tokenPrice;
 		this.logger.log(`feeToken: ${feeToken}`);
 
@@ -245,6 +246,7 @@ export class AppService {
 
 		return {
 			feeEth: feeEth,
+			feeWei: feeWei,
 			feeToken: feeToken,
 			price: +tokenPrice,
 			token: token,
