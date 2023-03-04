@@ -66,11 +66,15 @@ bus.on('tx-simulate', async ({ tx }: { tx: TxRequest }) => {
 				tx,
 			},
 		});
+		if (!simResp.success) {
+			throw new Error('Cannot simulate tx');
+		}
 		bus.emit('resp:tx-simulate', {
 			err: null,
 			resp: simResp,
 		});
 	} catch (e) {
+		console.log('SCOPED CS: Simulate Error', e);
 		bus.emit('resp:tx-simulate', { err: e, resp: null });
 	}
 });

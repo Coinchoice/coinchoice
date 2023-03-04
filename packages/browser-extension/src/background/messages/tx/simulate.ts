@@ -47,15 +47,24 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 		input: txParams.data,
 	};
 	console.log('TX:SIMULATE BGSW: Simulate with params', simParams);
-	const resp: Simulation = await api
-		.post(`simulation`, {
-			json: simParams,
-		})
-		.json();
+	try {
+		const resp: Simulation = await api
+			.post(`simulation`, {
+				json: simParams,
+			})
+			.json();
+		return res.send({
+			success: true,
+			data: resp,
+		});
+	} catch (e) {
+		console.log('TX:SIMULATE BGSW ERROR: Cannot simulate tx');
+		await handleReqErr(e);
+	}
 
 	return res.send({
-		success: true,
-		data: resp,
+		success: false,
+		data: {},
 	});
 };
 

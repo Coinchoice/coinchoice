@@ -2,10 +2,9 @@ import type { PlasmoMessaging } from '@plasmohq/messaging';
 import { Storage } from '@plasmohq/storage';
 import { ethers } from 'ethers';
 import type { GasPayload, Signature, StoredWallet } from '~types';
-import { api } from '~utils/api';
 // import type { Simulation } from '~types';
 // import type { TxRequest } from '~types/requests';
-// import { api, handleReqErr } from '~utils/api';
+import { api, handleReqErr } from '~utils/api';
 import {
 	relayerSpenderContractAddress, // storageKeyCoin,
 	storageKeyWallet,
@@ -57,15 +56,23 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	 */
 
 	console.log('TX:SUBMIT BGSW: Submit with params', submitBody);
-
-	await api
-		.post('transactions/relayed', {
-			json: {},
-		})
-		.json();
+	try {
+		await api
+			.post('transactions/relayed', {
+				json: submitBody,
+			})
+			.json();
+		return res.send({
+			success: true,
+			data: {},
+		});
+	} catch (e) {
+		console.log('TX:SIMULATE BGSW ERROR: Cannot simulate tx');
+		await handleReqErr(e);
+	}
 
 	return res.send({
-		success: true,
+		success: false,
 		data: {},
 	});
 };

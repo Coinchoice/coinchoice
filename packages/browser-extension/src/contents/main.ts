@@ -1,12 +1,13 @@
 import detectEthereumProvider from '@metamask/detect-provider';
-import ky from 'ky';
 import type { PlasmoCSConfig } from 'plasmo';
 import { io } from 'socket.io-client';
-import type { Coin, TopUp } from '~types';
+import type { TopUp } from '~types';
 import type { JsonRpcRequest } from '~types/requests';
 import { bus, busPromise } from '~utils/bus';
 import { API_HOST } from '~utils/env';
 import { RPCProviderFacade } from '~utils/RPCProviderFacade';
+
+// import { NetworkChainIds } from '../types/requests';
 
 export const config: PlasmoCSConfig = {
 	matches: ['<all_urls>'],
@@ -132,7 +133,7 @@ async function onProvider(provider) {
 			address: wallet.address,
 			targetChainIdHex: '0x5', // Eth - Goreli
 			requiredTokenBalance: topUp.amount,
-			// requiredTokenContractAddress: topUp.coin.networks[5],
+			// requiredTokenContractAddress: topUp.coin.networks[NetworkChainIds.GOERLI],
 			isTestnet: true,
 			callBack: () => {
 				console.log('topup exchange cypher loaded');

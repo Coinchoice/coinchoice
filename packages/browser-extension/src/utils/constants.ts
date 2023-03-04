@@ -36,7 +36,7 @@ export const coinList: Coin[] = [
 		name: 'USD Coin',
 		icon: USDCIcon,
 		networks: {
-			[NetworkChainIds.GOERLI]: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
+			[NetworkChainIds.GOERLI]: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
 		},
 		default: false,
 		permit: true,
