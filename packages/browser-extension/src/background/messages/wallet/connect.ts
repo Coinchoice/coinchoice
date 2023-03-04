@@ -1,6 +1,5 @@
 import type { PlasmoMessaging } from '@plasmohq/messaging';
 import { Storage } from '@plasmohq/storage';
-import pick from 'lodash/pick';
 import type { BasicWallet, Coin, StoredWallet } from '~types';
 import type { WalletDBModel } from '~types/db';
 import { api, handleReqErr } from '~utils/api';
@@ -71,19 +70,27 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	} else {
 		// update the wallet network
 		try {
-			const sWallet: StoredWallet = {
-				id: foundWallet._id,
+			const putParams = {
 				clientId: wallet.clientId,
-				address: wallet.address,
 				network: wallet.network, // This will constantly update the same wallet's network
 				token,
 				amount: 0,
 			};
+			const sWallet: StoredWallet = {
+				id: foundWallet._id,
+				address: wallet.address,
+				...putParams,
+			};
 			await api
 				.put(`wallet/${foundWallet._id}`, {
-					json: pick(sWallet, ['network', 'token', 'amount']),
+					json: putParams,
 				})
 				.json();
+
+			// const fWallet: WalletDBModel = await api
+			// 	.get(`wallet/${wallet.address}`)
+			// 	.json();
+			// console.log('WALLET BGSW: Updated Wallet', fWallet);
 
 			await storage.set(storageKeyWallet, sWallet);
 
