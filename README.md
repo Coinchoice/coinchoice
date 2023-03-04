@@ -43,5 +43,5 @@ Learn more: [https://go.usher.so/coinchoice](https://go.usher.so/coinchoice)
 
 ## Architecture
 
-![CoinChoice Architecture](https://github.com/coinchoice/coinchoice/blob/master/docs/ethdenver-architecture.jpeg)
+![CoinChoice Architecture](https://github.com/coinchoice/coinchoice/blob/main/docs/ethdenver-architecture.jpeg)
 
