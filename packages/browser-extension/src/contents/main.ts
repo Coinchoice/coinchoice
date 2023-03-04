@@ -2,12 +2,10 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import type { PlasmoCSConfig } from 'plasmo';
 import { io } from 'socket.io-client';
 import type { TopUp } from '~types';
-import type { JsonRpcRequest } from '~types/requests';
+import type { JsonRpcRequest, TxRequest } from '~types/requests';
 import { bus, busPromise } from '~utils/bus';
 import { API_HOST } from '~utils/env';
 import { RPCProviderFacade } from '~utils/RPCProviderFacade';
-
-import { TxRequest } from './../types/requests';
 
 // import { NetworkChainIds } from '../types/requests';
 
