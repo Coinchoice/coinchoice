@@ -32,5 +32,9 @@ export const addresses = {
     aaveDAI: {
         5: '0xBa8DCeD3512925e52FE67b1b5329187589072A55',
         80001: '0xF14f9596430931E177469715c591513308244e8F'
+    },
+    aaveUSDT: {
+        5: '0x2E8D98fd126a32362F2Bd8aA427E59a1ec63F780',
+        80001: '0xAcDe43b9E5f72a4F554D4346e69e8e7AC8F352f0'
     }
 }
