@@ -7,6 +7,7 @@ type Wallets @createModel(accountRelation: LIST, description: "Wallet preference
   token: String! @string(minLength: 1, maxLength: 100)
   amount: String @string(minLength: 1, maxLength: 18)
   network: Int!
+  clientId: String @string(minLength: 1, maxLength: 50)
   edited: DateTime
   created: DateTime!
   ownerId: StreamID! @documentReference(model:"BasicProfile")
