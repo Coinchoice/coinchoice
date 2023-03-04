@@ -13,7 +13,9 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 		const wallet = (await storage.get(storageKeyWallet)) as StoredWallet;
 		if (wallet) {
 			const coinFromWallet = coinList.find(
-				(c) => c.networks[wallet.network] === wallet.token
+				(c) =>
+					(c.networks[wallet.network] || '').toLowerCase() ===
+					(wallet.token || '').toLowerCase()
 			);
 			if (coinFromWallet) {
 				console.log('COIN BGSW: Derived coin from wallet', coinFromWallet);

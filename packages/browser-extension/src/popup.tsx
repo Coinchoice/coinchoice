@@ -81,7 +81,7 @@ function IndexPopup() {
 		setTimeout(() => {
 			setTopUpLoading(false);
 			setStep(Steps.Primary);
-		}, 1000);
+		}, 3000);
 	}, [topUpAmount, selectedCoin]);
 
 	const onTopUpGasStart = useCallback(() => {

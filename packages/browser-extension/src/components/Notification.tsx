@@ -25,11 +25,15 @@ const Notification = () => {
 	let selectedCoin: Coin | null = null;
 	if (payload !== null) {
 		selectedCoin = coinList.find(
-			(c) => c.networks[payload.wallet.network] === payload.sim.token
+			(c) =>
+				(c.networks[payload.wallet.network] || '').toLowerCase() ===
+				(payload.sim.token || '').toLowerCase()
 		);
 	}
 	const [isSignLoading, setSignLoading] = useState(false);
 	const [newAccount, setNewAccount] = useState('');
+
+	// console.log('Notif: Selected Coin', selectedCoin);
 
 	useEffect(() => {
 		bus.on('open', (data: GasPayload) => {
@@ -71,9 +75,7 @@ const Notification = () => {
 				coin: selectedCoin,
 				payload,
 			});
-			if (!accepted) {
-				setOpened(false);
-			}
+			setOpened(false);
 		},
 		[selectedCoin, payload]
 	);

@@ -1,38 +1,43 @@
 import type { PlasmoMessaging } from '@plasmohq/messaging';
-import { Storage } from '@plasmohq/storage';
+// import { Storage } from '@plasmohq/storage';
 import { ethers } from 'ethers';
-import type { GasPayload, Signature, StoredWallet } from '~types';
+import type {
+	GasPayload,
+	Signature, // StoredWallet
+} from '~types';
 // import type { Simulation } from '~types';
 // import type { TxRequest } from '~types/requests';
 import { api, handleReqErr } from '~utils/api';
-import {
-	relayerSpenderContractAddress, // storageKeyCoin,
-	storageKeyWallet,
-} from '~utils/constants';
+
+// import { storageKeyWallet } from '~utils/constants';
 
 const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
-	const storage = new Storage();
+	// const storage = new Storage();
 
-	const wallet = (await storage.get(storageKeyWallet)) as StoredWallet;
+	// const wallet = (await storage.get(storageKeyWallet)) as StoredWallet;
 
 	const { sig, payload }: { sig: Signature; payload: GasPayload } = req.body;
 	const [txParams] = payload.tx.params || [{}]; // Original transaction parameters
 
+	const fee = ethers.utils.parseEther(payload.sim.feeToken.toString());
+
+	console.log('TX:SUBMIT BGSW: amount to wei', payload.sim.feeToken, fee);
+
 	const submitBody = {
 		user: txParams.from,
-		amount: payload.sim.feeToken,
-		spender: relayerSpenderContractAddress[wallet.network],
-		to: relayerSpenderContractAddress[wallet.network],
+		amount: fee,
+		spender: payload.sim.spender,
+		to: payload.sim.to,
 		permit: {
-			value: payload.sim.feeToken,
+			value: fee,
 			owner: txParams.from,
-			spender: relayerSpenderContractAddress[wallet.network],
+			spender: payload.sim.spender,
 			deadline: ethers.constants.MaxUint256.toString(),
 			v: sig.split.v,
 			r: sig.split.r,
 			s: sig.split.s,
 		},
-		data: '', // TODO: Should be 0x quote data
+		data: payload.sim.data,
 	};
 
 	/**
@@ -67,7 +72,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 			data: {},
 		});
 	} catch (e) {
-		console.log('TX:SIMULATE BGSW ERROR: Cannot simulate tx');
+		console.log('TX:SUBMIT BGSW ERROR: Cannot submit meta-tx');
 		await handleReqErr(e);
 	}
 

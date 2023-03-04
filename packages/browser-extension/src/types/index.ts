@@ -18,6 +18,9 @@ export type Simulation = {
 		type: string;
 		hex: string;
 	};
+	data: string;
+	spender: string;
+	to: string;
 };
 
 export type BasicWallet = {
