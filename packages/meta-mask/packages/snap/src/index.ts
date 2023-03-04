@@ -1,31 +1,28 @@
 import { OnTransactionHandler } from '@metamask/snaps-types';
 import { heading, panel, text } from '@metamask/snaps-ui';
 
-const onTriggerAPI = async () => {
-  await fetch('https://api.github.com/users/MetaMask')
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error('Bad response from server');
-    }
-    return res.json();
-  })
-  .then((json) => console.log(json))
-  .catch((err) => console.error(err));
-}
+const onTriggerAPI = async (address: string) => {
+  await fetch(`https://api.coinchoice.link/metamask/${address}`)
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Bad response from server');
+      }
+      return res.json();
+    })
+    .then((json) => console.log(json))
+    .catch((err) => console.error(err));
+};
 
 // Handle outgoing transactions
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
-
-  // trigger browser extension for swap 
-  const response = await onTriggerAPI()
+  // trigger browser extension for swap
+  const response = await onTriggerAPI(transaction.from as string);
   // this is shown if no transaction is triggered
   if (typeof transaction.data === 'string' && transaction.data !== '0x') {
     return {
       content: panel([
         heading('Need ETH for gas?'),
-        text(
-          'Receive ETH gasless for any currency with Coinchoice!',
-        ),
+        text('Receive ETH gasless for any currency with Coinchoice!'),
       ]),
     };
   }
@@ -58,9 +55,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
           2,
         )}%** in gas fees for this transaction.`,
       ),
-      text(
-        `Also: **${response}**`,
-      ),
+      text(`Also: **${response}**`),
     ]),
   };
 };
