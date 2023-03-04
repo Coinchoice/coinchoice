@@ -18,7 +18,7 @@ import {
 	JsonRpcSigner,
 } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
-import { parseEther, formatUnits } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import {
 	FireblocksWeb3Provider,
 	ApiBaseUrl,
@@ -213,7 +213,6 @@ export class AppService {
 		return provider.getSigner(process.env.FIREBLOCKS_WALLET_ADDRESS);
 	}
 
-	// Check if the user has enough balance to pay the gas fee in the preferred currency
 	async simulation(
 		from: string,
 		to: string,
@@ -222,31 +221,28 @@ export class AppService {
 		token: string,
 	) {
 		// Original Transaction
-		const txGasFeeEth = await this.getTenderlySimulationGasFee(
+		const txGasFeeWei = await this.getTenderlySimulationGasFee(
 			from,
 			to,
 			input,
 			value,
 		);
-		this.logger.log(`txGasFeeEth: ${txGasFeeEth}`);
-		const txGasFeeBig = parseEther(txGasFeeEth.toString());
+		this.logger.log(`txGasFeeWei: ${txGasFeeWei}`);
 
 		// Swap Transaction
-		const [tokenPrice, swapGasFeeEth, data, spender, swapTo] =
+		const [tokenPrice, swapGasFeeWei, data, spender, swapTo] =
 			await firstValueFrom(
-				await this.getTokenSwapQuote(token, txGasFeeBig.toString()),
+				await this.getTokenSwapQuote(token, txGasFeeWei.toString()),
 			);
-		this.logger.log(`swapGasFeeEth: ${swapGasFeeEth}`);
+		this.logger.log(`swapGasFeeWei: ${swapGasFeeWei}`);
 		this.logger.log(`tokenPrice: ${tokenPrice}`);
 
-		const feeEth = swapGasFeeEth + txGasFeeEth;
+		const feeEth = (swapGasFeeWei + txGasFeeWei) / 1e18;
 		const feeToken = feeEth / tokenPrice;
 		this.logger.log(`feeToken: ${feeToken}`);
 
 		const balanceTokenBig = await this.getTokenBalance(token, from);
 		this.logger.log(`balanceToken: ${formatUnits(balanceTokenBig)}`);
-
-		// return parseInt(formatUnits(balanceTokenBig)) > feeToken; // considering 18 decimals for now
 
 		return {
 			feeEth: feeEth,
@@ -290,10 +286,7 @@ export class AppService {
 				map((result) => {
 					return [
 						result?.data.price, // tokenPrice: X ETH/TOKEN
-						+(
-							(result?.data.gasPrice * result?.data.estimatedGas) /
-							1e18
-						).toFixed(17), // gasFee: ETH
+						result?.data.gasPrice * result?.data.estimatedGas, // gasFee: wei
 						result?.data.data, //data
 						result?.data.allowanceTarget, //spender
 						result?.data.to, //to
@@ -314,14 +307,12 @@ export class AppService {
 		input: string,
 		value: string,
 	) {
-		const gasPrice = await firstValueFrom(await this.getGasPrice());
+		const gasPrice = await firstValueFrom(await this.getGasPrice()); // wei
 		const gasUsed = await firstValueFrom(
 			await this.getTenderlySimulation(from, to, input, value),
 		);
-		const gasGwei = gasPrice * gasUsed; // Gwei = 1e-9 ETH
-		const gasEther = gasGwei / 1e9;
-		this.logger.log(`gasEther: ${gasEther} | gasGwei ${gasGwei}`);
-		return +gasEther.toFixed(17); // ETH
+		const gasWei = gasPrice * gasUsed;
+		return gasWei; // wei
 	}
 
 	// https://ethereum.org/en/developers/docs/gas/#base-fee
@@ -336,7 +327,7 @@ export class AppService {
 			.pipe(
 				map((res) => res.data?.result),
 				map((result) => {
-					return +(parseInt(result) / 1e9).toFixed(17); // Gwei
+					return parseInt(result); // wei
 				}),
 			)
 			.pipe(
