@@ -29,6 +29,7 @@ export interface JsonRpcResponse {
 	result?: unknown;
 	error?: Error;
 }
+
 export type JsonRpcCallback = (
 	error: Error,
 	response: JsonRpcResponse
@@ -50,6 +51,8 @@ export type ExternalProvider = {
 	) => Promise<JsonRpcResponse> | void;
 	request?: (request: JsonRpcRequest) => Promise<any>;
 };
+
+export type TxRequest = JsonRpcRequest | { method: any; params: any };
 
 declare global {
 	interface Window {

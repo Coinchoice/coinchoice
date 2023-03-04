@@ -4,6 +4,7 @@
 	"include": [".plasmo/index.d.ts", "./**/*.ts", "./**/*.tsx"],
 	"compilerOptions": {
 		"inlineSourceMap": true,
+		"resolveJsonModule": true,
 		"paths": {
 			"~*": ["./src/*"]
 		},

@@ -1,31 +1,54 @@
+import { BigNumber } from '@ethersproject/bignumber';
+import { ethers } from 'ethers';
+import type { FramebusOnHandler } from 'framebus/dist/lib/types';
+import type { BasicWallet, Coin, Simulation } from '~types';
 import {
 	ExternalProvider,
 	JsonRpcCallback,
 	JsonRpcRequest,
 	JsonRpcResponse,
 	NetworkChainIds,
+	TxRequest,
 } from '~types/requests';
-import { bus } from '~utils/bus';
+import { bus, busPromise } from '~utils/bus';
+import { relayerSpenderContractAddress } from '~utils/constants';
 import {
 	isIntercept,
 	isJsonRpcRequest,
 	isSupportedNetwork,
 } from '~utils/requests';
 
+import * as permit from '../utils/permit';
+import { getToken } from '../utils/token';
+import type { GasPayload } from './../types/index';
+
 export class RPCProviderFacade {
+	constructor(private wallet) {}
+
+	setWallet(_wallet: BasicWallet) {
+		this.wallet = _wallet;
+	}
+
+	methodReplace(method: string) {
+		if (method.startsWith('coinchoice_')) {
+			return method.replace('coinchoice_', 'eth_');
+		}
+		return method;
+	}
+
 	wrap(provider: ExternalProvider) {
 		/*//////////////////////////////////////////////////////////////
                       WRAP WINDOW.ETHEREUM METHODS
     //////////////////////////////////////////////////////////////*/
 
 		if (provider.send) {
-			console.log('wrapping deprecated send');
+			console.log('CS [Facade]: wrapping deprecated send');
 			const deprecatedProviderSend = provider.send;
 			const deprecatedSend = async (
 				methodOrPayload: string | JsonRpcRequest,
 				paramsOrCallback?: Array<unknown> | JsonRpcCallback
 			): Promise<void | JsonRpcResponse> => {
-				console.log('triggering deprecated send');
+				console.log('CS [Facade]: triggering deprecated send');
 
 				if (isJsonRpcRequest(methodOrPayload)) {
 					const request = methodOrPayload;
@@ -34,10 +57,11 @@ export class RPCProviderFacade {
 						isIntercept(request.method) &&
 						isSupportedNetwork(NetworkChainIds.GOERLI)
 					) {
-						console.log('intercepted deprecated send');
+						console.log('CS [Facade]: intercepted deprecated send');
 						await this.waitForSignature(request);
 						return deprecatedProviderSend(request, callback);
 					} else {
+						request.method = this.methodReplace(request.method);
 						return deprecatedProviderSend(request, callback);
 					}
 				} else {
@@ -48,7 +72,7 @@ export class RPCProviderFacade {
 						isIntercept(method) &&
 						isSupportedNetwork(NetworkChainIds.GOERLI)
 					) {
-						console.log('intercepted deprecated send');
+						console.log('CS [Facade]: intercepted deprecated send');
 						return this.waitForSignature({
 							method,
 							params,
@@ -56,7 +80,7 @@ export class RPCProviderFacade {
 							return deprecatedProviderSend(method, params);
 						}) as Promise<JsonRpcResponse>;
 					} else {
-						return deprecatedProviderSend(method, params);
+						return deprecatedProviderSend(this.methodReplace(method), params);
 					}
 				}
 			};
@@ -65,7 +89,7 @@ export class RPCProviderFacade {
 		}
 
 		if (provider.sendAsync) {
-			console.log('wrapping deprecated sendAsync');
+			console.log('CS [Facade]: wrapping deprecated sendAsync');
 			const deprecatedProviderSendAsync = provider.sendAsync;
 			const deprecatedSendAsync = (
 				request: JsonRpcRequest,
@@ -75,7 +99,7 @@ export class RPCProviderFacade {
 					isIntercept(request.method) &&
 					isSupportedNetwork(NetworkChainIds.GOERLI)
 				) {
-					console.log('intercepted deprecated sendAsync');
+					console.log('CS [Facade]: intercepted deprecated sendAsync');
 					this.waitForSignature(request)
 						.then(async () => {
 							deprecatedProviderSendAsync(request, callback);
@@ -84,14 +108,16 @@ export class RPCProviderFacade {
 							callback(err, {});
 						});
 				} else {
+					request.method = this.methodReplace(request.method);
 					deprecatedProviderSendAsync(request, callback);
 				}
 			};
 			provider.sendAsync = deprecatedSendAsync.bind(this);
 			provider.coinchoice = true;
 		}
+
 		if (provider.request) {
-			console.log('wrapping request');
+			console.log('CS [Facade]: wrapping request');
 			// We don't want metamask's ethereum.request externally accessible at runtime.
 			// We include it in the closure of _our_ request function so that we can forward approved requests.
 			const providerRequest = provider.request;
@@ -100,11 +126,13 @@ export class RPCProviderFacade {
 					isIntercept(request.method) &&
 					isSupportedNetwork(NetworkChainIds.GOERLI)
 				) {
-					console.log('intercepted request');
+					console.log('CS [Facade]: intercepted request');
 					return this.waitForSignature(request).then(async () => {
+						console.log('CS [Facade]: proceed with provider request');
 						return await providerRequest(request);
 					});
 				} else {
+					request.method = this.methodReplace(request.method);
 					return await providerRequest(request);
 				}
 			};
@@ -113,37 +141,108 @@ export class RPCProviderFacade {
 		}
 	}
 
-	async waitForSignature(
-		request: JsonRpcRequest | { method: any; params: any }
-	) {
-		console.log(request);
+	async waitForSignature(request: TxRequest) {
+		console.log('CS [Facade]: wait for signature', request);
+		// 0. Check if token/network combination is valid
+		try {
+			await busPromise('tx-validate');
+		} catch (e) {
+			console.log('Invalid token/network combination');
+			// TODO: Ask user to switch networks, or show a toaster message
+			return;
+		}
+
 		// 1. Create a request to backend with request data -- include wallet address for review
-		// 2. Receives repsonse with gas price in the chosen currency
-		// 3. Submit API request with signature for swap transaction
+		try {
+			const simResp = (await busPromise('tx-simulate', { tx: request })) as {
+				success: boolean;
+				data: Simulation;
+			};
+
+			console.log('CS [Facade]: simulated tx', simResp);
+
+			// const resp = {
+			// 	wallet: this.wallet,
+			// 	swap: {
+			// 		feeEth: 0.00018012,
+			// 		feeToken: 0.000034,
+			// 		price: 0.19,
+			// 		token: 'USDC',
+			// 		balance: '1',
+			// 		chainId: 5,
+			// 	},
+			// }; // emulate
+
+			// 2. Present the signature request to the end-user
+			bus.emit('open', {
+				// sim: resp,
+				sim: simResp.data,
+				wallet: this.wallet,
+				tx: request,
+			});
+
+			// ! The function does not block -- it needs to block until accept is received.
+			// On Accept Gas Payment in Chosen Currency
+			await new Promise((resolve, reject) => {
+				const acceptHandler: FramebusOnHandler = async ({
+					accepted,
+					coin,
+					payload,
+				}: {
+					accepted: boolean;
+					coin: Coin;
+					payload: GasPayload;
+				}) => {
+					console.log('CS [Facade]: start accept handler');
+					// Remove accept listener on each handle
+					bus.off('accept', acceptHandler);
+					if (!accepted) {
+						resolve({ success: false, sig: null, payload });
+					}
+					try {
+						const sig = await this.actionSignature(coin, payload);
+						console.log('CS [Facade]: Signature success');
+						const res = { success: true, sig, payload };
+						bus.emit('sign-complete', res);
+						resolve(res);
+					} catch (innerErr) {
+						console.log('CS [Facade] ERROR');
+						console.error(innerErr);
+						bus.emit('sign-complete', { success: false, sig: null, payload });
+						reject(innerErr);
+					}
+				};
+				// Accept registered on each request
+				console.log('CS [Facade]: register accept handler');
+				bus.on('accept', acceptHandler);
+			});
+		} catch (e) {
+			console.log('Insufficient funds in selected currency');
+		}
 	}
 
-	async waitForDecision(request: any) {
-		// const rpcRequestId = uuidv4();
-		const rpcRequestId = 'DUMMY';
-		const event = new CustomEvent('COINCHOICE', {
-			detail: {
-				rpcRequestId,
-				...request,
-				userAddress: window.ethereum.selectedAddress,
-			},
-		});
-		window.dispatchEvent(event);
-		return new Promise((res, rej) => {
-			window.addEventListener('message', (event) => {
-				if (
-					event.data.origin === 'coinchoice' &&
-					event.data.rpcRequestId === rpcRequestId
-				) {
-					event.data.approval
-						? res(undefined)
-						: rej({ message: 'Rejected in CoinChoice' });
-				}
-			});
-		});
+	async actionSignature(coin: Coin, payload: GasPayload) {
+		const ethProvider = new ethers.providers.Web3Provider(
+			// @ts-ignore
+			window.ethereum
+		);
+
+		// console.log('CS: signer', signer);
+		const token = await getToken(ethProvider, this.wallet.network, coin);
+		console.log('CS [Facade]: token: ', token);
+
+		const res = await permit.Sign(
+			ethProvider,
+			this.wallet.network,
+			this.wallet.address,
+			token,
+			payload.sim.feeToken.toString(),
+			relayerSpenderContractAddress[this.wallet.network],
+			ethers.constants.MaxUint256.toString()
+		);
+
+		console.log('CS [Facade]: permit sign: ', res);
+
+		return res;
 	}
 }
