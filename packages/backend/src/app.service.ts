@@ -248,6 +248,8 @@ export class AppService {
 		this.logger.log(`balanceToken: ${formatUnits(balanceTokenBig)}`);
 
 		const response = {
+			txGasFeeWei: txGasFeeWei,
+			swapGasFeeWei: swapGasFeeWei,
 			feeEth: feeEth,
 			feeWei: feeWei,
 			feeToken: feeToken,
@@ -259,7 +261,7 @@ export class AppService {
 			relayer: process.env.RELAYER_CONTRACT_ADDRESS,
 			to: swapTo,
 		};
-		console.log('response:');
+		console.log('simulation response:');
 		console.log(response);
 
 		return response;
