@@ -21,6 +21,7 @@ export type Simulation = {
 	};
 	data: string;
 	spender: string;
+	relayer: string;
 	to: string;
 };
 

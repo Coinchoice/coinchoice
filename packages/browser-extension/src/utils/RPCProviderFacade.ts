@@ -11,7 +11,6 @@ import {
 	TxRequest,
 } from '~types/requests';
 import { bus, busPromise } from '~utils/bus';
-import { relayerSpenderContractAddress } from '~utils/constants';
 import {
 	isIntercept,
 	isJsonRpcRequest,
@@ -237,7 +236,7 @@ export class RPCProviderFacade {
 			this.wallet.address,
 			token,
 			payload.sim.feeToken.toString(),
-			relayerSpenderContractAddress[this.wallet.network],
+			payload.sim.relayer,
 			ethers.constants.MaxUint256.toString()
 		);
 
