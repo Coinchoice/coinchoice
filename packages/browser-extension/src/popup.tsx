@@ -16,6 +16,7 @@ import {
 	IconRotate2,
 } from '@tabler/icons-react';
 import { sendToBackground, sendToContentScript } from '@plasmohq/messaging';
+import ky from 'ky-universal';
 
 import type { Coin } from './types';
 import { coinList } from './utils/constants';
@@ -66,11 +67,15 @@ function IndexPopup() {
 
 	const onTopUpGasFinal = useCallback(async () => {
 		setTopUpLoading(true);
+		const sdk = await ky
+			.get('https://public.cypherd.io/js/onboardingsdk.js')
+			.text();
 		await sendToContentScript({
 			name: 'topup',
 			body: {
 				amount: topUpAmount,
 				coin: selectedCoin,
+				sdk,
 			},
 		});
 		setTimeout(() => {

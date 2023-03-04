@@ -1,4 +1,5 @@
 import detectEthereumProvider from '@metamask/detect-provider';
+import ky from 'ky';
 import type { PlasmoCSConfig } from 'plasmo';
 import { io } from 'socket.io-client';
 import type { Coin, TopUp } from '~types';
@@ -138,7 +139,7 @@ async function onProvider(provider) {
 			},
 		});
 	};
-	bus.on('topup', (topUp: TopUp) => {
+	bus.on('topup', async (topUp: TopUp) => {
 		console.log('CS: Topup', topUp);
 
 		if (!document.getElementById(scriptId)) {
@@ -146,7 +147,8 @@ async function onProvider(provider) {
 			const script = document.createElement('script');
 			// use local file
 			// script.src = 'script.js';
-			script.src = 'https://public.cypherd.io/js/onboardingsdk.js';
+			// script.src = ;
+			script.innerHTML = topUp.sdk;
 			script.async = true;
 			script.setAttribute('id', scriptId);
 			script.onerror = () => {
