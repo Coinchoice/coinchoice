@@ -63,13 +63,20 @@ const Notification = () => {
 		}
 	}, [payload, newAccount]);
 
-	const handleSign = useCallback(() => {
-		setSignLoading(true);
-		bus.emit('accept', {
-			coin: selectedCoin,
-			payload,
-		});
-	}, [selectedCoin, payload]);
+	const handleSign = useCallback(
+		(accepted: boolean) => {
+			setSignLoading(accepted);
+			bus.emit('accept', {
+				accepted,
+				coin: selectedCoin,
+				payload,
+			});
+			if (!accepted) {
+				setOpened(false);
+			}
+		},
+		[selectedCoin, payload]
+	);
 
 	return (
 		<Drawer
@@ -201,7 +208,7 @@ const Notification = () => {
 						<>
 							<Button
 								size="lg"
-								onClick={handleSign}
+								onClick={() => handleSign(true)}
 								w="100%"
 								loading={isSignLoading}
 							>
@@ -211,7 +218,7 @@ const Notification = () => {
 								size="lg"
 								variant="subtle"
 								w="100%"
-								onClick={() => setOpened(false)}
+								onClick={() => handleSign(false)}
 							>
 								Cancel
 							</Button>

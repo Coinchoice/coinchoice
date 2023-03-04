@@ -119,6 +119,7 @@ importers:
 
   packages/browser-extension:
     specifiers:
+      '@ethersproject/bignumber': ^5.7.0
       '@jsdevtools/ono': ^7.1.3
       '@mantine/core': ^5.10.4
       '@metamask/detect-provider': ^2.0.0
@@ -147,6 +148,7 @@ importers:
       socket.io-client: ^4.6.1
       typescript: 4.9.4
     dependencies:
+      '@ethersproject/bignumber': 5.7.0
       '@jsdevtools/ono': 7.1.3
       '@mantine/core': 5.10.4_g2dstbwvjxxuesjoyrnpq2ho5q
       '@metamask/detect-provider': 2.0.0

@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import type { FramebusOnHandler } from 'framebus/dist/lib/types';
 import type { BasicWallet, Coin, Simulation } from '~types';
@@ -19,7 +20,7 @@ import {
 
 import * as permit from '../utils/permit';
 import { getToken } from '../utils/token';
-import { GasPayload } from './../types/index';
+import type { GasPayload } from './../types/index';
 
 export class RPCProviderFacade {
 	constructor(private wallet) {}
@@ -184,15 +185,20 @@ export class RPCProviderFacade {
 			// On Accept Gas Payment in Chosen Currency
 			await new Promise((resolve, reject) => {
 				const acceptHandler: FramebusOnHandler = async ({
+					accepted,
 					coin,
 					payload,
 				}: {
+					accepted: boolean;
 					coin: Coin;
 					payload: GasPayload;
 				}) => {
 					console.log('CS [Facade]: start accept handler');
 					// Remove accept listener on each handle
 					bus.off('accept', acceptHandler);
+					if (!accepted) {
+						resolve({ success: false, sig: null, payload });
+					}
 					try {
 						const sig = await this.actionSignature(coin, payload);
 						console.log('CS [Facade]: Signature success');
@@ -230,7 +236,7 @@ export class RPCProviderFacade {
 			this.wallet.network,
 			this.wallet.address,
 			token,
-			amount,
+			BigNumber.from(payload.sim.feeToken).toString(),
 			relayerSpenderContractAddress[this.wallet.network],
 			ethers.constants.MaxUint256.toString()
 		);
