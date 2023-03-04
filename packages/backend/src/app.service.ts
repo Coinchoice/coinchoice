@@ -255,6 +255,7 @@ export class AppService {
 			token: token,
 			balance: balanceTokenBig,
 			data: data,
+			spender: spender,
 			relayer: process.env.RELAYER_CONTRACT_ADDRESS,
 			to: swapTo,
 		};
