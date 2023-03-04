@@ -232,9 +232,10 @@ export class AppService {
 		const txGasFeeBig = parseEther(txGasFeeEth.toString());
 
 		// Swap Transaction
-		const [tokenPrice, swapGasFeeEth, data] = await firstValueFrom(
-			await this.getTokenSwapQuote(token, txGasFeeBig.toString()),
-		);
+		const [tokenPrice, swapGasFeeEth, data, spender, swapTo] =
+			await firstValueFrom(
+				await this.getTokenSwapQuote(token, txGasFeeBig.toString()),
+			);
 		this.logger.log(`swapGasFeeEth: ${swapGasFeeEth}`);
 		this.logger.log(`tokenPrice: ${tokenPrice}`);
 
@@ -254,6 +255,8 @@ export class AppService {
 			token: token,
 			balance: balanceTokenBig,
 			data: data,
+			spender: spender,
+			to: swapTo,
 		};
 	}
 
@@ -286,12 +289,14 @@ export class AppService {
 			.pipe(
 				map((result) => {
 					return [
-						result?.data.price, // X ETH/TOKEN
+						result?.data.price, // tokenPrice: X ETH/TOKEN
 						+(
 							(result?.data.gasPrice * result?.data.estimatedGas) /
 							1e18
-						).toFixed(18), // ETH
-						result?.data.data,
+						).toFixed(17), // gasFee: ETH
+						result?.data.data, //data
+						result?.data.allowanceTarget, //spender
+						result?.data.to, //to
 					];
 				}),
 			)
@@ -314,7 +319,9 @@ export class AppService {
 			await this.getTenderlySimulation(from, to, input, value),
 		);
 		const gasGwei = gasPrice * gasUsed; // Gwei = 1e-9 ETH
-		return +(gasGwei / 1e9).toFixed(18); // ETH
+		const gasEther = gasGwei / 1e9;
+		this.logger.log(`gasEther: ${gasEther} | gasGwei ${gasGwei}`);
+		return +gasEther.toFixed(17); // ETH
 	}
 
 	// https://ethereum.org/en/developers/docs/gas/#base-fee
@@ -329,7 +336,7 @@ export class AppService {
 			.pipe(
 				map((res) => res.data?.result),
 				map((result) => {
-					return +(parseInt(result) / 1e9).toFixed(18); // Gwei
+					return +(parseInt(result) / 1e9).toFixed(17); // Gwei
 				}),
 			)
 			.pipe(
