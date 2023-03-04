@@ -8,12 +8,14 @@ import {
 	ThemeIcon,
 	Flex,
 	Image,
+	NumberInput,
 } from '@mantine/core';
 import {
-	// IconCurrencyCent,
+	IconCurrencyCent,
 	IconArrowLeft,
+	IconRotate2,
 } from '@tabler/icons-react';
-import { sendToBackground } from '@plasmohq/messaging';
+import { sendToBackground, sendToContentScript } from '@plasmohq/messaging';
 
 import type { Coin } from './types';
 import { coinList } from './utils/constants';
@@ -22,12 +24,15 @@ import LogoWhite from 'data-base64:~assets/LogoWhite.png';
 enum Steps {
 	Primary,
 	CurrencySelect,
+	TopUp,
 }
 
 const defaultCoin = coinList.find((coin) => !!coin.default);
 
 function IndexPopup() {
 	const [selectedCoin, setSelectedCoin] = useState(defaultCoin);
+	const [isTopUpLoading, setTopUpLoading] = useState(false);
+	const [topUpAmount, setTopUpAmount] = useState(1);
 	const [step, setStep] = useState(Steps.Primary);
 
 	useEffect(() => {
@@ -57,6 +62,25 @@ function IndexPopup() {
 			name: 'coin/set',
 			body: coin,
 		});
+	}, []);
+
+	const onTopUpGasFinal = useCallback(async () => {
+		setTopUpLoading(true);
+		await sendToContentScript({
+			name: 'topup',
+			body: {
+				amount: topUpAmount,
+				coin: selectedCoin,
+			},
+		});
+		setTimeout(() => {
+			setTopUpLoading(false);
+			setStep(Steps.Primary);
+		}, 1000);
+	}, [topUpAmount, selectedCoin]);
+
+	const onTopUpGasStart = useCallback(() => {
+		setStep(Steps.TopUp);
 	}, []);
 
 	return (
@@ -105,8 +129,23 @@ function IndexPopup() {
 								width: '100%',
 							})}
 							mb={10}
+							gradient={{ from: 'indigo', to: 'cyan' }}
+							leftIcon={<IconCurrencyCent />}
 						>
 							Choose Gas Coin
+						</Button>
+						<Button
+							onClick={onTopUpGasStart}
+							variant="subtle"
+							size="lg"
+							sx={() => ({
+								width: '100%',
+							})}
+							mb={10}
+							gradient={{ from: 'indigo', to: 'cyan' }}
+							leftIcon={<IconRotate2 />}
+						>
+							Top up Gas
 						</Button>
 					</Container>
 				)}
@@ -146,6 +185,39 @@ function IndexPopup() {
 								</Flex>
 							</Button>
 						))}
+					</Container>
+				)}
+				{step === Steps.TopUp && (
+					<Container>
+						<Flex direction="row" align="center" justify="flex-start" mb={20}>
+							<Button onClick={onBackButton} variant="subtle" mr={10}>
+								<IconArrowLeft />
+							</Button>
+							<Text fz="lg" fw={700}>
+								Top up Gas
+							</Text>
+						</Flex>
+						<NumberInput
+							defaultValue={topUpAmount}
+							placeholder={`Top up ${selectedCoin.ticker}`}
+							label={`Top up ${selectedCoin.ticker}`}
+							value={topUpAmount}
+							onChange={setTopUpAmount}
+							mb={20}
+						/>
+						<Button
+							onClick={onTopUpGasFinal}
+							size="lg"
+							sx={() => ({
+								width: '100%',
+							})}
+							mb={10}
+							gradient={{ from: 'indigo', to: 'cyan' }}
+							leftIcon={<IconRotate2 />}
+							loading={isTopUpLoading}
+						>
+							Top up Gas
+						</Button>
 					</Container>
 				)}
 			</Container>

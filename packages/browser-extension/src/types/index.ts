@@ -45,3 +45,5 @@ export type Signature = {
 		s: string;
 	};
 };
+
+export type TopUp = { amount: number; coin: Coin };

@@ -1,6 +1,7 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import type { PlasmoCSConfig } from 'plasmo';
 import { io } from 'socket.io-client';
+import type { Coin, TopUp } from '~types';
 import type { JsonRpcRequest } from '~types/requests';
 import { bus, busPromise } from '~utils/bus';
 import { API_HOST } from '~utils/env';
@@ -120,6 +121,45 @@ async function onProvider(provider) {
 	// socket.on('disconnect', function() {
 	// 	console.log('Disconnected');
 	// });
+
+	// Register topup event handler
+	const scriptId = 'coinchoice-topup-script';
+	const loadTopUp = (topUp: TopUp) => {
+		// Load topup ui
+		// @ts-ignore
+		window.Cypher({
+			address: wallet.address,
+			targetChainIdHex: '0x5', // Eth - Goreli
+			requiredTokenBalance: topUp.amount,
+			requiredTokenContractAddress: topUp.coin.networks[5],
+			isTestnet: true,
+			callBack: () => {
+				console.log('topup exchange cypher loaded');
+			},
+		});
+	};
+	bus.on('topup', (topUp: TopUp) => {
+		console.log('CS: Topup', topUp);
+
+		if (!document.getElementById(scriptId)) {
+			// Check if cypher script already loaded.
+			const script = document.createElement('script');
+			// use local file
+			// script.src = 'script.js';
+			script.src = 'https://public.cypherd.io/js/onboardingsdk.js';
+			script.async = true;
+			script.setAttribute('id', scriptId);
+			script.onerror = () => {
+				console.log('TOPUP: Error occurred while loading script');
+			};
+			script.onload = () => {
+				loadTopUp(topUp);
+			};
+			document.body.appendChild(script);
+		} else {
+			loadTopUp(topUp);
+		}
+	});
 }
 
 (async () => {
