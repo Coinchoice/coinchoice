@@ -35,6 +35,10 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	} catch (e) {
 		console.log('TX:SIMULATE BGSW ERROR: Cannot update wallet');
 		await handleReqErr(e);
+		return res.send({
+			success: false,
+			data: {},
+		});
 	}
 
 	const { tx }: { tx: TxRequest } = req.body;

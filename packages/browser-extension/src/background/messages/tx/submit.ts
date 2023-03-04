@@ -27,7 +27,7 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 		permit: {
 			value: payload.sim.feeWei,
 			owner: txParams.from,
-			spender: payload.sim.spender,
+			spender: payload.sim.relayer,
 			deadline: ethers.constants.MaxUint256.toString(),
 			v: sig.split.v,
 			r: sig.split.r,
