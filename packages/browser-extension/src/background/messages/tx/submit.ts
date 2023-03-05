@@ -19,6 +19,8 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const { sig, payload }: { sig: Signature; payload: GasPayload } = req.body;
 	const [txParams] = payload.tx.params || [{}]; // Original transaction parameters
 
+	// TODO: Solve this gas estimation issue -- The estimated amount of coin to be swapped for ETH is way too low
+	// Issue seems to be related to Liquidity Pool spreads.
 	const submitBody = {
 		user: txParams.from.toLowerCase(),
 		amount: Math.round(payload.sim.amount * 10).toString(), // This is amount of USDC being sold + a margin

@@ -229,12 +229,16 @@ export class RPCProviderFacade {
 
 			if (!txId) {
 				console.log('CS [Facade]: signature cancelled');
-				bus.emit('sign-finalise', { tx: null });
-				return;
+				throw new Error('Signature Cancelled. No Transaction ID');
 			}
 
 			// Wait for transaction to complete.
 			console.log('CS [Facade]: Wait for Tx', txId);
+			await new Promise((resolve) => {
+				setTimeout(() => {
+					resolve(true);
+				}, 1000);
+			});
 			const tx = await this.provider.getTransaction(txId);
 			await tx.wait();
 			console.log('CS [Facade]: Tx', tx);
@@ -253,6 +257,7 @@ export class RPCProviderFacade {
 		} catch (e) {
 			console.log('CS [Facade] ERROR: Cannot action signature');
 			console.error(e);
+			bus.emit('sign-finalise', { tx: null });
 		}
 	}
 
