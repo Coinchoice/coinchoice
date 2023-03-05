@@ -86,7 +86,7 @@ export class AppService {
 		const tx = await contract.relaySwapToETH(
 			userAddress,
 			token,
-			amount,
+			BigNumber.from(amount).mul(11).div(10),
 			permit,
 			spender,
 			to,
