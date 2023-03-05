@@ -66,6 +66,7 @@ Learn more: [https://go.usher.so/coinchoice](https://go.usher.so/coinchoice)
 ## Caveats
 
 The codebase is highly experimental as it was developed at the EthDenver Hackathon in a matter of days!
+
 ## Contribution
 
 Simply fork this repo and make it your own, or create a pull request and we can build something awesome together!
