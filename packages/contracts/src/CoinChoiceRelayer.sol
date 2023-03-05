@@ -18,7 +18,7 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
     using RelayerLib for uint256;
 
     bytes32 public constant EXECUTIONER_ROLE = keccak256("EXECUTIONER");
-    bytes32 public constant PROXY_ADMIN_ROLE = keccak256("PROXY_ADMIN");
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN");
 
     struct PermitParams {
         address owner;
@@ -171,6 +171,10 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
 
     function relaySwipeETH() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function pause() external onlyRole(ADMIN_ROLE) {
+        _pause();
     }
 
     receive() external payable {}

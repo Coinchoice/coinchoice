@@ -1,7 +1,7 @@
 import hre from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ethers, network } from 'hardhat'
-import { CoinChoiceRelayer, CoinChoiceRelayer__factory, ERC20MockWithPermit, ERC20MockWithPermit__factory, TestCallee__factory, TransparentUpgradeableProxy, TransparentUpgradeableProxy__factory, WETH9, WETH9__factory } from '../types';
+import { CoinChoiceRelayer, CoinChoiceRelayer__factory, ERC20MockWithPermit, ERC20MockWithPermit__factory, MultiSigWallet, MultiSigWallet__factory, TestCallee__factory, TransparentUpgradeableProxy, TransparentUpgradeableProxy__factory, WETH9, WETH9__factory } from '../types';
 
 import { AbiCoder, formatBytes32String, keccak256, parseEther } from 'ethers/lib/utils';
 import { MaxUint256, PermitSingle } from '@uniswap/permit2-sdk';
@@ -58,18 +58,33 @@ describe('relayer', async () => {
     let weth: WETH9
     let ccRelayerLogic: CoinChoiceRelayer
     let ccRelayer: CoinChoiceRelayer
+    let multisig: MultiSigWallet
     let proxy: TransparentUpgradeableProxy
     const chainId = hre.network.config.chainId ?? 0
     beforeEach('Deploy Account, Trader, Uniswap and Compound', async () => {
         [deployer, user] = await ethers.getSigners();
         weth = await new WETH9__factory(deployer).deploy()
+        multisig = await new MultiSigWallet__factory(deployer).deploy([deployer.address], [1])
+
         ccRelayerLogic = await new CoinChoiceRelayer__factory(deployer).deploy()
-        proxy = await new TransparentUpgradeableProxy__factory(deployer).deploy(ccRelayerLogic.address, deployer.address, '0x')
+        const ccRelayerLogicPrev = await new CoinChoiceRelayer__factory(deployer).deploy()
+        proxy = await new TransparentUpgradeableProxy__factory(deployer).deploy(ccRelayerLogicPrev.address, multisig.address, '0x')
+        // function upgradeTo(address newImplementation) external ifAdmin {
+        //     _upgradeToAndCall(newImplementation, bytes(""), false);
+        // }
+        const tx = proxy.interface.encodeFunctionData('upgradeTo', [ccRelayerLogic.address])
+        console.log("submit to multiSig")
+        await multisig.submitTransaction(proxy.address, 0, tx)
+        console.log("confirm multiSig")
+        await multisig.confirmTransaction(0)
+        console.log("execute multiSig")
+        await multisig.executeTransaction(0)
+
         ccRelayer = await new CoinChoiceRelayer__factory(deployer).attach(proxy.address)
         console.log("initialize")
         await ccRelayer.initialize(weth.address)
-        let role = formatBytes32String("PROXY_ADMIN")
-        console.log(formatBytes32String("PROXY_ADMIN"), role)
+        let role = formatBytes32String("ADMIN")
+        console.log(formatBytes32String("ADMIN"), role)
         await ccRelayer.grantRole(role, deployer.address)
         role = formatBytes32String("EXECUTIONER")
         await ccRelayer.grantRole(role, deployer.address)
