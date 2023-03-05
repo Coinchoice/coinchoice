@@ -29,5 +29,12 @@
 		"prettier": "^2.8.4",
 		"prettier-plugin-solidity": "^1.1.2",
 		"turbo": "^1.8.2"
-	}
+	},
+	"pnpm": {
+        "overrides": {
+            "uint8arrays": "^2.1.10",
+			"multiformats": "^9.0.0",
+			"@ipld/dag-cbor": "^7.0.3"
+        }
+    }
 }

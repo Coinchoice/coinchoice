@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+overrides:
+  uint8arrays: ^2.1.10
+  multiformats: ^9.0.0
+  '@ipld/dag-cbor': ^7.0.3
+
 importers:
 
   .:
@@ -133,6 +138,11 @@ importers:
 
   packages/browser-extension:
     specifiers:
+      '@ceramicnetwork/common': ^2.23.0
+      '@ceramicnetwork/http-client': ^2.20.0
+      '@composedb/client': ^0.4.3
+      '@composedb/types': ^0.3.0
+      '@didtools/pkh-ethereum': 0.1.0
       '@ethersproject/bignumber': ^5.7.0
       '@jsdevtools/ono': ^7.1.3
       '@mantine/core': ^5.10.4
@@ -148,6 +158,7 @@ importers:
       '@types/react-dom': 18.0.10
       cryptocurrency-icons: ^0.18.1
       del-cli: ^5.0.0
+      did-session: ^1.0.0
       ethers: ^5.3.1
       framebus: ^5.2.0
       isomorphic-fetch: ^3.0.0
@@ -162,6 +173,10 @@ importers:
       socket.io-client: ^4.6.1
       typescript: 4.9.4
     dependencies:
+      '@ceramicnetwork/common': 2.23.0
+      '@ceramicnetwork/http-client': 2.20.0
+      '@composedb/client': 0.4.3
+      '@didtools/pkh-ethereum': 0.1.0
       '@ethersproject/bignumber': 5.7.0
       '@jsdevtools/ono': 7.1.3
       '@mantine/core': 5.10.4_g2dstbwvjxxuesjoyrnpq2ho5q
@@ -172,6 +187,7 @@ importers:
       '@tabler/icons': 2.7.0
       '@tabler/icons-react': 2.7.0_react@18.2.0
       cryptocurrency-icons: 0.18.1
+      did-session: 1.0.0
       ethers: 5.7.2
       framebus: 5.2.0
       isomorphic-fetch: 3.0.0
@@ -183,6 +199,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       socket.io-client: 4.6.1
     devDependencies:
+      '@composedb/types': 0.3.1
       '@types/chrome': 0.0.210
       '@types/node': 18.11.18
       '@types/react': 18.0.27
@@ -210,7 +227,7 @@ importers:
       key-did-resolver: ^2.1.3
       ora: ^6.1.2
       typescript: ^4.5.2
-      uint8arrays: ^4.0.2
+      uint8arrays: ^2.1.10
     dependencies:
       '@ceramicnetwork/blockchain-utils-linking': 2.11.0
       '@ceramicnetwork/cli': 2.28.0_3ot4onxp3qr2wb5ka6omvzb4qq
@@ -229,7 +246,7 @@ importers:
       key-did-provider-ed25519: 2.0.1
       key-did-resolver: 2.3.0
       typescript: 4.9.4
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
 
   packages/contracts:
     specifiers:
@@ -1718,8 +1735,8 @@ packages:
       '@ceramicnetwork/streamid': 2.14.0
       cross-fetch: 3.1.5
       lru_map: 0.4.1
-      multiformats: 11.0.1
-      uint8arrays: 4.0.3
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -1741,8 +1758,8 @@ packages:
     dependencies:
       '@ceramicnetwork/common': 2.23.0
       '@ethersproject/abi': 5.7.0
-      multiformats: 11.0.1
-      uint8arrays: 4.0.3
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -1756,7 +1773,7 @@ packages:
       '@stablelib/sha256': 1.0.1
       caip: 1.1.0
       near-api-js: 0.44.2
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -1770,7 +1787,7 @@ packages:
       '@stablelib/sha256': 1.0.1
       caip: 1.1.0
       near-api-js: 0.44.2
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -1792,7 +1809,7 @@ packages:
       caip: 1.1.0
       cross-fetch: 3.1.5
       tweetnacl: 1.0.3
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - '@polkadot/util'
       - bufferutil
@@ -1839,7 +1856,7 @@ packages:
       safe-did-resolver: 2.0.0
       stream-to-array: 2.3.0
       typedjson: 1.8.0
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - '@polkadot/util'
       - '@types/express'
@@ -1873,12 +1890,11 @@ packages:
       jet-logger: 1.2.2
       lodash.clonedeep: 4.5.0
       logfmt: 1.3.2
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       rxjs: 7.8.0
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
-    dev: false
 
   /@ceramicnetwork/core/2.30.0_@polkadot+util@7.9.2:
     resolution: {integrity: sha512-LH7sFSGfuyVcU+oHEtCGipC+A+5dHg+FHSGaqeGF8XnjICrNKwgCwID/XqXaCOX9r0ApLv4iolcbspkQAnX0nw==}
@@ -1917,13 +1933,13 @@ packages:
       lodash.clonedeep: 4.5.0
       lru_map: 0.4.1
       mapmoize: 1.2.1
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       p-queue: 7.3.0
       pg: 8.9.0
       pg-boss: 8.4.1
       rxjs: 7.8.0
       sqlite3: 5.1.4
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - '@polkadot/util'
       - better-sqlite3
@@ -2005,7 +2021,7 @@ packages:
     resolution: {integrity: sha512-Fowpsi45SA4zVYPcQ5DUSTP+ijPutMgR5SC4fr4v+SnZIX6FbpfCeJ0WGFXrCxHHvj/YVP2Ic8JxpY/mVD4Chw==}
     dependencies:
       '@stablelib/sha256': 1.0.1
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     dev: false
 
   /@ceramicnetwork/pinning-ipfs-backend/2.15.0:
@@ -2013,7 +2029,7 @@ packages:
     dependencies:
       '@stablelib/sha256': 1.0.1
       ipfs-http-client: 60.0.0
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -2067,7 +2083,7 @@ packages:
       ajv-formats: 2.1.1_ajv@8.12.0
       fast-json-patch: 3.1.1
       lodash.clonedeep: 4.5.0
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2084,10 +2100,23 @@ packages:
       fast-json-patch: 3.1.1
       lodash.clonedeep: 4.5.0
       lru_map: 0.4.1
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
+
+  /@ceramicnetwork/stream-model-instance/0.9.0:
+    resolution: {integrity: sha512-COcaVhzlairDFZHBbdQ27Bo0zkdC0E0SDMUc/R5NlgczI5OxNhrG7TShGcRzBGeQJfMa8UrxVAYFpXmn3QQ8QQ==}
+    dependencies:
+      '@ceramicnetwork/common': 2.23.0
+      '@ceramicnetwork/streamid': 2.14.0
+      '@ipld/dag-cbor': 7.0.3
+      '@stablelib/random': 1.0.2
+      fast-json-patch: 3.1.1
+      uint8arrays: 2.1.10
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /@ceramicnetwork/stream-model-instance/1.5.0:
     resolution: {integrity: sha512-zdm+JbORr/3bxgMsFck6jYQGWeaWZnjotMnq2k2e9Wyqr5ulyXDk4uh7HG7nJAvTDvjEvAWgjqXFbLLyCzEixw==}
@@ -2098,10 +2127,26 @@ packages:
       '@stablelib/random': 1.0.2
       fast-json-patch: 3.1.1
       object-sizeof: 2.6.1
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
+
+  /@ceramicnetwork/stream-model/0.11.0:
+    resolution: {integrity: sha512-2sP59rThgCjNHaix0w/ekdcltnRj/wzF2hd8roZ0SeO7msHJWD+6lDIdtGLAdg8XpD5KUFdXd/L+1FvXaAaK9g==}
+    dependencies:
+      '@ceramicnetwork/common': 2.23.0
+      '@ceramicnetwork/streamid': 2.14.0
+      '@ipld/dag-cbor': 7.0.3
+      '@stablelib/random': 1.0.2
+      fast-json-patch: 3.1.1
+      json-schema-typed: 8.0.1
+      multiformats: 9.9.0
+      multihashes: 4.0.3
+      uint8arrays: 2.1.10
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /@ceramicnetwork/stream-model/1.5.0:
     resolution: {integrity: sha512-zqE+SA5nssHqXeIEJnbAjsxFx8Fhdl67wM/Mz8tRZr1m2ya6BjchGd5rrtE41gfwM6ZM6WYZ/xJZ+k0iMpGiQQ==}
@@ -2112,9 +2157,9 @@ packages:
       '@stablelib/random': 1.0.2
       fast-json-patch: 3.1.1
       json-schema-typed: 8.0.1
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       multihashes: 4.0.3
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2131,7 +2176,7 @@ packages:
       fast-json-patch: 3.1.1
       lodash.clonedeep: 4.5.0
       lru_map: 0.4.1
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2146,7 +2191,7 @@ packages:
       dids: 4.0.0
       fast-json-patch: 3.1.1
       lodash.clonedeep: 4.5.0
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2156,10 +2201,9 @@ packages:
     dependencies:
       '@ipld/dag-cbor': 7.0.3
       mapmoize: 1.2.1
-      multiformats: 11.0.1
-      uint8arrays: 4.0.3
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
       varint: 6.0.0
-    dev: false
 
   /@ceramicnetwork/wasm-bloom-filter/0.1.0:
     resolution: {integrity: sha512-vCKJsphSqVFpQISEBK/B59s278xmyab7BYX4yPZGI9aP92jjtGrrkQGaCQF+JOd/0ZSNRbYA3uOUH4BcKaoTCg==}
@@ -2229,10 +2273,10 @@ packages:
       change-case: 4.1.2
       json-ptr: 3.1.1
       lodash-es: 4.17.21
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       object-hash: 3.0.0
       type-fest: 3.6.1
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
       - graphql
@@ -2247,7 +2291,7 @@ packages:
       caip: 1.1.0
       graphql: 16.6.0
       graphql-scalars: 1.20.1_graphql@16.6.0
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2282,6 +2326,18 @@ packages:
       - '@types/node'
       - encoding
     dev: false
+
+  /@composedb/types/0.3.1:
+    resolution: {integrity: sha512-CKy3dTyZ8KHIjHOwS43apvQMnr/Bi0paZ7vkvaNvTqpZ+KncXX6WaVCs3D7bTlFVFLKiv9cIfZ96DCDdafyY8w==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@ceramicnetwork/stream-model': 0.11.0
+      '@ceramicnetwork/stream-model-instance': 0.9.0
+      dids: 3.4.0
+      json-schema-typed: 8.0.1
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /@composedb/types/0.4.3:
     resolution: {integrity: sha512-oNkOnMmObTak1IPX8gpRI/cPad1m/waFowG5kRtjvLBrrpl1lrRqBVZ1rYVL2O78pq28v8vKvKw0Ac2ss6I4Kw==}
@@ -2347,19 +2403,17 @@ packages:
       apg-js: 4.1.3
       caip: 1.1.0
       multiformats: 9.9.0
-      uint8arrays: 4.0.3
-    dev: false
+      uint8arrays: 2.1.10
 
   /@didtools/cacao/2.0.0:
     resolution: {integrity: sha512-FpJA/oLA/kahxIUBTLO1MLLiv6BHdUVoyXg80l6umCQytUytnnGvwmmQZa6GucQZkW0jN0FA953H8ELbNrBD0A==}
     engines: {node: '>=14.14'}
     dependencies:
-      '@ipld/dag-cbor': 9.0.0
+      '@ipld/dag-cbor': 7.0.3
       apg-js: 4.1.3
       caip: 1.1.0
-      multiformats: 11.0.1
-      uint8arrays: 4.0.3
-    dev: false
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
 
   /@didtools/pkh-ethereum/0.0.1:
     resolution: {integrity: sha512-2hDt1f60WXUNWMVS9S9b0pmXl78ivkVxZJHeyBUkbz7O7To1rHvlgvJ0gFJ3sKVemI1llpClzwd3PEjZfGwiUw==}
@@ -2369,7 +2423,6 @@ packages:
       '@ethersproject/wallet': 5.7.0
       '@stablelib/random': 1.0.2
       caip: 1.1.0
-    dev: false
 
   /@didtools/pkh-ethereum/0.1.0:
     resolution: {integrity: sha512-Abmc6uvWU8zkOrQbPUAsRtTW293vhx+rzd+/bbduTLrRGEqZ3niakQkxMqvQKZ6/9w+n0IjQVXSHE5vzc5cAeg==}
@@ -2379,7 +2432,6 @@ packages:
       '@ethersproject/wallet': 5.7.0
       '@stablelib/random': 1.0.2
       caip: 1.1.0
-    dev: false
 
   /@didtools/pkh-solana/0.1.0:
     resolution: {integrity: sha512-/0pWsM/TCdHjYZMy4yNcQav2SNj+3W/6RmMebUxdFDKVZFss3ULXIJD0+qsrMFpVNZw3sW/xjFs3He+/fl4HvA==}
@@ -2389,8 +2441,7 @@ packages:
       '@stablelib/ed25519': 1.0.3
       '@stablelib/random': 1.0.2
       caip: 1.1.0
-      uint8arrays: 4.0.3
-    dev: false
+      uint8arrays: 2.1.10
 
   /@didtools/pkh-tezos/0.2.1:
     resolution: {integrity: sha512-QKf73frCwcxpY8qZkLqt7EP2eGieltRW5GU/xmMPfgrNLYQrfFRYjF8Rmp9wf16cBuRjCRD0WuxQ8rV/++dseg==}
@@ -2402,8 +2453,7 @@ packages:
       '@stablelib/random': 1.0.2
       '@stablelib/sha256': 1.0.1
       caip: 1.1.0
-      uint8arrays: 4.0.3
-    dev: false
+      uint8arrays: 2.1.10
 
   /@emotion/babel-plugin/11.10.6:
     resolution: {integrity: sha512-p2dAqtVrkhSa7xz1u/m9eHYdLi+en8NowrmXeF/dKtJpU8lCWli8RUAati7NcSl0afsBott48pdnANuD0wh9QQ==}
@@ -3963,29 +4013,20 @@ packages:
     dependencies:
       cborg: 1.10.0
       multiformats: 9.9.0
-    dev: false
-
-  /@ipld/dag-cbor/9.0.0:
-    resolution: {integrity: sha512-zdsiSiYDEOIDW7mmWOYWC9gukjXO+F8wqxz/LfN7iSwTfIyipC8+UQrCbPupFMRb/33XQTZk8yl3My8vUQBRoA==}
-    engines: {node: '>=16.0.0', npm: '>=7.0.0'}
-    dependencies:
-      cborg: 1.10.0
-      multiformats: 11.0.1
-    dev: false
 
   /@ipld/dag-json/10.0.1:
     resolution: {integrity: sha512-XE1Eqw3eNVrSfOhtqCM/gwCxEgYFBzkDlkwhEeMmMvhd0rLBfSyVzXbahZSlv97tiTPEIx5rt41gcFAda3W8zg==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
       cborg: 1.10.0
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     dev: false
 
   /@ipld/dag-pb/4.0.2:
     resolution: {integrity: sha512-me9oEPb7UNPWSplUFCXyxnQE3/WlsjOljqO2RZN44XOmGkBY0/WVklbXorVE1eiv0Rt3p6dBS2x36Rq8A0Am8A==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     dev: false
 
   /@istanbuljs/load-nyc-config/1.1.0:
@@ -4439,10 +4480,10 @@ packages:
       '@libp2p/interfaces': 3.3.1
       '@noble/ed25519': 1.7.3
       '@noble/secp256k1': 1.7.1
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       node-forge: 1.3.1
       protons-runtime: 4.0.2_uint8arraylist@2.4.3
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - uint8arraylist
     dev: false
@@ -4465,7 +4506,7 @@ packages:
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
       '@libp2p/interface-peer-id': 2.0.1
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     dev: false
 
   /@libp2p/interface-keys/1.0.7:
@@ -4477,7 +4518,7 @@ packages:
     resolution: {integrity: sha512-k01hKHTAZWMOiBC+yyFsmBguEMvhPkXnQtqLtFqga2fVZu8Zve7zFAtQYLhQjeJ4/apeFtO6ddTS8mCE6hl4OA==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     dev: false
 
   /@libp2p/interface-peer-info/1.0.8:
@@ -4515,7 +4556,7 @@ packages:
       '@libp2p/interface-peer-id': 2.0.1
       debug: 4.3.4
       interface-datastore: 7.0.4
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4526,8 +4567,8 @@ packages:
     dependencies:
       '@libp2p/interface-peer-id': 2.0.1
       '@libp2p/interfaces': 3.3.1
-      multiformats: 11.0.1
-      uint8arrays: 4.0.3
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
     dev: false
 
   /@lmdb/lmdb-darwin-arm64/2.5.2:
@@ -4817,7 +4858,6 @@ packages:
 
   /@multiformats/base-x/4.0.1:
     resolution: {integrity: sha512-eMk0b9ReBbV23xXU693TAIrLyeO5iTgBZGSJfpqriG8UkYvr/hC9u9pyMlAakDNHWmbhMZCDs6KQO0jzKD8OTw==}
-    dev: false
 
   /@multiformats/multiaddr-to-uri/9.0.2:
     resolution: {integrity: sha512-vrWmfFadmix5Ab9l//oRQdQ7O3J5bGJpJRMSm21bHlQB0XV4xtNU6vMZBVXeu3Su79LgflEp37cjTFE3yKf3Hw==}
@@ -4835,8 +4875,8 @@ packages:
       '@chainsafe/is-ip': 2.0.1
       dns-over-http-resolver: 2.1.1
       err-code: 3.0.1
-      multiformats: 11.0.1
-      uint8arrays: 4.0.3
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
       varint: 6.0.0
     transitivePeerDependencies:
       - supports-color
@@ -7306,7 +7346,6 @@ packages:
       '@stablelib/binary': 1.0.1
       '@stablelib/hash': 1.0.1
       '@stablelib/wipe': 1.0.1
-    dev: false
 
   /@stablelib/bytes/1.0.1:
     resolution: {integrity: sha512-Kre4Y4kdwuqL8BR2E9hV/R5sOrUj6NanZaZis0V6lX5yzqC3hBuVSDXUIBqQv/sCpmuWRiHLwqiT1pqqjuBXoQ==}
@@ -9021,7 +9060,6 @@ packages:
 
   /apg-js/4.1.3:
     resolution: {integrity: sha512-XYyDcoBho8OpnWPRnedMwyL+76ovCtsESerHZEfY39dO4IrEqN97mdEYkOyHa0XTX5+3+U5FmpqPLttK0f7n6g==}
-    dev: false
 
   /append-field/1.0.0:
     resolution: {integrity: sha512-klpgFSWLW1ZEs8svjfb7g4qWY0YS5imI82dTg+QahUvJ8YqAY0P10Uk8tTyh9ZGuYEZEMaeJYCF5BFuX552hsw==}
@@ -10540,7 +10578,6 @@ packages:
 
   /caip/1.1.0:
     resolution: {integrity: sha512-yOO3Fu4ygyKYAdznuoaqschMKIZzcdgyMpBNtrIfrUhnOeaOWG+dh0c13wcOS6B/46IGGbncoyzJlio79jU7rw==}
-    dev: false
 
   /call-bind/1.0.2:
     resolution: {integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==}
@@ -10653,7 +10690,6 @@ packages:
   /cborg/1.10.0:
     resolution: {integrity: sha512-/eM0JCaL99HDHxjySNQJLaolZFVdl6VA0/hEKIoiQPcQzE5LrG5QHdml0HaBt31brgB9dNe1zMr3f8IVrpotRQ==}
     hasBin: true
-    dev: false
 
   /chai-ethers/0.0.1:
     resolution: {integrity: sha512-yajwk1BSf+lO2LzV+vra/iKukiUJcfD2aEVBZRWmaIJr0kI0eI1s6VF47qoXNolYxg0bf/SAlHSfwaPZWKBVyQ==}
@@ -11049,7 +11085,6 @@ packages:
   /colors/1.3.0:
     resolution: {integrity: sha512-EDpX3a7wHMWFA7PUHWPHNWqOxIIRSJetuwl0AS5Oi/5FMV8kWm69RTlgm00GKjBO1xFHMtBbL49yRtMMdticBw==}
     engines: {node: '>=0.1.90'}
-    dev: false
 
   /colors/1.4.0:
     resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
@@ -11448,20 +11483,19 @@ packages:
     dependencies:
       '@ipld/dag-cbor': 7.0.3
       multiformats: 9.9.0
-    dev: false
 
   /dag-jose-utils/3.0.0:
     resolution: {integrity: sha512-gu+XutOTy3kD8fDcA1SMjZ2U0mUOb/hxoRVZaMCizXN7Ssbc5dKOzeXQ4GquV4BdQzs3w5Y7irOpn2plFPIJfg==}
     dependencies:
       '@ipld/dag-cbor': 7.0.3
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     dev: false
 
   /dag-jose/4.0.0:
     resolution: {integrity: sha512-tw595L3UYoOUT9dSJPbBEG/qpRpw24kRZxa5SLRnlnr+g5L7O8oEs1d3W5TiVA1oJZbthVsf0Vi3zFN66qcEBA==}
     dependencies:
-      '@ipld/dag-cbor': 9.0.0
-      multiformats: 11.0.1
+      '@ipld/dag-cbor': 7.0.3
+      multiformats: 9.9.0
     dev: false
 
   /dashdash/1.14.1:
@@ -11852,11 +11886,10 @@ packages:
       elliptic: 6.5.4
       js-sha3: 0.8.0
       multiformats: 9.9.0
-      uint8arrays: 3.1.1
+      uint8arrays: 2.1.10
 
   /did-resolver/3.2.2:
     resolution: {integrity: sha512-Eeo2F524VM5N3W4GwglZrnul2y6TLTwMQP3In62JdG34NZoqihYyOZLk+5wUW8sSgvIYIcJM8Dlt3xsdKZZ3tg==}
-    dev: false
 
   /did-resolver/4.0.1:
     resolution: {integrity: sha512-eHs2VLKhcANmh08S87PKvOauIAmSOd7nb7AlhNxcvOyDAIGQY1UfbiqI1VOW5IDKvOO6aEWY+5edOt1qrCp1Eg==}
@@ -11870,7 +11903,7 @@ packages:
       dids: 3.4.0
       key-did-provider-ed25519: 2.0.1
       key-did-resolver: 2.3.0
-      uint8arrays: 3.1.1
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -11887,8 +11920,7 @@ packages:
       did-resolver: 3.2.2
       multiformats: 9.9.0
       rpc-utils: 0.6.2
-      uint8arrays: 3.1.1
-    dev: false
+      uint8arrays: 2.1.10
 
   /dids/4.0.0:
     resolution: {integrity: sha512-sNba/y3XSXkhMYlWw3JBGST+AOySIqZ1M/rsvoxSoLvcempi4MbtwqCTkBzuiKiKKmbLXZbL/rFIr0HUSRMg1Q==}
@@ -11900,9 +11932,9 @@ packages:
       dag-jose-utils: 3.0.0
       did-jwt: 6.11.1
       did-resolver: 4.0.1
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       rpc-utils: 0.6.2
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     dev: false
 
   /diff-sequences/28.1.1:
@@ -13995,7 +14027,6 @@ packages:
 
   /fast-json-patch/3.1.1:
     resolution: {integrity: sha512-vf6IHUX2SBcA+5/+4883dsIjpBTqmfBjmYiWK1savxQmFk4JfBMLa7ynTYOs1Rolp/T1betJxHiGD3g1Mn8lUQ==}
-    dev: false
 
   /fast-json-stable-stringify/2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -15833,7 +15864,7 @@ packages:
     dependencies:
       interface-store: 3.0.4
       nanoid: 4.0.1
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     dev: false
 
   /interface-store/3.0.4:
@@ -15899,7 +15930,7 @@ packages:
       '@types/node': 18.11.18
       interface-datastore: 7.0.4
       ipfs-unixfs: 9.0.1
-      multiformats: 11.0.1
+      multiformats: 9.9.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -15923,11 +15954,11 @@ packages:
       it-peekable: 2.0.1
       it-to-stream: 1.0.0
       merge-options: 3.0.4
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       nanoid: 4.0.1
       parse-duration: 1.0.2
       timeout-abort-controller: 3.0.0
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -15937,7 +15968,7 @@ packages:
     resolution: {integrity: sha512-d6Rqc1UP5nWhp7j0PumK80CA5LvbTvskro+qGw7hgWvbfQ0rX/5ddig7ELvVYJbJM4YBxCJSaSHDEOGoSpzzKg==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
-      '@ipld/dag-cbor': 9.0.0
+      '@ipld/dag-cbor': 7.0.3
       '@ipld/dag-json': 10.0.1
       '@ipld/dag-pb': 4.0.2
       '@libp2p/logger': 2.0.5
@@ -15952,10 +15983,10 @@ packages:
       it-first: 2.0.1
       it-last: 2.0.1
       merge-options: 3.0.4
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       parse-duration: 1.0.2
       stream-to-it: 0.2.4
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -16478,7 +16509,6 @@ packages:
 
   /it-first/1.0.7:
     resolution: {integrity: sha512-nvJKZoBpZD/6Rtde6FXqwDqDZGF1sCADmr2Zoc0hZsIvnE449gRFnGctxDf09Bzc/FWnHXAdaHVIetY6lrE0/g==}
-    dev: false
 
   /it-first/2.0.1:
     resolution: {integrity: sha512-noC1oEQcWZZMUwq7VWxHNLML43dM+5bviZpfmkxkXlvBe60z7AFRqpZSga9uQBo792jKv9otnn1IjA4zwgNARw==}
@@ -17115,7 +17145,6 @@ packages:
     resolution: {integrity: sha512-Kbw4G3BC45+Umz5XBnsE50pHplruJTVKGRy5X1YfCu3Te7f8ggTL8Tm10YegAD2QP41MVQ3o/Y9MFAZzfythqw==}
     dependencies:
       colors: 1.3.0
-    dev: false
 
   /jmespath/0.16.0:
     resolution: {integrity: sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw==}
@@ -17273,7 +17302,6 @@ packages:
 
   /json-schema-typed/8.0.1:
     resolution: {integrity: sha512-XQmWYj2Sm4kn4WeTYvmpKEbyPsL7nBsb647c7pMe6l02/yx2+Jfc4dT6UZkEXnIUb5LhD55r2HPsJ1milQ4rDg==}
-    dev: false
 
   /json-schema/0.4.0:
     resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
@@ -17393,7 +17421,7 @@ packages:
       did-jwt: 6.11.1
       fast-json-stable-stringify: 2.1.0
       rpc-utils: 0.6.2
-      uint8arrays: 3.1.1
+      uint8arrays: 2.1.10
 
   /key-did-resolver/2.3.0:
     resolution: {integrity: sha512-q3ChQILPe+u8qkpWP196fEoxsygEyjM3K25qrGaMSolVaUdfgj7qwMz2DE/GRIlfNK2HgKW6KXA8RZMy8aL4MA==}
@@ -17402,7 +17430,7 @@ packages:
       bigint-mod-arith: 3.1.2
       multiformats: 9.9.0
       nist-weierstrauss: 1.6.1
-      uint8arrays: 3.1.1
+      uint8arrays: 2.1.10
       varint: 6.0.0
 
   /key-did-resolver/3.0.0:
@@ -17411,9 +17439,9 @@ packages:
     dependencies:
       '@stablelib/ed25519': 1.0.3
       bigint-mod-arith: 3.1.2
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       nist-weierstrauss: 1.6.1
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
       varint: 6.0.0
     dev: false
 
@@ -17513,7 +17541,7 @@ packages:
     resolution: {integrity: sha512-2SMH/eCZlwR/4e9Aqr0HC1gJvCDTsgBRWRdu4LjHLrRwGsmDAl32vK4PkwkKfYwgJMHY3lgA6eZzaOLzrPwxFg==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
-      '@ipld/dag-cbor': 9.0.0
+      '@ipld/dag-cbor': 7.0.3
       '@ipld/dag-json': 10.0.1
       '@ipld/dag-pb': 4.0.2
       '@libp2p/crypto': 1.0.12_uint8arraylist@2.4.3
@@ -17528,10 +17556,10 @@ packages:
       it-first: 2.0.1
       it-last: 2.0.1
       merge-options: 3.0.4
-      multiformats: 11.0.1
+      multiformats: 9.9.0
       parse-duration: 1.0.2
       stream-to-it: 0.2.4
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -18202,7 +18230,6 @@ packages:
 
   /lodash.clonedeep/4.5.0:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
-    dev: false
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
@@ -18299,7 +18326,6 @@ packages:
     dependencies:
       split: 0.2.10
       through: 2.3.8
-    dev: false
 
   /long/3.2.0:
     resolution: {integrity: sha512-ZYvPPOMqUwPoDsbJaR10iQJYnMuZhRTvHYl62ErLIEX7RgFlziSBUUvrt3OVfc47QlHHpzPZYP17g3Fv7oeJkg==}
@@ -18484,7 +18510,6 @@ packages:
   /mapmoize/1.2.1:
     resolution: {integrity: sha512-LK8ArSM1wbfRPTnl+LpdxW1pwkfY6GxtM9p+STr6aDtM7ImR8jLuf4ekei43/AN0f7XDSrohzwwK57eGHSDAuA==}
     engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
-    dev: false
 
   /markdown-table/1.1.3:
     resolution: {integrity: sha512-1RUZVgQlpJSPWYbFSpmudq5nHY1doEIv89gBtF0s4gW1GF2XorxcA/70M5vq7rLv0a6mhOUccRsqkwhwLCIQ2Q==}
@@ -19132,7 +19157,6 @@ packages:
     deprecated: This module has been superseded by the multiformats module
     dependencies:
       '@multiformats/base-x': 4.0.1
-    dev: false
 
   /multicodec/0.5.7:
     resolution: {integrity: sha512-PscoRxm3f+88fAtELwUnZxGDkduE2HD9Q6GHUOywQLjOGT/HAdhjLDYNZ1e7VR0s0TP0EwZ16LNUTFpoBGivOA==}
@@ -19146,10 +19170,6 @@ packages:
     dependencies:
       buffer: 5.7.1
       varint: 5.0.2
-
-  /multiformats/11.0.1:
-    resolution: {integrity: sha512-atWruyH34YiknSdL5yeIir00EDlJRpHzELYQxG7Iy29eCyL+VrZHpPrX5yqlik3jnuqpLpRKVZ0SGVb9UzKaSA==}
-    engines: {node: '>=16.0.0', npm: '>=7.0.0'}
 
   /multiformats/9.9.0:
     resolution: {integrity: sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==}
@@ -19174,9 +19194,8 @@ packages:
     engines: {node: '>=12.0.0', npm: '>=6.0.0'}
     dependencies:
       multibase: 4.0.6
-      uint8arrays: 3.1.1
+      uint8arrays: 2.1.10
       varint: 5.0.2
-    dev: false
 
   /murmur-128/0.2.1:
     resolution: {integrity: sha512-WseEgiRkI6aMFBbj8Cg9yBj/y+OdipwVC7zUo3W2W1JAJITwouUOtpqsmGSg67EQmwwSyod7hsVsWY5LsrfQVg==}
@@ -19358,7 +19377,7 @@ packages:
       json-to-graphql-query: 2.2.5
       merge-options: 3.0.4
       tslib: 2.5.0
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -22524,7 +22543,6 @@ packages:
     resolution: {integrity: sha512-e0pKq+UUH2Xq/sXbYpZBZc3BawsfDZ7dgv+JtRTUPNcvF5CMR4Y9cvJqkMY0MoxWzTHvZuz1beg6pNEKlszPiQ==}
     dependencies:
       through: 2.3.8
-    dev: false
 
   /split2/4.1.0:
     resolution: {integrity: sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==}
@@ -23921,24 +23939,13 @@ packages:
     resolution: {integrity: sha512-oEVZr4/GrH87K0kjNce6z8pSCzLEPqHNLNR5sj8cJOySrTP8Vb/pMIbZKLJGhQKxm1TiZ31atNrpn820Pyqpow==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
     dependencies:
-      uint8arrays: 4.0.3
+      uint8arrays: 2.1.10
     dev: false
 
   /uint8arrays/2.1.10:
     resolution: {integrity: sha512-Q9/hhJa2836nQfEJSZTmr+pg9+cDJS9XEAp7N2Vg5MzL3bK/mkMVfjscRGYruP9jNda6MAdf4QD/y78gSzkp6A==}
     dependencies:
       multiformats: 9.9.0
-
-  /uint8arrays/3.1.1:
-    resolution: {integrity: sha512-+QJa8QRnbdXVpHYjLoTpJIdCTiw9Ir62nocClWuXIq2JIh4Uta0cQsTSpFL678p2CN8B+XSApwcU+pQEqVpKWg==}
-    dependencies:
-      multiformats: 9.9.0
-
-  /uint8arrays/4.0.3:
-    resolution: {integrity: sha512-b+aKlI2oTnxnfeSQWV1sMacqSNxqhtXySaH6bflvONGxF8V/fT3ZlYH7z2qgGfydsvpVo4JUgM/Ylyfl2YouCg==}
-    engines: {node: '>=16.0.0', npm: '>=7.0.0'}
-    dependencies:
-      multiformats: 11.0.1
 
   /ultron/1.1.1:
     resolution: {integrity: sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==}

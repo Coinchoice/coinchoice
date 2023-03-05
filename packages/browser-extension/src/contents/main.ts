@@ -1,4 +1,6 @@
+import { EthereumWebAuth, getAccountId } from '@didtools/pkh-ethereum';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { DIDSession } from 'did-session';
 import type { PlasmoCSConfig } from 'plasmo';
 import { io } from 'socket.io-client';
 import type { TopUp } from '~types';
@@ -70,8 +72,21 @@ async function onProvider(provider) {
 	bus.on('connect', async () => {
 		console.log('CS: Connect Wallet');
 		const req = { method: 'eth_requestAccounts' } as JsonRpcRequest;
-		const accounts = await window.ethereum.request(req);
+		const ethProvider = window.ethereum;
+		const accounts = await ethProvider.request(req);
 		console.log('CS: Wallet Connected', accounts);
+
+		const accountId = await getAccountId(ethProvider, accounts[0]);
+		console.log('Ceramic: accountId', accountId);
+		const authMethod = await EthereumWebAuth.getAuthMethod(
+			ethProvider,
+			accountId
+		);
+		const session = await DIDSession.authorize(authMethod, {
+			resources: ['ceramic://*'],
+		});
+		console.log('Ceramic: session', session.serialize());
+
 		bus.emit('connected', {
 			address: accounts[0],
 		});

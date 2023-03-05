@@ -4,6 +4,7 @@ import type { PlasmoCSConfig } from 'plasmo';
 
 import Notification from '../components/Notification';
 import TopUp from '../components/TopUp';
+import { CeramicWrapper } from '../context';
 
 export const config: PlasmoCSConfig = {
 	matches: ['<all_urls>'],
@@ -11,10 +12,12 @@ export const config: PlasmoCSConfig = {
 
 const ContentUI = () => {
 	return (
-		<MantineProvider>
-			<Notification />
-			<TopUp />
-		</MantineProvider>
+		<CeramicWrapper>
+			<MantineProvider>
+				<Notification />
+				<TopUp />
+			</MantineProvider>
+		</CeramicWrapper>
 	);
 };
 

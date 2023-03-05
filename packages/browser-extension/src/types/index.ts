@@ -54,3 +54,24 @@ export type Signature = {
 };
 
 export type TopUp = { amount: number; coin: Coin; sdk: string };
+
+// Ceramic composite
+export type Wallet = {
+	address: string;
+	token: string;
+	amount: string;
+	clientId: string;
+	network: number;
+};
+
+export type Wallets = {
+	edges: Array<{
+		node: {
+			address: string;
+			token: string;
+			amount: string;
+			clientId: string;
+			network: number;
+		};
+	}>;
+};
