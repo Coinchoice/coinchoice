@@ -1,3 +1,4 @@
+import { _TypedDataEncoder } from '@ethersproject/hash';
 import { ethers } from 'ethers';
 
 // import { splitSignature } from 'ethers/lib/utils';
@@ -168,11 +169,26 @@ export const Sign = async (
 	);
 	console.log('permit: data', data);
 
+	const populated = await _TypedDataEncoder.resolveNames(
+		data.domain,
+		data.types,
+		data.message,
+		(name: string) => {
+			return provider.resolveName(name);
+		}
+	);
+
 	// Example Reference: https://codesandbox.io/s/335wo
 	const digest = await signTypedData(
 		provider,
-		userAddress,
-		JSON.stringify(data)
+		userAddress.toLowerCase(),
+		JSON.stringify(
+			_TypedDataEncoder.getPayload(
+				populated.domain,
+				data.types,
+				populated.value
+			)
+		)
 	);
 	const { v, r, s } = ethers.utils.splitSignature(digest);
 	return { signature: digest, split: { v, r, s } };

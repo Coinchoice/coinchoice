@@ -7,6 +7,7 @@ export type Coin = {
 	networks: Partial<Record<NetworkChainIds, string | null>>;
 	permit: boolean;
 	default: boolean;
+	units: number;
 };
 
 export type Simulation = {
@@ -14,6 +15,7 @@ export type Simulation = {
 	feeToken: number;
 	feeWei: number;
 	txGasFeeWei: number;
+	amount: number;
 	price: number;
 	token: string;
 	balance: {

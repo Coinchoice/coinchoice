@@ -30,6 +30,7 @@ export const coinList: Coin[] = [
 		},
 		default: true,
 		permit: false,
+		units: 18,
 	},
 	{
 		ticker: 'USDC',
@@ -40,6 +41,7 @@ export const coinList: Coin[] = [
 		},
 		default: false,
 		permit: true,
+		units: 6,
 	},
 	{
 		ticker: 'DAI',
@@ -50,6 +52,7 @@ export const coinList: Coin[] = [
 		},
 		default: false,
 		permit: true,
+		units: 18,
 	},
 	{
 		ticker: 'USDT',
@@ -60,6 +63,7 @@ export const coinList: Coin[] = [
 		},
 		default: false,
 		permit: true,
+		units: 6,
 	},
 ];
 

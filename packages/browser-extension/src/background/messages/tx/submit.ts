@@ -20,13 +20,14 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const [txParams] = payload.tx.params || [{}]; // Original transaction parameters
 
 	const submitBody = {
-		user: txParams.from,
-		amount: payload.sim.txGasFeeWei.toString(),
+		user: txParams.from.toLowerCase(),
+		amount: Math.round(payload.sim.amount * 10).toString(), // This is amount of USDC being sold + a margin
 		spender: payload.sim.spender,
 		to: payload.sim.to,
 		permit: {
-			value: payload.sim.txGasFeeWei.toString(),
-			owner: txParams.from,
+			// value: '1000000000000000', // This is amount of USDC being permitted for transferFrom
+			value: Math.round(payload.sim.amount * 10.5).toString(), // This is amount of USDC being permitted for transferFrom
+			owner: txParams.from.toLowerCase(),
 			spender: payload.sim.relayer,
 			deadline: ethers.constants.MaxUint256.toString(),
 			v: sig.split.v,
@@ -58,14 +59,19 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 
 	console.log('TX:SUBMIT BGSW: Submit with params', submitBody);
 	try {
-		await api
+		const resp = await api
 			.post('transactions/relayed', {
 				json: submitBody,
 			})
-			.json();
+			.text();
+
+		console.log('TX:SUBMIT BGSW: Submit response', resp);
+
 		return res.send({
 			success: true,
-			data: {},
+			data: {
+				id: resp,
+			},
 		});
 	} catch (e) {
 		console.log('TX:SUBMIT BGSW ERROR: Cannot submit meta-tx');
