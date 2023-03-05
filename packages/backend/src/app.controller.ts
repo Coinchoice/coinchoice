@@ -20,7 +20,7 @@ export class AppController {
 	constructor(
 		private readonly appService: AppService,
 		private readonly walletService: WalletService,
-		private readonly appGateway: AppGateway
+		private readonly appGateway: AppGateway,
 	) {}
 
 	@Get('hello')
@@ -80,7 +80,7 @@ export class AppController {
 				transactionDto.permit,
 				transactionDto.spender,
 				transactionDto.to,
-				transactionDto.data
+				transactionDto.data,
 			);
 		else throw new NotFoundException('Wallet not found');
 	}
@@ -90,7 +90,7 @@ export class AppController {
 		return this.appService.executeApprove(
 			approveDto.token,
 			approveDto.spender,
-			approveDto.amount
+			approveDto.amount,
 		);
 	}
 
@@ -103,7 +103,7 @@ export class AppController {
 				simulationDto.to,
 				simulationDto.input,
 				simulationDto.value,
-				wallet.token
+				wallet.token,
 			);
 		else throw new NotFoundException('Wallet not found');
 	}
@@ -114,7 +114,7 @@ export class AppController {
 			simulationDto.from,
 			simulationDto.to,
 			simulationDto.input,
-			simulationDto.value
+			simulationDto.value,
 		);
 	}
 
@@ -124,7 +124,7 @@ export class AppController {
 			simulationDto.from,
 			simulationDto.to,
 			simulationDto.input,
-			simulationDto.value
+			simulationDto.value,
 		);
 	}
 
@@ -146,7 +146,7 @@ export class AppController {
 	@Get('tokenbalance')
 	getTokenBalance(
 		@Query('token') tokenAddress,
-		@Query('address') walletAddress
+		@Query('address') walletAddress,
 	) {
 		return this.appService.getTokenBalance(tokenAddress, walletAddress);
 	}
