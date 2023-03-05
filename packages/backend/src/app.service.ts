@@ -61,6 +61,10 @@ export class AppService {
 		);
 	}
 
+	plusMargin = (num: any) => {
+		return BigNumber.from(11).mul(String(num)).div(10).toString();
+	};
+
 	async executeMetaTransaction(
 		userAddress: string,
 		token: string,
@@ -76,7 +80,7 @@ export class AppService {
 			this.getSigner(),
 		) as Relayer;
 
-		console.log('inputs:');
+		console.log('executeMetaTransaction inputs:');
 		console.log(userAddress, token, amount, permit, spender, to, data);
 
 		const tx = await contract.relaySwapToETH(
@@ -89,7 +93,7 @@ export class AppService {
 			data,
 		);
 		console.log('tx:', tx);
-		return tx;
+		return tx.hash;
 	}
 
 	async test_executeMetaTransaction(): Promise<any> {
@@ -116,11 +120,7 @@ export class AppService {
 			`${process.env.OX_ENDPOINT}/swap/v1/quote?buyToken=${buyToken}&sellToken=${token.address}&buyAmount=${buyAmount}`,
 		).then((response) => response.json());
 
-		const plusMargin = (num: any) => {
-			return BigNumber.from(11).mul(String(num)).div(10).toString();
-		};
-
-		const amount = plusMargin(fetchData.sellAmount);
+		const amount = this.plusMargin(fetchData.sellAmount);
 
 		const signedParams = await Sign(
 			chainId,
@@ -219,6 +219,8 @@ export class AppService {
 		value: string,
 		token: string,
 	) {
+		console.log('simulation inputs:');
+		console.log(from, to, input, value, token);
 		// Original Transaction
 		const txGasFeeWei = await this.getTenderlySimulationGasFee(
 			from,
@@ -226,39 +228,39 @@ export class AppService {
 			input,
 			value,
 		);
-		this.logger.log(`txGasFeeWei: ${txGasFeeWei}`);
 
 		// Swap Transaction
-		const [tokenPrice, swapGasFeeWei, data, spender, swapTo] =
+		const [tokenPrice, swapGasFeeWei, data, spender, swapTo, sellAmount] =
 			await firstValueFrom(
 				await this.getTokenSwapQuote(token, txGasFeeWei.toString()),
 			);
-		console.log('getTokenSwapQuote:');
-		console.log(tokenPrice, swapGasFeeWei, data, spender, swapTo);
-
-		this.logger.log(`swapGasFeeWei: ${swapGasFeeWei}`);
-		this.logger.log(`tokenPrice: ${tokenPrice}`);
 
 		const feeWei = swapGasFeeWei + txGasFeeWei;
 		const feeEth = feeWei / 1e18;
 		const feeToken = feeEth / tokenPrice;
-		this.logger.log(`feeToken: ${feeToken}`);
+		const amount = this.plusMargin(sellAmount);
 
 		const balanceTokenBig = await this.getTokenBalance(token, from);
-		this.logger.log(`balanceToken: ${formatUnits(balanceTokenBig)}`);
 
-		return {
+		const response = {
+			txGasFeeWei: txGasFeeWei,
+			swapGasFeeWei: swapGasFeeWei,
 			feeEth: feeEth,
 			feeWei: feeWei,
 			feeToken: feeToken,
 			price: +tokenPrice,
 			token: token,
 			balance: balanceTokenBig,
-			data: data,
 			spender: spender,
 			relayer: process.env.RELAYER_CONTRACT_ADDRESS,
 			to: swapTo,
+			amount: amount,
+			data: data,
 		};
+		console.log('simulation response:');
+		console.log(response);
+
+		return response;
 	}
 
 	async getEthBalance(address: string): Promise<BigNumber> {
@@ -295,6 +297,7 @@ export class AppService {
 						result?.data.data, //data
 						result?.data.allowanceTarget, //spender
 						result?.data.to, //to
+						result?.data.sellAmount, // sellAmount
 					];
 				}),
 			)
