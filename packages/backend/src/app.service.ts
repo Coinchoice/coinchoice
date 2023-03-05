@@ -237,7 +237,7 @@ export class AppService {
 
 		const feeWei = swapGasFeeWei + txGasFeeWei;
 		const feeEth = feeWei / 1e18;
-		const feeToken = feeEth / tokenPrice;
+		const feeToken = feeEth * tokenPrice;
 		const amount = this.plusMargin(sellAmount);
 
 		const balanceTokenBig = await this.getTokenBalance(token, from);
