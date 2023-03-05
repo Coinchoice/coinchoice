@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethers';
 import type { FramebusOnHandler } from 'framebus/dist/lib/types';
 import type { BasicWallet, Coin, Simulation } from '~types';
@@ -22,6 +21,8 @@ import { getToken } from '../utils/token';
 import type { GasPayload } from './../types/index';
 
 export class RPCProviderFacade {
+	private provider: ethers.providers.Web3Provider;
+
 	constructor(private wallet) {}
 
 	setWallet(_wallet: BasicWallet) {
@@ -138,6 +139,8 @@ export class RPCProviderFacade {
 			provider.request = request.bind(this);
 			provider.coinchoice = true;
 		}
+
+		this.provider = new ethers.providers.Web3Provider(provider);
 	}
 
 	async waitForSignature(request: TxRequest) {
@@ -179,10 +182,15 @@ export class RPCProviderFacade {
 				wallet: this.wallet,
 				tx: request,
 			});
+		} catch (e) {
+			console.log('CS [Facade]: Insufficient funds in selected currency');
+			console.error(e);
+		}
 
+		try {
 			// ! The function does not block -- it needs to block until accept is received.
 			// On Accept Gas Payment in Chosen Currency
-			await new Promise((resolve, reject) => {
+			const txId = await new Promise<string>((resolve, reject) => {
 				const acceptHandler: FramebusOnHandler = async ({
 					accepted,
 					coin,
@@ -196,27 +204,55 @@ export class RPCProviderFacade {
 					// Remove accept listener on each handle
 					bus.off('accept', acceptHandler);
 					if (!accepted) {
-						resolve({ success: false, sig: null, payload });
+						return resolve('');
 					}
 					try {
 						const sig = await this.actionSignature(coin, payload);
 						console.log('CS [Facade]: Signature success');
 						const res = { success: true, sig, payload };
-						bus.emit('sign-complete', res);
-						resolve(res);
+						const resp = (await busPromise('sign-complete', res)) as {
+							success: boolean;
+							data: { id: string };
+						};
+						if (!resp.success) {
+							throw new Error('Meta-tx Submissions Failed');
+						}
+						return resolve(resp.data.id);
 					} catch (innerErr) {
-						console.log('CS [Facade] ERROR');
-						console.error(innerErr);
-						bus.emit('sign-complete', { success: false, sig: null, payload });
-						reject(innerErr);
+						return reject(innerErr);
 					}
 				};
 				// Accept registered on each request
 				console.log('CS [Facade]: register accept handler');
 				bus.on('accept', acceptHandler);
 			});
+
+			if (!txId) {
+				console.log('CS [Facade]: signature cancelled');
+				bus.emit('sign-finalise', { tx: null });
+				return;
+			}
+
+			// Wait for transaction to complete.
+			console.log('CS [Facade]: Wait for Tx', txId);
+			const tx = await this.provider.getTransaction(txId);
+			await tx.wait();
+			console.log('CS [Facade]: Tx', tx);
+
+			// Delay by an additional second
+			// await new Promise((resolve) => {
+			// 	setTimeout(() => {
+			// 		resolve(true);
+			// 	}, 1000);
+			// });
+
+			// Then emit sign-finalise for close of notification
+			bus.emit('sign-finalise', { tx });
+
+			// This will continue with the original transaction
 		} catch (e) {
-			console.log('Insufficient funds in selected currency');
+			console.log('CS [Facade] ERROR: Cannot action signature');
+			console.error(e);
 		}
 	}
 
@@ -227,15 +263,20 @@ export class RPCProviderFacade {
 		);
 
 		// console.log('CS: signer', signer);
-		const token = await getToken(ethProvider, this.wallet.network, coin);
+		const token = await getToken(
+			ethProvider,
+			this.wallet.network,
+			coin.networks[this.wallet.network]
+		);
 		console.log('CS [Facade]: token: ', token);
 
 		const res = await permit.Sign(
 			ethProvider,
 			this.wallet.network,
-			this.wallet.address,
+			this.wallet.address.toLowerCase(),
 			token,
-			payload.sim.feeToken.toString(),
+			Math.round(payload.sim.amount * 10.5).toString(),
+			// '1000000000000000',
 			payload.sim.relayer,
 			ethers.constants.MaxUint256.toString()
 		);

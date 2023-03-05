@@ -34,14 +34,22 @@ bus.on(
 		payload: GasPayload;
 	}) => {
 		if (success) {
-			// Submit meta-tx in API request for swap transaction
-			await sendToBackground({
-				name: 'tx/submit',
-				body: {
-					sig,
-					payload,
-				},
-			});
+			try {
+				// Submit meta-tx in API request for swap transaction
+				const resp = await sendToBackground({
+					name: 'tx/submit',
+					body: {
+						sig,
+						payload,
+					},
+				});
+
+				bus.emit('resp:sign-complete', { err: null, resp });
+			} catch (e) {
+				bus.emit('resp:sign-complete', { err: e, resp: null });
+			}
+		} else {
+			bus.emit('resp:sign-complete', { err: null, resp: null });
 		}
 	}
 );

@@ -7,12 +7,15 @@ export type Coin = {
 	networks: Partial<Record<NetworkChainIds, string | null>>;
 	permit: boolean;
 	default: boolean;
+	units: number;
 };
 
 export type Simulation = {
 	feeEth: number;
 	feeToken: number;
-	feeWei: number; // TODO: Is this ETH or native token?
+	feeWei: number;
+	txGasFeeWei: number;
+	amount: number;
 	price: number;
 	token: string;
 	balance: {
