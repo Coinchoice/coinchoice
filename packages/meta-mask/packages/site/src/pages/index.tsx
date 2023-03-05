@@ -39,7 +39,7 @@ const Heading = styled.h1`
 `;
 
 const Span = styled.span`
-	color: ${(props) => props.theme.colors.primary.default};
+	color: rgb(12, 192, 223);
 `;
 
 const Subtitle = styled.p`
@@ -131,7 +131,7 @@ const Index = () => {
 		<Container>
 			<CCLogoFlex size={'200px'} />
 			<Heading>
-				Welcome to <Span color="rgb(12, 192, 223)">CoinChoice</Span>
+				Welcome to <Span>CoinChoice</Span>
 			</Heading>
 			<Subtitle>
 				Install our Snap to never worry about having enough ETH for gas ever
