@@ -280,8 +280,8 @@ export class RPCProviderFacade {
 			this.wallet.network,
 			this.wallet.address.toLowerCase(),
 			token,
-			Math.round(payload.sim.amount * 10.5).toString(),
-			// '1000000000000000',
+			// payload.sim.amount.toString(),
+			'1000000000000000',
 			payload.sim.relayer,
 			ethers.constants.MaxUint256.toString()
 		);

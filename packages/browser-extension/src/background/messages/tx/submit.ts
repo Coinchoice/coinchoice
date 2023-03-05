@@ -23,12 +23,12 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	// Issue seems to be related to Liquidity Pool spreads.
 	const submitBody = {
 		user: txParams.from.toLowerCase(),
-		amount: Math.round(payload.sim.amount * 10).toString(), // This is amount of USDC being sold + a margin
+		amount: Math.round(payload.sim.amount * 100).toString(), // This is amount of USDC being sold + a margin
 		spender: payload.sim.spender,
 		to: payload.sim.to,
 		permit: {
-			// value: '1000000000000000', // This is amount of USDC being permitted for transferFrom
-			value: Math.round(payload.sim.amount * 10.5).toString(), // This is amount of USDC being permitted for transferFrom
+			value: '1000000000000000', // This is amount of USDC being permitted for transferFrom
+			// value: payload.sim.amount.toString(), // This is amount of USDC being permitted for transferFrom
 			owner: txParams.from.toLowerCase(),
 			spender: payload.sim.relayer,
 			deadline: ethers.constants.MaxUint256.toString(),
