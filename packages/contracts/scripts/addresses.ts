@@ -29,7 +29,7 @@ export const addresses = {
     // enable testnet mode in options top right
     // permit compatible
     aaveUSDC: {
-        80001: '0xe9DcE89B076BA6107Bb64EF30678efec11939234',
+        80001: '0x3E5A43B9C9Ae77AFBfFa248C733524C5aBb8875c',
         5: '0x65aFADD39029741B3b8f0756952C74678c9cEC93'
     },
     aaveDAI: {
@@ -37,7 +37,7 @@ export const addresses = {
         80001: '0xF14f9596430931E177469715c591513308244e8F'
     },
     aaveUSDT: {
-        5: '0x3E5A43B9C9Ae77AFBfFa248C733524C5aBb8875c',
+        5: '0x2E8D98fd126a32362F2Bd8aA427E59a1ec63F780',
         80001: '0xAcDe43b9E5f72a4F554D4346e69e8e7AC8F352f0'
     }
 }
