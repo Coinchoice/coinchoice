@@ -39,6 +39,10 @@ const address1: string = process.env.ADDRESS_1 || '';
 const address2: string = process.env.ADDRESS_2 || ''
 
 const config: HardhatUserConfig = {
+	etherscan: {
+		apiKey: process.env.ETHERSCAN_API_KEY,
+		// apiKey: process.env.POLYGONSCAN_API_KEY,
+	  },
 	abiExporter: {
 		path: './abi',
 		clear: false,
@@ -47,9 +51,6 @@ const config: HardhatUserConfig = {
 		// except: []
 	},
 	defaultNetwork: 'hardhat',
-	etherscan: {
-		apiKey: ''
-	},
 	gasReporter: {
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
 		currency: 'USD',
@@ -166,6 +167,16 @@ const config: HardhatUserConfig = {
 						runs: 1_000_000,
 					},
 					evmVersion: 'london',
+				},
+			},
+			{
+				version: '0.4.15',
+				settings: {
+					optimizer: {
+						enabled: true,
+						runs: 1_000_000,
+					},
+					// evmVersion: 'london',
 				},
 			},
 			{

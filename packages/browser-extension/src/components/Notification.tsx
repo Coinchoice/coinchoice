@@ -7,7 +7,10 @@ import {
 	Image,
 	ThemeIcon,
 	Text,
+	Anchor,
 } from '@mantine/core';
+import { ethers } from 'ethers';
+import { IconCheck } from '@tabler/icons-react';
 
 import { coinList } from '~utils/constants';
 import { bus } from '~utils/bus';
@@ -15,6 +18,8 @@ import type { GasPayload, Coin } from '~types';
 import { truncate } from '~utils/truncate';
 import LogoWhite from 'data-base64:~assets/LogoWhite.png';
 import ConnectButton from './ConnectButton';
+import { notifications } from '@mantine/notifications';
+import { getNetworkExplorer } from '~utils/explorers';
 
 const Notification = () => {
 	const [isOpened, setOpened] = useState(
@@ -43,9 +48,31 @@ const Notification = () => {
 		});
 
 		// Executed once a signature is captured
-		bus.on('sign-complete', () => {
-			setSignLoading(false);
-		});
+		bus.on(
+			'sign-finalise',
+			({ tx }: { tx: { hash: string; chainId: number } } | null) => {
+				setSignLoading(false);
+				// Close on finalise
+				setOpened(false);
+
+				if (tx && tx.hash) {
+					notifications.show({
+						title: 'Gas deposited into your wallet successfully!',
+						message: (
+							<Anchor
+								href={getNetworkExplorer(tx.chainId, tx.hash)}
+								target="_blank"
+							>
+								See on Etherscan
+							</Anchor>
+						),
+						id: tx.hash,
+						icon: <IconCheck size="1.1rem" />,
+						color: 'teal',
+					});
+				}
+			}
+		);
 
 		// On wallet connection, update the payload
 		bus.on('mm:accountsChanged', ({ accounts }) => {
@@ -69,13 +96,17 @@ const Notification = () => {
 
 	const handleSign = useCallback(
 		(accepted: boolean) => {
-			setSignLoading(accepted);
 			bus.emit('accept', {
 				accepted,
 				coin: selectedCoin,
 				payload,
 			});
-			setOpened(false);
+			if (accepted) {
+				setSignLoading(true);
+			} else {
+				// Close on cancel
+				setOpened(false);
+			}
 		},
 		[selectedCoin, payload]
 	);
@@ -85,25 +116,12 @@ const Notification = () => {
 			opened={isOpened}
 			onClose={() => setOpened(false)}
 			padding="xl"
-			size="lg"
+			size="sm"
 			position="right"
 			zIndex={9999}
 			closeOnClickOutside={false}
-			// className={classes.body}
-			sx={() => ({
-				'&  .mantine-Drawer-body': {
-					marginTop: '-50px',
-				},
-			})}
-		>
-			<Flex
-				gap="sm"
-				direction="column"
-				sx={() => ({
-					overflowY: 'auto',
-				})}
-			>
-				<Flex direction="row" mb={20}>
+			title={
+				<Flex direction="row">
 					<ThemeIcon
 						size="xl"
 						variant="gradient"
@@ -122,6 +140,15 @@ const Notification = () => {
 						CoinChoice
 					</Title>
 				</Flex>
+			}
+		>
+			<Flex
+				gap="sm"
+				direction="column"
+				sx={() => ({
+					overflowY: 'auto',
+				})}
+			>
 				{payload !== null && (
 					<>
 						<Flex
@@ -164,7 +191,12 @@ const Notification = () => {
 										{selectedCoin.ticker} Balance
 									</Text>
 									<Text fz={12} m={5} opacity="0.7">
-										{parseInt(payload.sim.balance.hex, 16).toFixed(6)}
+										{parseFloat(
+											ethers.utils.formatUnits(
+												parseInt(payload.sim.balance.hex, 16),
+												selectedCoin.units
+											)
+										).toFixed(6)}
 									</Text>
 								</Flex>
 							</>
@@ -221,6 +253,7 @@ const Notification = () => {
 								variant="subtle"
 								w="100%"
 								onClick={() => handleSign(false)}
+								disabled={isSignLoading}
 							>
 								Cancel
 							</Button>

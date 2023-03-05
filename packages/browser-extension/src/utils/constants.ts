@@ -30,6 +30,7 @@ export const coinList: Coin[] = [
 		},
 		default: true,
 		permit: false,
+		units: 18,
 	},
 	{
 		ticker: 'USDC',
@@ -40,26 +41,29 @@ export const coinList: Coin[] = [
 		},
 		default: false,
 		permit: true,
+		units: 6,
 	},
 	{
 		ticker: 'DAI',
 		name: 'Dai',
 		icon: DAIIcon,
 		networks: {
-			[NetworkChainIds.GOERLI]: '',
+			[NetworkChainIds.GOERLI]: '0xBa8DCeD3512925e52FE67b1b5329187589072A55',
 		},
 		default: false,
 		permit: true,
+		units: 18,
 	},
 	{
 		ticker: 'USDT',
 		name: 'Tether USD',
 		icon: USDTIcon,
 		networks: {
-			[NetworkChainIds.GOERLI]: '',
+			[NetworkChainIds.GOERLI]: '0x2E8D98fd126a32362F2Bd8aA427E59a1ec63F780',
 		},
 		default: false,
 		permit: true,
+		units: 6,
 	},
 ];
 

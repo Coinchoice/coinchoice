@@ -2,8 +2,11 @@
 
 
 export const addresses = {
+    multisig: {
+        5: '0xE427ACd7b0d6fb7F780eBdc315C8c00C32584622'
+    },
     relayer: {
-        5: '0xC38f5162545995b75103Bb11796A7ae0f17602AA',
+        5: '0x2B8DFD530D51235F384C0E746B5Fa9999Ffc239B',
         80001: '0x7E64d52D285E47b088f7b1df2438C1782099101a'
     },
     // not permit compatible

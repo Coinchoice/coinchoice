@@ -1,17 +1,10 @@
-import { BigNumber } from "ethers";
 import '@nomiclabs/hardhat-ethers'
 import { ethers } from "hardhat";
-import { Relayer__factory } from "../types";
+import { MultiSigWallet__factory } from "../types";
 import { addresses } from "./addresses";
 
 
 const _addresses = addresses as any
-
-const plusMargin = (num: any) => {
-    return BigNumber.from(11).mul(String(num)).div(10).toString()
-}
-
-const executioner = '0x36176f5A332cB5a26e0B4924747BC3dB3Bd9aA05'
 
 async function main() {
 
@@ -23,18 +16,16 @@ async function main() {
 
     console.log("operator", operator.address, 'on', chainId, "with relayer", relayerAddress, "with user", user.address)
 
-    const relayerContract = await new Relayer__factory(operator).attach(relayerAddress)
 
-    // estimate gas for transaction
-    const gasEst = await relayerContract.estimateGas.addExecutioner(executioner)
+    const multisig = await new MultiSigWallet__factory(operator).attach(_addresses.multisig[chainId])
 
-    console.log(gasEst.toString())
-    const tx = await relayerContract.addExecutioner(
-        executioner,
-        { gasLimit: plusMargin(gasEst) }
-    )
-    console.log("TX", tx)
-    await tx.wait()
+
+    const msConfirm = await multisig.confirmTransaction(4)
+    await msConfirm.wait()
+
+    const msSend = await multisig.executeTransaction(4)
+    await msSend.wait()
+
     console.log("completed")
 
 }
