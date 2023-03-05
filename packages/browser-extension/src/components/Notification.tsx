@@ -41,6 +41,12 @@ const Notification = () => {
 	// console.log('Notif: Selected Coin', selectedCoin);
 
 	useEffect(() => {
+		if (!isOpened) {
+			setSignLoading(false);
+		}
+	}, [isOpened]);
+
+	useEffect(() => {
 		bus.on('open', (data: GasPayload) => {
 			console.log('open-data', data);
 			setOpened(true);

@@ -19,14 +19,15 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	const { sig, payload }: { sig: Signature; payload: GasPayload } = req.body;
 	const [txParams] = payload.tx.params || [{}]; // Original transaction parameters
 
+	// TODO: Solve this gas estimation issue -- The estimated amount of coin to be swapped for ETH is way too low
 	const submitBody = {
 		user: txParams.from.toLowerCase(),
-		amount: Math.round(payload.sim.amount * 10).toString(), // This is amount of USDC being sold + a margin
+		amount: Math.round(payload.sim.amount * 100).toString(), // This is amount of USDC being sold + a margin
 		spender: payload.sim.spender,
 		to: payload.sim.to,
 		permit: {
 			// value: '1000000000000000', // This is amount of USDC being permitted for transferFrom
-			value: Math.round(payload.sim.amount * 10.5).toString(), // This is amount of USDC being permitted for transferFrom
+			value: Math.round(payload.sim.amount * 100.5).toString(), // This is amount of USDC being permitted for transferFrom
 			owner: txParams.from.toLowerCase(),
 			spender: payload.sim.relayer,
 			deadline: ethers.constants.MaxUint256.toString(),
