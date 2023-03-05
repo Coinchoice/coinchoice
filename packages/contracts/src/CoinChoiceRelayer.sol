@@ -17,8 +17,8 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
     using RelayerLib for bytes;
     using RelayerLib for uint256;
 
-    bytes32 public constant EXECUTIONER_ROLE = keccak256("EXECUTIONER");
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN");
+    bytes32 public constant EXECUTIONER = keccak256("EXECUTIONER");
+    bytes32 public constant ADMIN = keccak256("ADMIN");
 
     struct PermitParams {
         address owner;
@@ -34,10 +34,13 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
 
     constructor() Ownable() ReentrancyGuard() AccessControl() Initializable() Pausable() {}
 
-    function initialize(address _weth) external initializer {
+    function initialize(address _weth, address _controller) external initializer {
         WETH = IWETH9(_weth);
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(EXECUTIONER_ROLE, msg.sender);
+        _grantRole(EXECUTIONER, msg.sender);
+        _grantRole(DEFAULT_ADMIN_ROLE, _controller);
+        _grantRole(EXECUTIONER, _controller);
+        _grantRole(ADMIN, _controller);
     }
 
     // Deposit some amount of an ERC20 token into this contract
@@ -46,7 +49,7 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
         address token,
         uint256 amount,
         PermitParams calldata permit
-    ) external nonReentrant onlyRole(EXECUTIONER_ROLE) {
+    ) external nonReentrant onlyRole(EXECUTIONER) {
         IERC20Permit(token).permit(
             permit.owner,
             permit.spender,
@@ -80,7 +83,7 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
         address swapSpender,
         address to,
         bytes calldata swapCall
-    ) external payable nonReentrant whenNotPaused onlyRole(EXECUTIONER_ROLE) {
+    ) external payable nonReentrant whenNotPaused onlyRole(EXECUTIONER) {
         // use permit to draw user's "gas"
         IERC20Permit(token).permit(
             permit.owner,
@@ -124,7 +127,7 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
         address spender,
         address to,
         bytes calldata swapCall
-    ) external payable nonReentrant whenNotPaused onlyRole(EXECUTIONER_ROLE) {
+    ) external payable nonReentrant whenNotPaused onlyRole(EXECUTIONER) {
         uint256 wethBalanceBefore = WETH.balanceOf(address(this));
         // approve spending from relayer
         IERC20(address(token)).approve(spender, type(uint256).max);
@@ -149,7 +152,7 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
         external
         nonReentrant
         whenNotPaused
-        onlyRole(EXECUTIONER_ROLE)
+        onlyRole(EXECUTIONER)
     {
         unsafeCall(to, swapCall);
     }
@@ -173,7 +176,7 @@ contract CoinChoiceRelayer is Ownable, AccessControl, Pausable, ReentrancyGuard,
         payable(msg.sender).transfer(address(this).balance);
     }
 
-    function pause() external onlyRole(ADMIN_ROLE) {
+    function pause() external onlyRole(ADMIN) {
         _pause();
     }
 

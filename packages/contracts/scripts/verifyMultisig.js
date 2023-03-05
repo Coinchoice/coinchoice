@@ -4,9 +4,9 @@ module.exports = [
   ];
 
   // operator 0xBe7cdd945079210dA9C871417966a0E0bDC08719
-  // multisig 0xB424540a1b15F16a2ccEC7e6a6B94267043ffaCa
-  // relayerLogic 0xd51bF91faF29E8e9E63659EF1f7f79f16b9f8071
-  // relayerProxy 0x701539b8e013E0995aA6eD73e4Cef32ceAF9796d
+  // multisig 0xABb5218B12a37e95422e273c63A9d72D5A99ccDa
+  // relayerLogic 0x1C721380AFc8A8D17c922477b97a72E2DC66ABEf
+  // relayerProxy 0xCf2a0b10447a3149467E2172eAd07eA2cb627193
   
   
 

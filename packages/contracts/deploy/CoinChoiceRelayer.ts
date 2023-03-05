@@ -2,6 +2,7 @@ import '@nomiclabs/hardhat-ethers'
 import { ethers } from "hardhat";
 import { CoinChoiceRelayer__factory, MultiSigWallet__factory, TransparentUpgradeableProxy__factory } from "../types";
 import { addresses } from "../scripts/addresses";
+// import { abiMultiSig } from "../scripts/_abiMiltiSig";
 
 const _addresses = addresses as any
 
@@ -12,8 +13,7 @@ async function main() {
 
     console.log("operator", operator.address)
 
-    const multisig = await new MultiSigWallet__factory(operator).deploy([operator.address], [1])
-    await multisig.deployed()
+    const multisig = await new MultiSigWallet__factory(operator).attach(_addresses.multisig[chainId])
 
     const relayerLogic = await new CoinChoiceRelayer__factory(operator).deploy()
     await relayerLogic.deployed()
@@ -30,16 +30,16 @@ async function main() {
 
     // await relayerContract.initialize(_addresses.weth[chainId])
 
-    const tx = relayerContract.interface.encodeFunctionData('initialize', [_addresses.weth[chainId]])
+    await relayerContract.initialize(_addresses.weth[chainId], _addresses.multisig[chainId])
 
-    const mstx = await multisig.submitTransaction(relayerContract.address, 0, tx)
-    await mstx.wait()
+    // const mstx = await multisig.submitTransaction(relayerContract.address, 0, tx)
+    // await mstx.wait()
 
-    const msConfirm = await multisig.confirmTransaction(0)
-    await msConfirm.wait()
+    // const msConfirm = await multisig.confirmTransaction(0)
+    // await msConfirm.wait()
 
-    const msSend = await multisig.executeTransaction(0)
-    await msSend.wait()
+    // const msSend = await multisig.executeTransaction(0)
+    // await msSend.wait()
 
     console.log("completed")
 
