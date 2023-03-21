@@ -56,6 +56,7 @@ Learn more: [https://go.usher.so/coinchoice](https://go.usher.so/coinchoice)
   2. offers a popup where Gas Coin can be selected
   3. offers a popup for Token management powered by [Cypher Onboarding SDK](https://developer.cypherwallet.io/)
   All data is submitted to `backend` service where Blockchain Interactions and Simulations are managed
+- `contracts`: Smart Contracts that power relaying meta-transactions to facilitate swaps on 0x Protocol.
 - `ceramic`: An alternative approach to data management whereby ComposeDB is used in place of MongoDB for Wallets and Selected Coins
 - `frpc`: A package to leverage the Fluence Network's fRPC Gateway
 - `meta-mask`: A package that contains a React.js Site and assocated MetaMask Snap.
